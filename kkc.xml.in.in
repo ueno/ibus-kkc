@@ -1,0 +1,28 @@
+<?xml version=\"1.0\" encoding=\"utf-8\"?>
+<!-- filename: kkc.xml -->
+<component>
+	<name>org.freedesktop.IBus.KKC</name>
+	<description>KKC Component</description>
+	<exec>${libexecdir}/ibus-engine-kkc --ibus</exec>
+	<version>@VERSION@</version>
+	<author>Daiki Ueno &lt;ueno@unixuser.org&gt;</author>
+	<license>GPL</license>
+	<homepage>http://code.google.com/p/ibus</homepage>
+	<textdomain>ibus-kkc</textdomain>
+
+	<!-- for static engines -->
+	<engines>
+		<engine>
+			<name>kkc</name>
+			<language>ja</language>
+			<license>GPL</license>
+			<author>Daiki Ueno &lt;ueno@unixuser.org&gt;</author>
+			<icon>${pkgdatadir}/icons/ibus-kkc.svg</icon>
+			<layout>jp</layout>
+			<longname>KKC</longname>
+			<description>KKC Input Method</description>
+			<rank>70</rank>
+			<symbol>&#x3042;</symbol>
+		</engine>
+	</engines>
+</component>

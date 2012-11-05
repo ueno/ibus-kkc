@@ -1,0 +1,45 @@
+Name:		@PACKAGE_NAME@
+Version:	@PACKAGE_VERSION@
+Release:	1%{?dist}
+Summary:	Japanese KKC input method for ibus
+
+Group:		System Environment/Libraries
+License:	GPLv2+
+URL:		http://gitorious.org/libkkc/ibus-kkc
+Source0:	%{name}-%{version}.tar.gz
+
+BuildRequires:	intltool
+BuildRequires:	libkkc-devel
+BuildRequires:	ibus-devel
+BuildRequires:	gtk3-devel
+Requires:	ibus
+
+%description
+A Japanese KKC Input Method Engine for ibus.
+
+
+%prep
+%setup -q
+
+
+%build
+%configure
+make %{?_smp_mflags}
+
+
+%install
+make install DESTDIR=$RPM_BUILD_ROOT INSTALL="install -p"
+
+%find_lang %{name}
+
+
+%files -f %{name}.lang
+%doc AUTHORS COPYING README
+%{_datadir}/ibus-kkc
+%{_libexecdir}/ibus-*-kkc
+%{_datadir}/ibus/component/kkc.xml
+
+
+%changelog
+* @DATE_DISPLAY@ Daiki Ueno <dueno@redhat.com> - @PACKAGE_VERSION@-1
+- initial release
