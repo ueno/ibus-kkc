@@ -23,13 +23,11 @@ class Setup : Object {
     // main dialog
     Gtk.Dialog dialog;
     Gtk.TreeView dictionaries_treeview;
-    Gtk.Entry auto_start_henkan_keywords_entry;
     Gtk.ComboBox period_style_combobox;
     Gtk.SpinButton page_size_spinbutton;
     Gtk.SpinButton pagination_start_spinbutton;
     Gtk.CheckButton show_annotation_checkbutton;
     Gtk.ComboBox initial_input_mode_combobox;
-    Gtk.CheckButton egg_like_newline_checkbutton;
     Gtk.ComboBox typing_rule_combobox;
 
     // dict dialog
@@ -67,14 +65,6 @@ class Setup : Object {
         assert (object != null);
         dictionaries_treeview = (Gtk.TreeView) object;
 
-        object = builder.get_object ("auto_start_henkan_keywords_entry");
-        assert (object != null);
-        auto_start_henkan_keywords_entry = (Gtk.Entry) object;
-
-        object = builder.get_object ("egg_like_newline_checkbutton");
-        assert (object != null);
-        egg_like_newline_checkbutton = (Gtk.CheckButton) object;
-
         object = builder.get_object ("period_style_combobox");
         assert (object != null);
         period_style_combobox = (Gtk.ComboBox) object;
@@ -94,10 +84,6 @@ class Setup : Object {
         object = builder.get_object ("initial_input_mode_combobox");
         assert (object != null);
         initial_input_mode_combobox = (Gtk.ComboBox) object;
-
-        object = builder.get_object ("egg_like_newline_checkbutton");
-        assert (object != null);
-        egg_like_newline_checkbutton = (Gtk.CheckButton) object;
 
         object = builder.get_object ("typing_rule_combobox");
         assert (object != null);
@@ -376,14 +362,6 @@ class Setup : Object {
 
         Variant? variant;
 
-        variant = preferences.get ("auto_start_henkan_keywords");
-        assert (variant != null);
-        auto_start_henkan_keywords_entry.text = string.joinv ("", variant.dup_strv ());
-
-        variant = preferences.get ("egg_like_newline");
-        assert (variant != null);
-        egg_like_newline_checkbutton.active = variant.get_boolean ();
-
         variant = preferences.get ("page_size");
         assert (variant != null);
         page_size_spinbutton.set_range (7.0, 16.0);
@@ -450,17 +428,6 @@ class Setup : Object {
     void save () {
         save_dictionaries ("dictionaries");
 
-        ArrayList<string> keywords = new ArrayList<string> ();
-        int index = 0;
-        unichar uc;
-        while (auto_start_henkan_keywords_entry.text.get_next_char (ref index,
-                                                                    out uc)) {
-            keywords.add (uc.to_string ());
-        }
-        preferences.set ("auto_start_henkan_keywords",
-                         keywords.to_array ());
-        preferences.set ("egg_like_newline",
-                         egg_like_newline_checkbutton.active);
         preferences.set ("page_size",
                          (int) page_size_spinbutton.value);
         preferences.set ("pagination_start",
