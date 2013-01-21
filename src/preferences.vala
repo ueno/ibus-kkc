@@ -62,26 +62,15 @@ public class Preferences : Object {
         current.set (name, value);
     }
 
-    static const string[] AUTO_START_HENKAN_KEYWORDS = {
-        "を", "、", "。", "．", "，", "？", "」",
-        "！", "；", "：", ")", ";", ":", "）",
-        "”", "】", "』", "》", "〉", "｝", "］",
-        "〕", "}", "]", "?", ".", ",", "!"
-    };
-
     public Preferences (IBus.Config config) {
         ArrayList<string> dictionaries = new ArrayList<string> ();
         dictionaries.add (
             "type=file,file=%s/ibus-kkc/user.dict,mode=readwrite".printf (
                 Environment.get_user_config_dir ()));
         dictionaries.add (
-            "type=file,file=/usr/share/kkc/KKC-JISYO.L,mode=readonly");
-        dictionaries.add (
-            "type=server,host=localhost,port=1178");
+            "type=file,file=/usr/share/skk/SKK-JISYO.L,mode=readonly");
         _default.set ("dictionaries",
                       new Variant.strv (dictionaries.to_array ()));
-        _default.set ("auto_start_henkan_keywords",
-                      new Variant.strv (AUTO_START_HENKAN_KEYWORDS));
         _default.set ("period_style",
                       new Variant.int32 ((int32) Kkc.PeriodStyle.JA_JA));
         _default.set ("page_size",

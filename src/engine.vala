@@ -23,6 +23,10 @@ class KkcEngine : IBus.Engine {
     // Preferences are shared among KkcEngine instances.
     static Preferences preferences;
 
+    // Dictionaries are shared among SkkEngine instances and
+    // maintained in the per-class signal handler in main().
+    static ArrayList<Kkc.Dict> dictionaries;
+
     Kkc.Context context;
     IBus.LookupTable lookup_table;
     uint page_start;
@@ -111,16 +115,31 @@ class KkcEngine : IBus.Engine {
         prop_list.append (prop);
 
         // Initialize libkkc
-        Kkc.Dict dict;
+        Kkc.LanguageModel model;
         try {
-            dict = Kkc.Dict.load ("sorted3");
+            model = Kkc.LanguageModel.load ("sorted3");
         } catch (Kkc.DictError e) {
             warning ("Couldn't load dict: %s\n", e.message);
         }
 
-        context = new Kkc.Context (dict);
+        context = new Kkc.Context (model);
+
+        foreach (var dict in dictionaries) {
+			context.add_dictionary (dict);
+        }
 
         apply_preferences ();
+        preferences.value_changed.connect ((name, value) => {
+                apply_preferences ();
+                if (name == "dictionaries") {
+                    // KkcEngine.dictionaries should be updated separately
+					context.clear_dictionaries ();
+					foreach (var dict in KkcEngine.dictionaries) {
+						context.add_dictionary (dict);
+					}
+                }
+            });
+
         preferences.value_changed.connect ((name, value) => {
                 apply_preferences ();
             });
@@ -152,22 +171,6 @@ class KkcEngine : IBus.Engine {
 
         update_candidates ();
         update_input_mode ();
-        context.retrieve_surrounding_text.connect (_retrieve_surrounding_text);
-        context.delete_surrounding_text.connect (_delete_surrounding_text);
-    }
-
-    bool _retrieve_surrounding_text (out string text, out uint cursor_pos) {
-        weak IBus.Text _text;
-        uint _cursor_pos, anchor_pos;
-        get_surrounding_text (out _text, out _cursor_pos, out anchor_pos);
-        text = _text.text.dup ();
-        cursor_pos = _cursor_pos;
-        return true;
-    }
-
-    bool _delete_surrounding_text (int offset, uint nchars) {
-        delete_surrounding_text (offset, nchars);
-        return true;
     }
 
     void populate_lookup_table () {
@@ -249,12 +252,46 @@ class KkcEngine : IBus.Engine {
         update_property (input_mode_prop);
     }
 
+    static Kkc.Dict? parse_dict_from_plist (PList plist) throws GLib.Error {
+        var encoding = plist.get ("encoding") ?? "EUC-JP";
+        var type = plist.get ("type");
+        if (type == "file") {
+            string? file = plist.get ("file");
+            if (file == null) {
+                return null;
+            }
+            string mode = plist.get ("mode") ?? "readonly";
+            if (mode == "readonly") {
+				return new Kkc.FileDict (file, encoding);
+            } else if (mode == "readwrite")
+                return new Kkc.UserDict (file, encoding);
+        }
+        return null;
+    }
+
+    static void reload_dictionaries () {
+        KkcEngine.dictionaries.clear ();
+        Variant? variant = preferences.get ("dictionaries");
+        assert (variant != null);
+        string[] strv = variant.dup_strv ();
+        foreach (var str in strv) {
+            try {
+                var plist = new PList (str);
+                Kkc.Dict? dict = parse_dict_from_plist (plist);
+                if (dict != null)
+                    dictionaries.add (dict);
+            } catch (PListParseError e) {
+                warning ("can't parse plist \"%s\": %s",
+                         str, e.message);
+            } catch (GLib.Error e) {
+                warning ("can't open dictionary \"%s\": %s",
+                         str, e.message);
+            }
+        }
+    }
+
     void apply_preferences () {
         Variant? variant;
-
-        variant = preferences.get ("auto_start_henkan_keywords");
-        assert (variant != null);
-        context.auto_start_henkan_keywords = variant.get_strv ();
 
         variant = preferences.get ("period_style");
         assert (variant != null);
@@ -409,9 +446,6 @@ class KkcEngine : IBus.Engine {
 
     public override void enable () {
         context.reset ();
-
-        // Request to use surrounding text feature
-        get_surrounding_text (null, null, null);
         base.enable ();
     }
 
@@ -496,6 +530,13 @@ class KkcEngine : IBus.Engine {
 
         var config = bus.get_config ();
         KkcEngine.preferences = new Preferences (config);
+        KkcEngine.dictionaries = new ArrayList<Kkc.Dict> ();
+        KkcEngine.reload_dictionaries ();
+        KkcEngine.preferences.value_changed.connect ((name, value) => {
+                if (name == "dictionaries") {
+                    KkcEngine.reload_dictionaries ();
+                }
+            });
 
         var factory = new IBus.Factory (bus.get_connection());
         factory.add_engine ("kkc", typeof(KkcEngine));
