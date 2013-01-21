@@ -52,7 +52,6 @@ class KkcEngine : IBus.Engine {
             var text = new IBus.Text.from_string (LOOKUP_TABLE_LABELS[i]);
             lookup_table.set_label (i, text);
         }
-        lookup_table.set_orientation (IBus.Orientation.HORIZONTAL);
 
         // Prepare the properties on the lang bar
         prop_list = new IBus.PropList ();
@@ -343,8 +342,8 @@ class KkcEngine : IBus.Engine {
         return prop;
     }
 
-    string[] LOOKUP_TABLE_LABELS = {"a", "s", "d", "f", "j", "k", "l",
-                                    "q", "w", "e", "r", "u", "i", "o"};
+    string[] LOOKUP_TABLE_LABELS = {"1", "2", "3", "4", "5", "6", "7",
+                                    "8", "9", "a", "b", "c", "d", "e"};
 
     bool process_lookup_table_key_event (uint keyval,
                                          uint keycode,

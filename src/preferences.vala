@@ -74,9 +74,9 @@ public class Preferences : Object {
         _default.set ("period_style",
                       new Variant.int32 ((int32) Kkc.PeriodStyle.JA_JA));
         _default.set ("page_size",
-                      new Variant.int32 (7));
+                      new Variant.int32 (9));
         _default.set ("pagination_start",
-                      new Variant.int32 (4));
+                      new Variant.int32 (0));
         _default.set ("show_annotation",
                       new Variant.boolean (true));
         _default.set ("initial_input_mode",
