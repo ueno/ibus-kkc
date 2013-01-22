@@ -565,8 +565,8 @@ class KkcEngine : IBus.Engine {
                 "ibus-kkc");
             var engine = new IBus.EngineDesc (
                 "kkc",
-                "KKC",
-                "KKC Input Method",
+                "Kana Kanji",
+                "Kana Kanji Input Method",
                 "ja",
                 "GPL",
                 "Daiki Ueno <ueno@unixuser.org>",

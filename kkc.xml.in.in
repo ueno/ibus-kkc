@@ -20,7 +20,7 @@
 			<icon>${pkgdatadir}/icons/ibus-kkc.svg</icon>
 			<layout>jp</layout>
 			<longname>Kana Kanji</longname>
-			<description>Japanese Kana Kanji Input Method</description>
+			<description>Kana Kanji Input Method</description>
 			<rank>77</rank>
 			<symbol>&#x3042;</symbol>
 		</engine>
