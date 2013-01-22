@@ -47,7 +47,7 @@ class KkcEngine : IBus.Engine {
     construct {
         // Prepare lookup table
         lookup_table = new IBus.LookupTable (LOOKUP_TABLE_LABELS.length,
-                                             0, true, false);
+                                             0, true, true);
         for (var i = 0; i < LOOKUP_TABLE_LABELS.length; i++) {
             var text = new IBus.Text.from_string (LOOKUP_TABLE_LABELS[i]);
             lookup_table.set_label (i, text);
@@ -124,7 +124,7 @@ class KkcEngine : IBus.Engine {
         context = new Kkc.Context (model);
 
         foreach (var dict in dictionaries) {
-			context.add_dictionary (dict);
+            context.add_dictionary (dict);
         }
 
         apply_preferences ();
@@ -132,10 +132,10 @@ class KkcEngine : IBus.Engine {
                 apply_preferences ();
                 if (name == "dictionaries") {
                     // KkcEngine.dictionaries should be updated separately
-					context.clear_dictionaries ();
-					foreach (var dict in KkcEngine.dictionaries) {
-						context.add_dictionary (dict);
-					}
+                    context.clear_dictionaries ();
+                    foreach (var dict in KkcEngine.dictionaries) {
+                        context.add_dictionary (dict);
+                    }
                 }
             });
 
@@ -143,7 +143,10 @@ class KkcEngine : IBus.Engine {
                 apply_preferences ();
             });
 
-        context.notify["preedit"].connect (() => {
+        context.notify["input"].connect (() => {
+                update_preedit ();
+            });
+        context.segments.notify["cursor-pos"].connect (() => {
                 update_preedit ();
             });
         context.notify["input-mode"].connect ((s, p) => {
@@ -207,16 +210,27 @@ class KkcEngine : IBus.Engine {
     }
 
     void update_preedit () {
-        var text = new IBus.Text.from_string (context.preedit);
-        uint underline_offset, underline_nchars;
-        context.get_preedit_underline (out underline_offset,
-                                       out underline_nchars);
-        if (0 < underline_nchars) {
-            text.append_attribute (IBus.AttrType.UNDERLINE,
-                                   IBus.AttrUnderline.SINGLE,
-                                   (int) underline_offset,
-                                   (int) (underline_offset + underline_nchars));
+        IBus.Text text;
+        if (context.segments.cursor_pos >= 0) {
+            text = new IBus.Text.from_string (context.segments.to_string ());
+            int index = 0;
+            int offset = 0;
+            for (; index < context.segments.cursor_pos; index++) {
+                offset += context.segments[index].output.char_count ();
+            }
+            text.append_attribute (
+                IBus.AttrType.BACKGROUND,
+                0x00aaaaaa,
+                offset,
+                offset + context.segments[index].output.char_count ());
+        } else {
+            text = new IBus.Text.from_string (context.input);
         }
+        text.append_attribute (
+            IBus.AttrType.UNDERLINE,
+            IBus.AttrUnderline.SINGLE,
+            0,
+            (int) text.get_length ());
         update_preedit_text (text,
                              text.get_length (),
                              text.get_length () > 0);
@@ -261,7 +275,7 @@ class KkcEngine : IBus.Engine {
             }
             string mode = plist.get ("mode") ?? "readonly";
             if (mode == "readonly") {
-				return new Kkc.FileDict (file, encoding);
+                return new Kkc.FileDict (file, encoding);
             } else if (mode == "readwrite")
                 return new Kkc.UserDict (file, encoding);
         }
