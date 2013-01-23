@@ -31,7 +31,7 @@ ACLOCAL_AMFLAGS = -I m4
 component_DATA = kkc.xml
 componentdir = $(datadir)/ibus/component
 
-kkc.xml: kkc.xml.in
+kkc.xml.in: kkc.xml.in.in
 	$(AM_V_GEN) \
 	( \
 		libexecdir=${libexecdir}; \
@@ -39,6 +39,8 @@ kkc.xml: kkc.xml.in
 		s=`cat $<`; \
 		eval "echo \"$${s}\""; \
 	) > $@
+
+@INTLTOOL_XML_NOMERGE_RULE@
 
 EXTRA_DIST =					\
 	autogen.sh				\
@@ -62,10 +64,11 @@ GITIGNOREFILES =				\
 
 CLEANFILES =					\
 	kkc.xml					\
+	kkc.xml.in				\
 	$(NULL)
 
 DISTCLEANFILES =				\
-	kkc.xml.in				\
+	kkc.xml.in.in				\
 	po/stamp-it				\
 	$(NULL)
 

@@ -552,7 +552,7 @@ class KkcEngine : IBus.Engine {
         } else {
             var component = new IBus.Component (
                 "org.freedesktop.IBus.KKC",
-                N_("KKC"), Config.PACKAGE_VERSION, "GPL",
+                N_("Kana Kanji"), Config.PACKAGE_VERSION, "GPL",
                 "Daiki Ueno <ueno@unixuser.org>",
                 "http://code.google.com/p/ibus/",
                 "",

@@ -1,8 +1,8 @@
 [Desktop Entry]
-_Name=IBus SKK Setup
-_Comment=Set up IBus SKK engine
-Exec=@libexecdir@/ibus-setup-skk
-Icon=@pkgdatadir@/icons/ibus-skk.svg
+_Name=IBus Kana Kanji Engine Setup
+_Comment=Set up IBus Kana Kanji engine
+Exec=@libexecdir@/ibus-setup-kkc
+Icon=@pkgdatadir@/icons/ibus-kkc.svg
 NoDisplay=true
 Type=Application
 StartupNotify=true
