@@ -159,16 +159,12 @@ class KkcEngine : IBus.Engine {
                 set_lookup_table_cursor_pos ();
             });
         context.candidates.selected.connect (() => {
-                var output = context.poll_output ();
-                if (output.length > 0) {
-                    var text = new IBus.Text.from_string (output);
-                    commit_text (text);
-                }
                 if (lookup_table_visible) {
                     hide_lookup_table ();
                     hide_auxiliary_text ();
                     lookup_table_visible = false;
                 }
+                update_preedit ();
             });
 
         update_candidates ();
@@ -389,11 +385,9 @@ class KkcEngine : IBus.Engine {
                 retval = context.candidates.page_down ();
                 break;
             case IBus.Up:
-            case IBus.Left:
                 retval = context.candidates.cursor_up ();
                 break;
             case IBus.Down:
-            case IBus.Right:
                 retval = context.candidates.cursor_down ();
                 break;
             default:
