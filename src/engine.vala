@@ -25,7 +25,7 @@ class KkcEngine : IBus.Engine {
 
     // Dictionaries are shared among SkkEngine instances and
     // maintained in the per-class signal handler in main().
-    static ArrayList<Kkc.Dict> dictionaries;
+    static ArrayList<Kkc.Dictionary> dictionaries;
 
     Kkc.Context context;
     IBus.LookupTable lookup_table;
@@ -117,7 +117,7 @@ class KkcEngine : IBus.Engine {
         Kkc.LanguageModel model;
         try {
             model = Kkc.LanguageModel.load ("sorted3");
-        } catch (Kkc.DictError e) {
+        } catch (Kkc.DictionaryError e) {
             warning ("Couldn't load dict: %s\n", e.message);
         }
 
@@ -208,7 +208,7 @@ class KkcEngine : IBus.Engine {
     void update_preedit () {
         IBus.Text text;
         if (context.segments.cursor_pos >= 0) {
-            text = new IBus.Text.from_string (context.segments.to_string ());
+            text = new IBus.Text.from_string (context.segments.get_output ());
             int index = 0;
             int offset = 0;
             for (; index < context.segments.cursor_pos; index++) {
@@ -261,7 +261,7 @@ class KkcEngine : IBus.Engine {
         update_property (input_mode_prop);
     }
 
-    static Kkc.Dict? parse_dict_from_plist (PList plist) throws GLib.Error {
+    static Kkc.Dictionary? parse_dict_from_plist (PList plist) throws GLib.Error {
         var encoding = plist.get ("encoding") ?? "EUC-JP";
         var type = plist.get ("type");
         if (type == "file") {
@@ -271,9 +271,9 @@ class KkcEngine : IBus.Engine {
             }
             string mode = plist.get ("mode") ?? "readonly";
             if (mode == "readonly") {
-                return new Kkc.FileDict (file, encoding);
+                return new Kkc.FileDictionary (file, encoding);
             } else if (mode == "readwrite")
-                return new Kkc.UserDict (file, encoding);
+                return new Kkc.UserDictionary (file, encoding);
         }
         return null;
     }
@@ -286,7 +286,7 @@ class KkcEngine : IBus.Engine {
         foreach (var str in strv) {
             try {
                 var plist = new PList (str);
-                Kkc.Dict? dict = parse_dict_from_plist (plist);
+                Kkc.Dictionary? dict = parse_dict_from_plist (plist);
                 if (dict != null)
                     dictionaries.add (dict);
             } catch (PListParseError e) {
@@ -537,7 +537,7 @@ class KkcEngine : IBus.Engine {
 
         var config = bus.get_config ();
         KkcEngine.preferences = new Preferences (config);
-        KkcEngine.dictionaries = new ArrayList<Kkc.Dict> ();
+        KkcEngine.dictionaries = new ArrayList<Kkc.Dictionary> ();
         KkcEngine.reload_dictionaries ();
         KkcEngine.preferences.value_changed.connect ((name, value) => {
                 if (name == "dictionaries") {
