@@ -226,8 +226,8 @@ class KkcEngine : IBus.Engine {
                 (int) text.get_length ());
         }
 
-        var output = context.poll_output ();
-        if (output.length > 0) {
+        if (context.has_output ()) {
+            var output = context.poll_output ();
             var ctext = new IBus.Text.from_string (output);
             commit_text (ctext);
         }
