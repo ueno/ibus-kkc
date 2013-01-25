@@ -225,6 +225,13 @@ class KkcEngine : IBus.Engine {
                 0,
                 (int) text.get_length ());
         }
+
+        var output = context.poll_output ();
+        if (output.length > 0) {
+            var ctext = new IBus.Text.from_string (output);
+            commit_text (ctext);
+        }
+
         update_preedit_text (text,
                              text.get_length (),
                              text.get_length () > 0);
@@ -437,11 +444,6 @@ class KkcEngine : IBus.Engine {
         }
 
         var retval = context.process_key_event (key);
-        var output = context.poll_output ();
-        if (output.length > 0) {
-            var text = new IBus.Text.from_string (output);
-            commit_text (text);
-        }
         foreach (var entry in IGNORE_KEYS) {
             if (entry.keyval == keyval && entry.modifiers == modifiers) {
                 return true;
