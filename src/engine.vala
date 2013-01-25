@@ -1,6 +1,6 @@
 /* 
- * Copyright (C) 2011-2012 Daiki Ueno <ueno@unixuser.org>
- * Copyright (C) 2011-2012 Red Hat, Inc.
+ * Copyright (C) 2011-2013 Daiki Ueno <ueno@gnu.org>
+ * Copyright (C) 2011-2013 Red Hat, Inc.
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -554,7 +554,7 @@ class KkcEngine : IBus.Engine {
             var component = new IBus.Component (
                 "org.freedesktop.IBus.KKC",
                 N_("Kana Kanji"), Config.PACKAGE_VERSION, "GPL",
-                "Daiki Ueno <ueno@unixuser.org>",
+                "Daiki Ueno <ueno@gnu.org>",
                 "http://code.google.com/p/ibus/",
                 "",
                 "ibus-kkc");
@@ -564,7 +564,7 @@ class KkcEngine : IBus.Engine {
                 "Kana Kanji Input Method",
                 "ja",
                 "GPL",
-                "Daiki Ueno <ueno@unixuser.org>",
+                "Daiki Ueno <ueno@gnu.org>",
                 "%s/icons/ibus-kkc.svg".printf (Config.PACKAGE_DATADIR),
                 "us");
             component.add_engine (engine);
