@@ -117,8 +117,8 @@ class KkcEngine : IBus.Engine {
         Kkc.LanguageModel model;
         try {
             model = Kkc.LanguageModel.load ("sorted3");
-        } catch (Kkc.DictionaryError e) {
-            warning ("Couldn't load dict: %s\n", e.message);
+        } catch (Kkc.LanguageModelError e) {
+            warning ("can't load language model: %s\n", e.message);
         }
 
         context = new Kkc.Context (model);
@@ -146,9 +146,6 @@ class KkcEngine : IBus.Engine {
         context.notify["input"].connect (() => {
                 update_preedit ();
             });
-        context.segments.notify["cursor-pos"].connect (() => {
-                update_preedit ();
-            });
         context.notify["input-mode"].connect ((s, p) => {
                 update_input_mode ();
             });
@@ -164,7 +161,6 @@ class KkcEngine : IBus.Engine {
                     hide_auxiliary_text ();
                     lookup_table_visible = false;
                 }
-                update_preedit ();
             });
 
         update_candidates ();
@@ -222,11 +218,13 @@ class KkcEngine : IBus.Engine {
         } else {
             text = new IBus.Text.from_string (context.input);
         }
-        text.append_attribute (
-            IBus.AttrType.UNDERLINE,
-            IBus.AttrUnderline.SINGLE,
-            0,
-            (int) text.get_length ());
+        if (text.get_length () > 0) {
+            text.append_attribute (
+                IBus.AttrType.UNDERLINE,
+                IBus.AttrUnderline.SINGLE,
+                0,
+                (int) text.get_length ());
+        }
         update_preedit_text (text,
                              text.get_length (),
                              text.get_length () > 0);
@@ -530,7 +528,7 @@ class KkcEngine : IBus.Engine {
         var bus = new IBus.Bus ();
 
         if (!bus.is_connected ()) {
-            stderr.printf ("Can not connect to ibus-daemon!\n");
+            stderr.printf ("cannot connect to ibus-daemon!\n");
             return 1;
         }
 
