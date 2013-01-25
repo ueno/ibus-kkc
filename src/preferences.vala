@@ -65,7 +65,7 @@ public class Preferences : Object {
     public Preferences (IBus.Config config) {
         ArrayList<string> dictionaries = new ArrayList<string> ();
         dictionaries.add (
-            "type=file,file=%s/ibus-kkc/user.dict,mode=readwrite".printf (
+            "type=file,file=%s/ibus-kkc/dictionary,mode=readwrite".printf (
                 Environment.get_user_config_dir ()));
         dictionaries.add (
             "type=file,file=/usr/share/skk/SKK-JISYO.L,mode=readonly");

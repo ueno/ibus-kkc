@@ -271,9 +271,9 @@ class KkcEngine : IBus.Engine {
             }
             string mode = plist.get ("mode") ?? "readonly";
             if (mode == "readonly") {
-                return new Kkc.FileDictionary (file, encoding);
+                return new Kkc.SystemSegmentDictionary (file, encoding);
             } else if (mode == "readwrite")
-                return new Kkc.UserDictionary (file, encoding);
+                return new Kkc.UserDictionary (file);
         }
         return null;
     }
@@ -420,7 +420,8 @@ class KkcEngine : IBus.Engine {
     {
         // Filter out unnecessary modifier bits
         // FIXME: should resolve virtual modifiers
-        uint _state = state & (IBus.ModifierType.CONTROL_MASK |
+        uint _state = state & (IBus.ModifierType.SHIFT_MASK |
+                               IBus.ModifierType.CONTROL_MASK |
                                IBus.ModifierType.MOD1_MASK |
                                IBus.ModifierType.MOD5_MASK |
                                IBus.ModifierType.RELEASE_MASK);
