@@ -2,5 +2,5 @@ src/engine.vala
 src/setup.vala
 [type: gettext/glade]src/ibus-kkc-preferences.ui.in
 src/ibus-setup-kkc.desktop.in.in
-kkc.xml.in
+src/kkc.xml.in.in.in
 

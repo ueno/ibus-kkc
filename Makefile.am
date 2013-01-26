@@ -28,23 +28,8 @@ SUBDIRS =					\
 
 ACLOCAL_AMFLAGS = -I m4
 
-component_DATA = kkc.xml
-componentdir = $(datadir)/ibus/component
-
-kkc.xml.in: kkc.xml.in.in
-	$(AM_V_GEN) \
-	( \
-		libexecdir=${libexecdir}; \
-		pkgdatadir=${pkgdatadir}; \
-		s=`cat $<`; \
-		eval "echo \"$${s}\""; \
-	) > $@
-
-@INTLTOOL_XML_NOMERGE_RULE@
-
 EXTRA_DIST =					\
 	autogen.sh				\
-	kkc.xml.in.in				\
 	ibus-kkc.spec.in			\
 	$(NULL)
 
@@ -62,13 +47,7 @@ GITIGNOREFILES =				\
 	mkinstalldirs				\
 	$(NULL)
 
-CLEANFILES =					\
-	kkc.xml					\
-	kkc.xml.in				\
-	$(NULL)
-
 DISTCLEANFILES =				\
-	kkc.xml.in.in				\
 	po/stamp-it				\
 	$(NULL)
 

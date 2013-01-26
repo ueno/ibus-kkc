@@ -85,6 +85,23 @@ desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
 
 @INTLTOOL_DESKTOP_RULE@
 
+component_DATA = kkc.xml
+componentdir = $(datadir)/ibus/component
+
+edit = sed \
+	-e 's|@libexecdir[@]|$(libexecdir)|g' \
+	-e 's|@pkgdatadir[@]|$(pkgdatadir)|g'
+
+kkc.xml.in: kkc.xml.in.in
+	$(AM_V_GEN) ( \
+		rm -rf $@ $@.tmp; \
+		srcdir=''; \
+		  test -f ./$@.in || srcdir=$(srcdir)/; \
+		  $(edit) $${srcdir}$@.in >$@.tmp; \
+		mv $@.tmp $@ )
+
+@INTLTOOL_XML_NOMERGE_RULE@
+
 GITIGNOREFILES =				\
         $(libutil_la_SOURCES:.vala=.c)		\
         $(ibus_engine_kkc_SOURCES:.vala=.c)	\
@@ -99,6 +116,8 @@ CLEANFILES =					\
 	ibus-kkc.vapi				\
 	$(desktop_DATA)				\
 	$(desktop_in_files)			\
+	kkc.xml.in				\
+	kkc.xml					\
 	$(NULL)
 
 EXTRA_DIST =					\
@@ -108,10 +127,12 @@ EXTRA_DIST =					\
 	ibus-1.0.deps				\
 	ibus-kkc-preferences.ui.in		\
 	$(desktop_in_in_files)			\
+	kkc.xml.in.in.in			\
 	$(NULL)
 
 DISTCLEANFILES =				\
 	ibus-kkc-preferences.ui			\
+	kkc.xml.in.in				\
 	$(NULL)
 
 -include $(top_srcdir)/git.mk
