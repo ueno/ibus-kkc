@@ -89,8 +89,8 @@ component_DATA = kkc.xml
 componentdir = $(datadir)/ibus/component
 
 edit = sed \
-	-e 's|@libexecdir[@]|$(libexecdir)|g' \
-	-e 's|@pkgdatadir[@]|$(pkgdatadir)|g'
+	-e 's|@LIBEXECDIR[@]|$(libexecdir)|g' \
+	-e 's|@PKGDATADIR[@]|$(pkgdatadir)|g'
 
 kkc.xml.in: kkc.xml.in.in
 	$(AM_V_GEN) ( \
