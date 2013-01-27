@@ -152,9 +152,6 @@ class KkcEngine : IBus.Engine {
         context.candidates.populated.connect (() => {
                 populate_lookup_table ();
             });
-        context.candidates.selected.connect (() => {
-                update_preedit ();
-            });
         context.candidates.notify["cursor-pos"].connect (() => {
                 set_lookup_table_cursor_pos ();
             });
