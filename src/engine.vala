@@ -123,8 +123,8 @@ class KkcEngine : IBus.Engine {
 
         context = new Kkc.Context (model);
 
-        foreach (var dict in dictionaries) {
-            context.add_dictionary (dict);
+        foreach (var dictionary in dictionaries) {
+            context.dictionaries.add (dictionary);
         }
 
         apply_preferences ();
@@ -132,9 +132,9 @@ class KkcEngine : IBus.Engine {
                 apply_preferences ();
                 if (name == "dictionaries") {
                     // KkcEngine.dictionaries should be updated separately
-                    context.clear_dictionaries ();
-                    foreach (var dict in KkcEngine.dictionaries) {
-                        context.add_dictionary (dict);
+                    context.dictionaries.clear ();
+                    foreach (var dictionary in KkcEngine.dictionaries) {
+                        context.dictionaries.add (dictionary);
                     }
                 }
             });
