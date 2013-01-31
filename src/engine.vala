@@ -162,6 +162,10 @@ class KkcEngine : IBus.Engine {
                     lookup_table_visible = false;
                 }
             });
+        Idle.add (() => {
+                context.dictionaries.save ();
+                return true;
+            });
 
         update_candidates ();
         update_input_mode ();
