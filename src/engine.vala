@@ -165,7 +165,8 @@ class KkcEngine : IBus.Engine {
         Idle.add (() => {
                 context.dictionaries.save ();
                 return true;
-            });
+            },
+            Priority.LOW);
 
         update_candidates ();
         update_input_mode ();
