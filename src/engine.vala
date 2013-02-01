@@ -312,9 +312,9 @@ class KkcEngine : IBus.Engine {
     void apply_preferences () {
         Variant? variant;
 
-        variant = preferences.get ("period_style");
+        variant = preferences.get ("punctulation_style");
         assert (variant != null);
-        context.period_style = (Kkc.PeriodStyle) variant.get_int32 ();
+        context.punctulation_style = (Kkc.PunctulationStyle) variant.get_int32 ();
 
         variant = preferences.get ("page_size");
         assert (variant != null);

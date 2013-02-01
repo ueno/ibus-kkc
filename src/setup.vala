@@ -23,7 +23,7 @@ class Setup : Object {
     // main dialog
     Gtk.Dialog dialog;
     Gtk.TreeView dictionaries_treeview;
-    Gtk.ComboBox period_style_combobox;
+    Gtk.ComboBox punctulation_style_combobox;
     Gtk.SpinButton page_size_spinbutton;
     Gtk.SpinButton pagination_start_spinbutton;
     Gtk.CheckButton show_annotation_checkbutton;
@@ -65,9 +65,9 @@ class Setup : Object {
         assert (object != null);
         dictionaries_treeview = (Gtk.TreeView) object;
 
-        object = builder.get_object ("period_style_combobox");
+        object = builder.get_object ("punctulation_style_combobox");
         assert (object != null);
-        period_style_combobox = (Gtk.ComboBox) object;
+        punctulation_style_combobox = (Gtk.ComboBox) object;
 
         object = builder.get_object ("page_size_spinbutton");
         assert (object != null);
@@ -141,8 +141,8 @@ class Setup : Object {
         dictionaries_treeview.append_column (column);
 
         renderer = new Gtk.CellRendererText ();
-        period_style_combobox.pack_start (renderer, false);
-        period_style_combobox.set_attributes (renderer, "text", 0);
+        punctulation_style_combobox.pack_start (renderer, false);
+        punctulation_style_combobox.set_attributes (renderer, "text", 0);
 
         renderer = new Gtk.CellRendererText ();
         initial_input_mode_combobox.pack_start (renderer, false);
@@ -378,7 +378,7 @@ class Setup : Object {
         assert (variant != null);
         show_annotation_checkbutton.active = variant.get_boolean ();
 
-        load_combobox ("period_style", period_style_combobox, 1);
+        load_combobox ("punctulation_style", punctulation_style_combobox, 1);
         load_combobox ("initial_input_mode", initial_input_mode_combobox, 1);
 
         variant = preferences.get ("typing_rule");
@@ -434,8 +434,8 @@ class Setup : Object {
                          (int) pagination_start_spinbutton.value);
         preferences.set ("show_annotation",
                          show_annotation_checkbutton.active);
-        save_combobox ("period_style",
-                       period_style_combobox, 1);
+        save_combobox ("punctulation_style",
+                       punctulation_style_combobox, 1);
         save_combobox ("initial_input_mode",
                        initial_input_mode_combobox, 1);
 
