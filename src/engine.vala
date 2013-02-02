@@ -44,6 +44,8 @@ class KkcEngine : IBus.Engine {
     Map<string, Kkc.InputMode> name_input_modes =
         new HashMap<string, Kkc.InputMode> ();
 
+    Gtk.Clipboard clipboard;
+
     construct {
         // Prepare lookup table
         lookup_table = new IBus.LookupTable (LOOKUP_TABLE_LABELS.length,
@@ -113,6 +115,13 @@ class KkcEngine : IBus.Engine {
             null);
         prop_list.append (prop);
 
+        // Initialize clipboard
+        clipboard = Gtk.Clipboard.get (Gdk.SELECTION_PRIMARY);
+        clipboard.owner_change.connect ((e) => {
+                clipboard.request_text (
+                    (Gtk.ClipboardTextReceivedFunc) set_selection_text);
+            });
+
         // Initialize libkkc
         Kkc.LanguageModel model;
         try {
@@ -170,6 +179,11 @@ class KkcEngine : IBus.Engine {
 
         update_candidates ();
         update_input_mode ();
+    }
+
+    [CCode (instance_pos = 2.1)]
+    void set_selection_text (Gtk.Clipboard clipboard, string? text) {
+        context.set_selection (text);
     }
 
     void populate_lookup_table () {
@@ -518,6 +532,7 @@ class KkcEngine : IBus.Engine {
     public static int main (string[] args) {
         IBus.init ();
         Kkc.init ();
+        Gtk.init (ref args);
 
         Intl.setlocale (LocaleCategory.ALL, "");
         Intl.bindtextdomain (Config.GETTEXT_PACKAGE, Config.LOCALEDIR);

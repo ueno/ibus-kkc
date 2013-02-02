@@ -36,14 +36,18 @@ COMMON_LIBS =					\
 
 ibus_engine_kkc_VALAFLAGS =			\
 	--vapidir=.				\
-	--pkg config --pkg ibus-kkc		\
+	--pkg config				\
+	--pkg ibus-kkc				\
+	--pkg gtk+-3.0				\
 	$(VALAFLAGS)
 
 ibus_engine_kkc_CFLAGS =			\
-	$(COMMON_CFLAGS)
+	$(COMMON_CFLAGS)			\
+	$(GTK_CFLAGS)
 
 ibus_engine_kkc_LDADD =				\
 	$(COMMON_LIBS)				\
+	$(GTK_LIBS)				\
 	libutil.la
 
 ibus_engine_kkc_SOURCES =			\
