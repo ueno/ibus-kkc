@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus-kkc 1.2.0.20091108\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-02 15:38+0900\n"
+"POT-Creation-Date: 2013-02-02 21:33+0900\n"
 "PO-Revision-Date: 2013-01-23 12:38+0900\n"
 "Last-Translator: Daiki Ueno <ueno@gnu.org>\n"
 "Language-Team: Japanese\n"
@@ -62,15 +62,15 @@ msgstr "IBus からコンポーネントを起動"
 msgid "Kana Kanji"
 msgstr "かな漢字"
 
-#: ../src/setup.vala:469
+#: ../src/setup.vala:461
 msgid "system"
 msgstr "システム"
 
-#: ../src/setup.vala:471
+#: ../src/setup.vala:463
 msgid "user"
 msgstr "ユーザ"
 
-#: ../src/setup.vala:473
+#: ../src/setup.vala:465
 msgid "server"
 msgstr "サーバ"
 
@@ -119,7 +119,7 @@ msgid "_Initial input mode:"
 msgstr "初期入力モード(_I):"
 
 #: ../src/ibus-kkc-preferences.ui.in.h:15
-msgid "_Period style:"
+msgid "_Punctuation style:"
 msgstr "句読点の形式(_P):"
 
 #: ../src/ibus-kkc-preferences.ui.in.h:16
@@ -147,10 +147,14 @@ msgid "Behavior"
 msgstr "動作"
 
 #: ../src/ibus-kkc-preferences.ui.in.h:22
+msgid "<big><b>IBus Kana Kanji @VERSION@</b></big>"
+msgstr "<big><b>IBus かな漢字 @VERSION@</b></big>"
+
+#: ../src/ibus-kkc-preferences.ui.in.h:23
 msgid "Kana-kanji input method for IBus"
 msgstr "IBus入力プラットフォーム用かな漢字変換エンジン"
 
-#: ../src/ibus-kkc-preferences.ui.in.h:23
+#: ../src/ibus-kkc-preferences.ui.in.h:24
 msgid "About"
 msgstr "情報"
 

@@ -197,16 +197,9 @@ class Setup : Object {
                     dict_filechooserbutton.set_current_folder (
                         Environment.get_home_dir ());
                     dict_data_widget = dict_filechooserbutton;
-                } else if (text == "KKC Server") {
-                    var hbox = new Gtk.HBox (false, 2);
-                    hbox.pack_start (new Gtk.Label ("Host:"), false, false, 0);
-                    hbox.pack_start (dict_entry, false, false, 0);
-                    dict_entry.text = "localhost";
-                    hbox.pack_start (new Gtk.Label ("Port:"), false, false, 0);
-                    hbox.pack_start (dict_spinbutton, false, false, 0);
-                    dict_spinbutton.value = 1178;
-                    dict_data_widget = hbox;
                 } else {
+                    warning ("unknown dictionary type: %s",
+                             text);
                     assert_not_reached ();
                 }
                 dict_data_hbox.add (dict_data_widget);
