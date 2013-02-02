@@ -121,13 +121,6 @@ class KkcEngine : IBus.Engine {
             null);
         prop_list.append (prop);
 
-        // Initialize clipboard
-        clipboard = Gtk.Clipboard.get (Gdk.SELECTION_PRIMARY);
-        clipboard.owner_change.connect ((e) => {
-                clipboard.request_text (
-                    (Gtk.ClipboardTextReceivedFunc) set_selection_text);
-            });
-
         // Initialize libkkc
         Kkc.LanguageModel model;
         try {
@@ -183,13 +176,20 @@ class KkcEngine : IBus.Engine {
             },
             Priority.LOW);
 
+        // Initialize clipboard
+        clipboard = Gtk.Clipboard.get (Gdk.SELECTION_PRIMARY);
+        context.request_selection_text.connect ((e) => {
+                clipboard.request_text (
+                    (Gtk.ClipboardTextReceivedFunc) set_selection_text);
+            });
+
         update_candidates ();
         update_input_mode ();
     }
 
     [CCode (instance_pos = 2.1)]
     void set_selection_text (Gtk.Clipboard clipboard, string? text) {
-        context.set_selection (text);
+        context.set_selection_text (text);
     }
 
     void populate_lookup_table () {
