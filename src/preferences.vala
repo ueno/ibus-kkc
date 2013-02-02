@@ -71,8 +71,8 @@ public class Preferences : Object {
             "type=file,file=/usr/share/skk/SKK-JISYO.L,mode=readonly");
         _default.set ("dictionaries",
                       new Variant.strv (dictionaries.to_array ()));
-        _default.set ("punctulation_style",
-                      new Variant.int32 ((int32) Kkc.PunctulationStyle.JA_JA));
+        _default.set ("punctuation_style",
+                      new Variant.int32 ((int32) Kkc.PunctuationStyle.JA_JA));
         _default.set ("page_size",
                       new Variant.int32 (9));
         _default.set ("pagination_start",
