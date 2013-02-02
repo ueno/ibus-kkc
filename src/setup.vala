@@ -256,20 +256,6 @@ class Setup : Object {
                     }
                 }
             }
-            else if (text == "KKC Server") {
-                string host = dict_entry.text;
-                uint16 port = (uint16) dict_spinbutton.value;
-                if (host.length > 0 && port > 0) {
-                    try {
-                        plist = new PList (
-                            "type=server,host=%s,port=%d".printf (
-                                PList.escape (host),
-                                port));
-                    } catch (PListParseError e) {
-                        assert_not_reached ();
-                    }
-                }
-            }
             else {
                 assert_not_reached ();
             }
@@ -462,8 +448,6 @@ class Setup : Object {
                         text = _("system");
                     else
                         text = _("user");
-                } else {
-                    text = _("server");
                 }
             }
         }
@@ -480,10 +464,6 @@ class Setup : Object {
                 var type = _plist.get ("type");
                 if (type == "file") {
                     text = _plist.get ("file");
-                } else {
-                    var host = _plist.get ("host") ?? "localhost";
-                    var port = _plist.get ("port") ?? "1178";
-                    text = "%s:%s".printf (host, port);
                 }
             }
         }
