@@ -163,6 +163,10 @@
         <col id="0" translatable="yes">Latin</col>
         <col id="1">3</col>
       </row>
+      <row>
+        <col id="0" translatable="yes">Direct input</col>
+        <col id="1">5</col>
+      </row>
     </data>
   </object>
   <object class="GtkDialog" id="dialog">

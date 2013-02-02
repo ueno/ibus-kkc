@@ -90,6 +90,12 @@ class KkcEngine : IBus.Engine {
                                              "Ａ");
         props.append (prop);
 
+        prop = register_input_mode_property (Kkc.InputMode.DIRECT,
+                                             "InputMode.Direct",
+                                             _("Direct input"),
+                                             "_A");
+        props.append (prop);
+
         prop = new IBus.Property (
             "InputMode",
             IBus.PropType.MENU,
