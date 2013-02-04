@@ -72,14 +72,10 @@
                 <property name="xalign">1</property>
                 <property name="xscale">0.5</property>
                 <child>
-                  <object class="GtkComboBoxText" id="dict_type_comboboxtext">
+                  <object class="GtkComboBox" id="dict_type_combobox">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="entry_text_column">0</property>
-                    <items>
-                      <item translatable="yes">System</item>
-                      <item translatable="yes">User</item>
-                    </items>
+                    <property name="model">dict_type_liststore</property>
                   </object>
                 </child>
               </object>
@@ -166,6 +162,24 @@
       <row>
         <col id="0" translatable="yes">Direct input</col>
         <col id="1">5</col>
+      </row>
+    </data>
+  </object>
+  <object class="GtkListStore" id="dict_type_liststore">
+    <columns>
+      <!-- column-name type -->
+      <column type="gchararray"/>
+      <!-- column-name name -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">System</col>
+        <col id="1">System</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">User</col>
+        <col id="1">User</col>
       </row>
     </data>
   </object>
