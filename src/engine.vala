@@ -170,11 +170,6 @@ class KkcEngine : IBus.Engine {
                     lookup_table_visible = false;
                 }
             });
-        Idle.add (() => {
-                context.dictionaries.save ();
-                return true;
-            },
-            Priority.LOW);
 
         // Initialize clipboard
         clipboard = Gtk.Clipboard.get (Gdk.SELECTION_PRIMARY);
@@ -477,13 +472,31 @@ class KkcEngine : IBus.Engine {
         return retval;
     }
 
+    uint save_dictionaries_timeout_id = 0;
+
     public override void enable () {
         context.reset ();
+
+        save_dictionaries_timeout_id = Timeout.add_seconds_full (
+            Priority.LOW,
+            300,
+            () => {
+                context.dictionaries.save ();
+                return true;
+            });
+
         base.enable ();
     }
 
     public override void disable () {
         focus_out ();
+
+        if (save_dictionaries_timeout_id > 0) {
+            Source.remove (save_dictionaries_timeout_id);
+            save_dictionaries_timeout_id = 0;
+        }
+        context.dictionaries.save ();
+
         base.disable ();
     }
 
