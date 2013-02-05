@@ -235,6 +235,11 @@ class KkcEngine : IBus.Engine {
                 0x00aaaaaa,
                 offset,
                 offset + context.segments[index].output.char_count ());
+            text.append_attribute (
+                IBus.AttrType.FOREGROUND,
+                0x00000000,
+                offset,
+                offset + context.segments[index].output.char_count ());
         } else {
             text = new IBus.Text.from_string (context.input);
         }
