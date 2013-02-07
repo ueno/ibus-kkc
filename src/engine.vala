@@ -361,8 +361,18 @@ class KkcEngine : IBus.Engine {
         
         variant = preferences.get ("typing_rule");
         assert (variant != null);
+
+        var parent_metadata = Kkc.Rule.find_rule (variant.get_string ());
+        assert (parent_metadata != null);
+
+        var base_dir = Path.build_filename (
+            Environment.get_user_config_dir (),
+            "ibus-kkc", "rules");
+
         try {
-            context.typing_rule = new Kkc.Rule (variant.get_string ());
+            context.typing_rule = new UserRule (parent_metadata,
+                                                base_dir,
+                                                "ibus-kkc");
         } catch (Kkc.RuleParseError e) {
             warning ("can't load typing rule %s: %s",
                      variant.get_string (), e.message);

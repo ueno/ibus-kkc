@@ -29,6 +29,10 @@ class Setup : Object {
     Gtk.CheckButton show_annotation_checkbutton;
     Gtk.ComboBox initial_input_mode_combobox;
     Gtk.ComboBox typing_rule_combobox;
+    Gtk.TreeView input_mode_treeview;
+    Gtk.TreeView shortcut_treeview;
+    Gtk.ToolButton add_shortcut_toolbutton;
+    Gtk.ToolButton remove_shortcut_toolbutton;
 
     // dict dialog
     Gtk.Dialog dict_dialog;
@@ -39,8 +43,14 @@ class Setup : Object {
     Gtk.Entry dict_entry;
     Gtk.SpinButton dict_spinbutton;
 
+    // shortcut dialog
+    Gtk.Dialog shortcut_dialog;
+    Gtk.ComboBox shortcut_command_combobox;
+
     Preferences preferences;
-    
+    UserRule shortcut_rule;
+    Kkc.InputMode shortcut_input_mode;
+
     public Setup (Preferences preferences) {
         this.preferences = preferences;
 
@@ -116,7 +126,31 @@ class Setup : Object {
         object = builder.get_object ("dict_data_hbox");
         assert (object != null);
         dict_data_hbox = (Gtk.HBox) object;
-        
+
+        object = builder.get_object ("input_mode_treeview");
+        assert (object != null);
+        input_mode_treeview = (Gtk.TreeView) object;
+
+        object = builder.get_object ("shortcut_treeview");
+        assert (object != null);
+        shortcut_treeview = (Gtk.TreeView) object;
+
+        object = builder.get_object ("add_shortcut_toolbutton");
+        assert (object != null);
+        add_shortcut_toolbutton = (Gtk.ToolButton) object;
+
+        object = builder.get_object ("remove_shortcut_toolbutton");
+        assert (object != null);
+        remove_shortcut_toolbutton = (Gtk.ToolButton) object;
+
+        object = builder.get_object ("shortcut_dialog");
+        assert (object != null);
+        shortcut_dialog = (Gtk.Dialog) object;
+
+        object = builder.get_object ("shortcut_command_combobox");
+        assert (object != null);
+        shortcut_command_combobox = (Gtk.ComboBox) object;
+
         dict_filechooserbutton = new Gtk.FileChooserButton (
             "dictionary file",
             Gtk.FileChooserAction.OPEN);
@@ -124,7 +158,7 @@ class Setup : Object {
         dict_spinbutton = new Gtk.SpinButton.with_range (0, 65535, 1);
 
         page_size_spinbutton.set_range (7.0, 16.0);
-        page_size_spinbutton.set_increments (1.0, 1.0); 
+        page_size_spinbutton.set_increments (1.0, 1.0);
 
         pagination_start_spinbutton.set_range (0.0, 7.0);
         pagination_start_spinbutton.set_increments (1.0, 1.0);
@@ -158,6 +192,72 @@ class Setup : Object {
         dict_type_combobox.pack_start (renderer, false);
         dict_type_combobox.set_attributes (renderer, "text", 0);
 
+        renderer = new Gtk.CellRendererText ();
+        column = new Gtk.TreeViewColumn.with_attributes ("Mode",
+                                                         renderer,
+                                                         "text", 0);
+        input_mode_treeview.append_column (column);
+        var input_mode_selection = input_mode_treeview.get_selection ();
+        input_mode_selection.changed.connect (() => {
+                Gtk.TreeIter iter;
+                Gtk.TreeModel _model;
+                if (input_mode_selection.get_selected (out _model, out iter)) {
+                    int input_mode;
+                    _model.get (iter, 1, out input_mode, -1);
+                    populate_shortcut_treeview ((Kkc.InputMode) input_mode);
+                }
+            });
+
+        model = new Gtk.ListStore (3, typeof (string), typeof (Kkc.KeyEvent), typeof (string));
+        model.set_sort_column_id (0, Gtk.SortType.ASCENDING);
+        shortcut_treeview.set_model (model);
+        renderer = new Gtk.CellRendererText ();
+        column = new Gtk.TreeViewColumn.with_attributes ("Command",
+                                                         renderer,
+                                                         "text", 2);
+        shortcut_treeview.append_column (column);
+
+        var accel_renderer = new KeyEventCellRenderer ();
+        accel_renderer.set ("editable", true,
+                            "accel-mode", Gtk.CellRendererAccelMode.OTHER,
+                            null);
+        column = new Gtk.TreeViewColumn.with_attributes ("Shortcut",
+                                                         accel_renderer,
+                                                         "event", 1);
+        shortcut_treeview.append_column (column);
+
+        accel_renderer.accel_edited.connect (accel_edited);
+        accel_renderer.accel_cleared.connect (accel_cleared);
+
+        var shortcut_selection = shortcut_treeview.get_selection ();
+        shortcut_selection.changed.connect (() => {
+                int count = shortcut_selection.count_selected_rows ();
+                if (count > 0) {
+                    remove_shortcut_toolbutton.sensitive = true;
+                } else if (count == 0) {
+                    remove_shortcut_toolbutton.sensitive = false;
+                }
+            });
+
+        model = new Gtk.ListStore (2, typeof (string), typeof (string));
+        model.set_sort_column_id (1, Gtk.SortType.ASCENDING);
+        shortcut_command_combobox.set_model (model);
+        var commands = Kkc.Keymap.commands ();
+        foreach (var command in commands) {
+            Gtk.TreeIter iter;
+            model.append (out iter);
+            model.set (iter, 0, command);
+            model.set (iter, 1, Kkc.Keymap.get_command_label (command));
+        }
+        shortcut_command_combobox.set_active (0);
+
+        renderer = new Gtk.CellRendererText ();
+        shortcut_command_combobox.pack_start (renderer, false);
+        shortcut_command_combobox.set_attributes (renderer, "text", 1);
+
+        add_shortcut_toolbutton.clicked.connect (add_shortcut);
+        remove_shortcut_toolbutton.clicked.connect (remove_shortcut);
+
         model = new Gtk.ListStore (2, typeof (string), typeof (string));
         model.set_sort_column_id (1, Gtk.SortType.ASCENDING);
         typing_rule_combobox.set_model (model);
@@ -180,9 +280,9 @@ class Setup : Object {
         up_dict_button.clicked.connect (up_dict);
         down_dict_button.clicked.connect (down_dict);
 
-        var selection = dictionaries_treeview.get_selection ();
-        selection.changed.connect (() => {
-                int count = selection.count_selected_rows ();
+        var dictionaries_selection = dictionaries_treeview.get_selection ();
+        dictionaries_selection.changed.connect (() => {
+                int count = dictionaries_selection.count_selected_rows ();
                 if (count > 0) {
                     remove_dict_button.sensitive = true;
                     up_dict_button.sensitive = true;
@@ -198,7 +298,7 @@ class Setup : Object {
                 if (dict_data_widget != null) {
                     dict_data_hbox.remove (dict_data_widget);
                 }
-                string text = get_active_dict_type ();
+                string text = combobox_get_active_string (dict_type_combobox, 1);
                 if (text == "System") {
                     dict_filechooserbutton.set_current_folder (
                         Path.build_filename (Config.DATADIR, "kkc"));
@@ -217,6 +317,104 @@ class Setup : Object {
                 dict_data_hbox.sensitive = true;
             });
         dict_type_combobox.active = 0;
+    }
+
+    void accel_edited (string path_string,
+                       uint keyval,
+                       Gdk.ModifierType modifiers,
+                       uint keycode)
+    {
+        Gtk.TreeIter iter;
+        var model = (Gtk.ListStore) shortcut_treeview.get_model ();
+        if (model.get_iter_from_string (out iter, path_string)) {
+            Kkc.KeyEvent new_event = new Kkc.KeyEvent.from_x_event (
+                keyval,
+                keycode,
+                (Kkc.ModifierType) modifiers);
+            var keymap = shortcut_rule.get_keymap (
+                shortcut_input_mode);
+            var old_command = keymap.lookup_key (new_event);
+            if (old_command != null) {
+                string new_command;
+                model.get (iter,
+                           0, out new_command,
+                           -1);
+                if (old_command != new_command) {
+                    var error_dialog = new Gtk.MessageDialog (
+                        dialog,
+                        Gtk.DialogFlags.MODAL,
+                        Gtk.MessageType.ERROR,
+                        Gtk.ButtonsType.CLOSE,
+                        _("Shortcut '%s' is already assigned to '%s'"),
+                        new_event.to_string (),
+                        old_command);
+                    error_dialog.run ();
+                    error_dialog.destroy ();
+                }
+            } else {
+                string new_command;
+                Kkc.KeyEvent *old_event;
+                model.get (iter,
+                           0, out new_command,
+                           1, out old_event,
+                           -1);
+                if (old_event != null)
+                    shortcut_rule.set_override (shortcut_input_mode,
+                                                old_event,
+                                                null);
+                shortcut_rule.set_override (shortcut_input_mode,
+                                            new_event,
+                                            new_command);
+                shortcut_rule.write_override (shortcut_input_mode);
+                model.set (iter, 1, new_event, -1);
+            }
+        }
+    }
+
+    void accel_cleared (string path_string) {
+        Gtk.TreeIter iter;
+        var model = (Gtk.ListStore) shortcut_treeview.get_model ();
+        if (model.get_iter_from_string (out iter, path_string)) {
+            Kkc.KeyEvent *old_event;
+            model.get (iter, 1, out old_event, -1);
+            if (old_event != null)
+                shortcut_rule.set_override (shortcut_input_mode,
+                                            old_event,
+                                            null);
+            shortcut_rule.write_override (shortcut_input_mode);
+            model.remove (iter);
+        }
+    }
+
+    void add_shortcut () {
+        if (shortcut_dialog.run () == Gtk.ResponseType.OK) {
+            string command = combobox_get_active_string (
+                shortcut_command_combobox,
+                0);
+            Gtk.TreeIter iter;
+            var model = (Gtk.ListStore) shortcut_treeview.get_model ();
+            model.append (out iter);
+            model.set (iter, 0, command, 1, null, -1);
+        }
+        shortcut_dialog.hide ();
+    }
+
+    void remove_shortcut () {
+        var selection = shortcut_treeview.get_selection ();
+        Gtk.TreeModel model;
+        var rows = selection.get_selected_rows (out model);
+        foreach (var row in rows) {
+            Gtk.TreeIter iter;
+            if (model.get_iter (out iter, row)) {
+                Kkc.KeyEvent *old_event;
+                model.get (iter, 1, out old_event, -1);
+                shortcut_rule.set_override (shortcut_input_mode,
+                                            old_event,
+                                            null);
+                ((Gtk.ListStore)model).remove (iter);
+            }
+        }
+        shortcut_rule.write_override (shortcut_input_mode);
     }
 
     void populate_dictionaries_treeview () {
@@ -238,12 +436,45 @@ class Setup : Object {
         }
     }
 
-    string get_active_dict_type () {
+    void populate_shortcut_treeview (Kkc.InputMode input_mode) {
+        Variant? variant = preferences.get ("typing_rule");
+        assert (variant != null);
+
+        var parent_metadata = Kkc.Rule.find_rule (variant.get_string ());
+        assert (parent_metadata != null);
+
+        var base_dir = Path.build_filename (
+            Environment.get_user_config_dir (),
+            "ibus-kkc", "rules");
+
+        UserRule rule;
+        try {
+            rule = new UserRule (parent_metadata, base_dir, "ibus-kkc");
+        } catch (Kkc.RuleParseError e) {
+            error ("can't load typing rule %s: %s",
+                   variant.get_string (), e.message);
+        }
+
+        var model = (Gtk.ListStore) shortcut_treeview.get_model ();
+        model.clear ();
+        var entries = rule.get_keymap (input_mode).entries ();
+        foreach (var entry in entries) {
+            Gtk.TreeIter iter;
+            model.append (out iter);
+            model.set (iter, 0, entry.command);
+            model.set (iter, 1, entry.key);
+            model.set (iter, 2, Kkc.Keymap.get_command_label (entry.command));
+        }
+        shortcut_input_mode = input_mode;
+        shortcut_rule = rule;
+    }
+
+    string combobox_get_active_string (Gtk.ComboBox combo, int column) {
         string text;
         Gtk.TreeIter iter;
-        if (dict_type_combobox.get_active_iter (out iter)) {
-            var model = (Gtk.ListStore) dict_type_combobox.get_model ();
-            model.get (iter, 1, out text, -1);
+        if (combo.get_active_iter (out iter)) {
+            var model = (Gtk.ListStore) combo.get_model ();
+            model.get (iter, column, out text, -1);
         } else {
             assert_not_reached ();
         }
@@ -253,7 +484,7 @@ class Setup : Object {
     void add_dict () {
         if (dict_dialog.run () == Gtk.ResponseType.OK) {
             PList? plist = null;
-            string text = get_active_dict_type ();
+            string text = combobox_get_active_string (dict_type_combobox, 1);
             if (text == "System") {
                 string? file = dict_filechooserbutton.get_filename ();
                 if (file != null) {
@@ -412,8 +643,25 @@ class Setup : Object {
             });
     }
 
+    void select_shortcut_section (Kkc.InputMode input_mode) {
+        Gtk.TreeIter iter;
+        var model = input_mode_treeview.get_model ();
+        if (model.get_iter_first (out iter)) {
+            do {
+                int _input_mode;
+                model.get (iter, 1, out _input_mode, -1);
+                if (_input_mode == input_mode) {
+                    var selection = input_mode_treeview.get_selection ();
+                    selection.select_iter (iter);
+                    break;
+                }
+            } while (model.iter_next (ref iter));
+        }
+    }
+
     void load () {
         populate_dictionaries_treeview ();
+        select_shortcut_section (Kkc.InputMode.HIRAGANA);
 
         load_spinbutton ("page_size",
                          page_size_spinbutton);
@@ -515,16 +763,38 @@ class Setup : Object {
         }
     }
 
+    class KeyEventCellRenderer : Gtk.CellRendererAccel {
+        private Kkc.KeyEvent _event;
+        public Kkc.KeyEvent event {
+            get {
+                return _event;
+            }
+            set {
+                accel_mode = Gtk.CellRendererAccelMode.OTHER;
+                _event = value;
+                if (_event == null) {
+                    accel_key = 0;
+                    accel_mode = 0;
+                    keycode = 0;
+                } else {
+                    accel_key = _event.keyval;
+                    accel_mods = (Gdk.ModifierType) _event.modifiers;
+                    keycode = _event.keycode;
+                }
+            }
+        }
+    }
+
     public static int main (string[] args) {
-		Gtk.init (ref args);
-		IBus.init ();
+        Gtk.init (ref args);
+        IBus.init ();
         Kkc.init ();
 
         var bus = new IBus.Bus ();
         var config = bus.get_config ();
-		var setup = new Setup (new Preferences (config));
+        var setup = new Setup (new Preferences (config));
 
-		setup.run ();
-		return 0;
-	}
+        setup.run ();
+        return 0;
+    }
 }
