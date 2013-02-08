@@ -74,7 +74,7 @@ public class Preferences : Object {
         _default.set ("punctuation_style",
                       new Variant.int32 ((int32) Kkc.PunctuationStyle.JA_JA));
         _default.set ("page_size",
-                      new Variant.int32 (9));
+                      new Variant.int32 (10));
         _default.set ("pagination_start",
                       new Variant.int32 (0));
         _default.set ("show_annotation",

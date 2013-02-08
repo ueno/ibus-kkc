@@ -383,7 +383,7 @@ class KkcEngine : IBus.Engine {
     }
 
     string[] LOOKUP_TABLE_LABELS = {"1", "2", "3", "4", "5", "6", "7",
-                                    "8", "9", "a", "b", "c", "d", "e"};
+                                    "8", "9", "0", "a", "b", "c", "d", "e"};
 
     bool process_lookup_table_key_event (uint keyval,
                                          uint keycode,
