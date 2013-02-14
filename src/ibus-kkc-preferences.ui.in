@@ -723,7 +723,7 @@
                         </child>
                         <child>
                           <object class="GtkLinkButton" id="linkbutton1">
-                            <property name="label">http://github.com/ueno/ibus-kkc</property>
+                            <property name="label">https://bitbucket.org/libkkc/libkkc/</property>
                             <property name="use_action_appearance">False</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
@@ -731,7 +731,7 @@
                             <property name="has_tooltip">True</property>
                             <property name="use_action_appearance">False</property>
                             <property name="relief">none</property>
-                            <property name="uri">http://github.com/ueno/ibus-kkc</property>
+                            <property name="uri">https://bitbucket.org/libkkc/libkkc/</property>
                           </object>
                           <packing>
                             <property name="expand">True</property>
