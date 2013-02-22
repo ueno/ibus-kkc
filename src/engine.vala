@@ -463,7 +463,7 @@ class KkcEngine : IBus.Engine {
         Kkc.ModifierType modifiers = (Kkc.ModifierType) _state;
         Kkc.KeyEvent key;
         try {
-            key = new Kkc.KeyEvent.from_x_keysym (keyval, modifiers);
+            key = new Kkc.KeyEvent.from_x_event (keyval, keycode, modifiers);
         } catch (Kkc.KeyEventFormatError e) {
             return false;
         }

@@ -62,7 +62,7 @@ PKG_CHECK_MODULES(IBUS, [ibus-1.0 >= 1.4.0], ,
   AC_MSG_ERROR([can't find ibus]))
 
 # check libkkc
-PKG_CHECK_MODULES(LIBKKC, [kkc-1.0 >= 0.1.1], ,
+PKG_CHECK_MODULES(LIBKKC, [kkc-1.0 >= 0.1.7], ,
   AC_MSG_ERROR([can't find libkkc]))
 
 # check gtk+
