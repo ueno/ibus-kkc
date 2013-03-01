@@ -41,6 +41,10 @@ ibus_engine_kkc_VALAFLAGS =			\
 	--pkg gtk+-3.0				\
 	$(VALAFLAGS)
 
+if IBUS_1_5
+ibus_engine_kkc_VALAFLAGS += -D IBUS_1_5
+endif
+
 ibus_engine_kkc_CFLAGS =			\
 	$(COMMON_CFLAGS)			\
 	$(GTK_CFLAGS)

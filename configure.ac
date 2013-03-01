@@ -61,6 +61,9 @@ AC_SUBST(DATE_DISPLAY)
 PKG_CHECK_MODULES(IBUS, [ibus-1.0 >= 1.4.0], ,
   AC_MSG_ERROR([can't find ibus]))
 
+PKG_CHECK_EXISTS([ibus-1.0 >= 1.5.0], have_ibus_1_5=yes, have_ibus_1_5=no)
+AM_CONDITIONAL([IBUS_1_5], [test x$have_ibus_1_5 = xyes])
+
 # check libkkc
 PKG_CHECK_MODULES(LIBKKC, [kkc-1.0 >= 0.1.7], ,
   AC_MSG_ERROR([can't find libkkc]))
