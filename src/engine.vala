@@ -74,7 +74,7 @@ class KkcEngine : IBus.Engine {
 
         prop = register_input_mode_property (Kkc.InputMode.HANKAKU_KATAKANA,
                                              "InputMode.HankakuKatakana",
-                                             _("HankakuKatakana"),
+                                             _("Halfwidth Katakana"),
                                              "_ｱ");
         props.append (prop);
 
@@ -86,13 +86,13 @@ class KkcEngine : IBus.Engine {
 
         prop = register_input_mode_property (Kkc.InputMode.WIDE_LATIN,
                                              "InputMode.WideLatin",
-                                             _("WideLatin"),
+                                             _("Wide Latin"),
                                              "Ａ");
         props.append (prop);
 
         prop = register_input_mode_property (Kkc.InputMode.DIRECT,
                                              "InputMode.Direct",
-                                             _("Direct input"),
+                                             _("Direct Input"),
                                              "_A");
         props.append (prop);
 
