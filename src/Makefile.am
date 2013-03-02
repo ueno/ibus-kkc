@@ -82,11 +82,13 @@ setup_DATA = ibus-kkc-preferences.ui
 desktop_in_in_files = ibus-setup-kkc.desktop.in.in
 desktop_in_files = $(desktop_in_in_files:.in.in=.in)
 
+edit = sed \
+	-e 's|@VERSION[@]|$(VERSION)|g' \
+	-e 's|@libexecdir[@]|$(libexecdir)|g' \
+	-e 's|@pkgdatadir[@]|$(pkgdatadir)|g'
+
 $(desktop_in_files): %.desktop.in: %.desktop.in.in Makefile
-	$(AM_V_GEN) sed \
-	       -e "s|\@libexecdir\@|$(libexecdir)|" \
-	       -e "s|\@pkgdatadir\@|$(pkgdatadir)|" \
-	       $< > $@.tmp && mv $@.tmp $@
+	$(AM_V_GEN) $(edit) $< > $@.tmp && mv $@.tmp $@
 
 desktopdir=$(datadir)/applications
 desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
@@ -95,10 +97,6 @@ desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
 
 component_DATA = kkc.xml
 componentdir = $(datadir)/ibus/component
-
-edit = sed \
-	-e 's|@LIBEXECDIR[@]|$(libexecdir)|g' \
-	-e 's|@PKGDATADIR[@]|$(pkgdatadir)|g'
 
 kkc.xml.in: kkc.xml.in.in
 	$(AM_V_GEN) $(edit) $< > $@.tmp && mv $@.tmp $@
@@ -130,12 +128,11 @@ EXTRA_DIST =					\
 	ibus-1.0.deps				\
 	ibus-kkc-preferences.ui.in		\
 	$(desktop_in_in_files)			\
-	kkc.xml.in.in.in			\
+	kkc.xml.in.in				\
 	$(NULL)
 
 DISTCLEANFILES =				\
 	ibus-kkc-preferences.ui			\
-	kkc.xml.in.in				\
 	$(NULL)
 
 -include $(top_srcdir)/git.mk

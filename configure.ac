@@ -89,7 +89,6 @@ AM_GLIB_GNU_GETTEXT
 AC_CONFIG_FILES([ po/Makefile.in
 Makefile
 ibus-kkc.spec
-src/kkc.xml.in.in
 src/Makefile
 src/ibus-kkc-preferences.ui
 icons/Makefile
