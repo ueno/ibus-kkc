@@ -101,7 +101,7 @@ edit = sed \
 	-e 's|@PKGDATADIR[@]|$(pkgdatadir)|g'
 
 kkc.xml.in: kkc.xml.in.in
-	$(AM_V_GEN) $(edit) $< > $@
+	$(AM_V_GEN) $(edit) $< > $@.tmp && mv $@.tmp $@
 
 @INTLTOOL_XML_NOMERGE_RULE@
 
