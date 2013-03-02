@@ -101,12 +101,7 @@ edit = sed \
 	-e 's|@PKGDATADIR[@]|$(pkgdatadir)|g'
 
 kkc.xml.in: kkc.xml.in.in
-	$(AM_V_GEN) ( \
-		rm -rf $@ $@.tmp; \
-		srcdir=''; \
-		  test -f ./$@.in || srcdir=$(srcdir)/; \
-		  $(edit) $${srcdir}$@.in >$@.tmp; \
-		mv $@.tmp $@ )
+	$(AM_V_GEN) $(edit) $< > $@
 
 @INTLTOOL_XML_NOMERGE_RULE@
 
