@@ -3,7 +3,7 @@
 <component>
 	<name>org.freedesktop.IBus.KKC</name>
 	<description>KKC Component</description>
-	<exec>@LIBEXECDIR@/ibus-engine-kkc --ibus</exec>
+	<exec>@libexecdir@/ibus-engine-kkc --ibus</exec>
 	<version>@VERSION@</version>
 	<author>Daiki Ueno &lt;ueno@gnu.org&gt;</author>
 	<license>GPL</license>
@@ -17,7 +17,7 @@
 			<language>ja</language>
 			<license>GPL</license>
 			<author>Daiki Ueno &lt;ueno@gnu.org&gt;</author>
-			<icon>@PKGDATADIR@/icons/ibus-kkc.svg</icon>
+			<icon>@pkgdatadir@/icons/ibus-kkc.svg</icon>
 			<layout>jp</layout>
 			<_longname>Kana Kanji</_longname>
 			<_description>Kana Kanji Input Method</_description>
