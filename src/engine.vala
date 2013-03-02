@@ -23,7 +23,7 @@ class KkcEngine : IBus.Engine {
     // Preferences are shared among KkcEngine instances.
     static Preferences preferences;
 
-    // Dictionaries are shared among SkkEngine instances and
+    // Dictionaries are shared among KkcEngine instances and
     // maintained in the per-class signal handler in main().
     static ArrayList<Kkc.Dictionary> dictionaries;
 
