@@ -79,13 +79,13 @@ ibus_setup_kkc_SOURCES =			\
 setupdir = $(pkgdatadir)/setup
 setup_DATA = ibus-kkc-preferences.ui
 
-desktop_in_in_files = ibus-setup-kkc.desktop.in.in
-desktop_in_files = $(desktop_in_in_files:.in.in=.in)
-
 edit = sed \
 	-e 's|@VERSION[@]|$(VERSION)|g' \
 	-e 's|@libexecdir[@]|$(libexecdir)|g' \
 	-e 's|@pkgdatadir[@]|$(pkgdatadir)|g'
+
+desktop_in_in_files = ibus-setup-kkc.desktop.in.in
+desktop_in_files = $(desktop_in_in_files:.in.in=.in)
 
 $(desktop_in_files): %.desktop.in: %.desktop.in.in Makefile
 	$(AM_V_GEN) $(edit) $< > $@.tmp && mv $@.tmp $@
