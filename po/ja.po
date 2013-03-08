@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus-kkc 1.2.0.20091108\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-03-08 17:45+0900\n"
-"PO-Revision-Date: 2013-03-08 17:47+0900\n"
+"POT-Creation-Date: 2013-03-08 19:25+0900\n"
+"PO-Revision-Date: 2013-03-08 19:25+0900\n"
 "Last-Translator: Daiki Ueno <ueno@gnu.org>\n"
 "Language-Team: Japanese\n"
 "Language: \n"
@@ -92,7 +92,7 @@ msgid "User"
 msgstr "ユーザ"
 
 #: ../src/ibus-kkc-preferences.ui.in.h:7
-msgid "Setup - IBus Kana Kanji"
+msgid "IBus Kana Kanji Preferences"
 msgstr "IBus かな漢字エンジンの設定"
 
 #: ../src/ibus-kkc-preferences.ui.in.h:8
