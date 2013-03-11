@@ -232,7 +232,7 @@ class KkcEngine : IBus.Engine {
             }
             text.append_attribute (
                 IBus.AttrType.BACKGROUND,
-                0x00aaaaaa,
+                0x00c8c8f0,
                 offset,
                 offset + context.segments[index].output.char_count ());
             text.append_attribute (
