@@ -23,6 +23,7 @@
 			<_description>Kana Kanji Input Method</_description>
 			<rank>77</rank>
 			<symbol>&#x3042;</symbol>
+			<textdomain>ibus-kkc</textdomain>
 		</engine>
 	</engines>
 </component>
