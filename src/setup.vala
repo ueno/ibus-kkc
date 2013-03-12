@@ -123,6 +123,12 @@ class Setup : Object {
         dict_entry = new Gtk.Entry ();
         dict_spinbutton = new Gtk.SpinButton.with_range (0, 65535, 1);
 
+        page_size_spinbutton.set_range (7.0, 16.0);
+        page_size_spinbutton.set_increments (1.0, 1.0); 
+
+        pagination_start_spinbutton.set_range (0.0, 7.0);
+        pagination_start_spinbutton.set_increments (1.0, 1.0);
+
         Gtk.ListStore model;
         Gtk.CellRenderer renderer;
         Gtk.TreeViewColumn column;
@@ -289,8 +295,10 @@ class Setup : Object {
                         }
                     } while (!found && model.iter_next (ref iter));
                 }
-                if (!found)
+                if (!found) {
                     model.insert_with_values (out iter, int.MAX, 0, plist, -1);
+                    save_dictionaries ("dictionaries");
+                }
             }
         }
         dict_dialog.hide ();
@@ -306,6 +314,7 @@ class Setup : Object {
                 ((Gtk.ListStore)model).remove (iter);
             }
         }
+        save_dictionaries ("dictionaries");
     }
 
     void up_dict () {
@@ -318,6 +327,7 @@ class Setup : Object {
                 ((Gtk.ListStore)model).swap (iter, prev);
             }
         }
+        save_dictionaries ("dictionaries");
     }
 
     void down_dict () {
@@ -330,6 +340,28 @@ class Setup : Object {
                 ((Gtk.ListStore)model).swap (iter, next);
             }
         }
+        save_dictionaries ("dictionaries");
+    }
+
+    void load_spinbutton (string name,
+                          Gtk.SpinButton spin) {
+        Variant? variant = preferences.get (name);
+        assert (variant != null);
+        spin.value = (double) variant.get_int32 ();
+        spin.value_changed.connect (() => {
+                preferences.set (name, (int) spin.value);
+            });
+    }
+
+    void load_togglebutton (string name,
+                            Gtk.ToggleButton toggle) {
+        Variant? variant = preferences.get (name);
+        assert (variant != null);
+        toggle.active = variant.get_boolean ();
+        toggle.toggled.connect (() => {
+                preferences.set (name,
+                                 toggle.active);
+            });
     }
 
     void load_combobox (string name,
@@ -350,47 +382,57 @@ class Setup : Object {
                 }
             } while (model.iter_next (ref iter));
         }
+
+        combo.changed.connect (() => {
+                save_combobox (name, combo, column);
+            });
+    }
+
+    void load_combobox_string (string name,
+                               Gtk.ComboBox combo,
+                               int column) {
+        Variant? variant = preferences.get (name);
+        assert (variant != null);
+        Gtk.TreeIter iter;
+        var model = combo.get_model ();
+        if (model.get_iter_first (out iter)) {
+            string str = variant.get_string ();
+            do {
+                string _str;
+                model.get (iter, column, out _str, -1);
+                if (str == _str) {
+                    combo.set_active_iter (iter);
+                    break;
+                }
+            } while (model.iter_next (ref iter));
+        }
+
+        combo.changed.connect (() => {
+                save_combobox_string (name, combo, column);
+            });
     }
 
     void load () {
         populate_dictionaries_treeview ();
 
-        Variant? variant;
+        load_spinbutton ("page_size",
+                         page_size_spinbutton);
+        load_spinbutton ("pagination_start",
+                         pagination_start_spinbutton);
 
-        variant = preferences.get ("page_size");
-        assert (variant != null);
-        page_size_spinbutton.set_range (7.0, 16.0);
-        page_size_spinbutton.set_increments (1.0, 1.0); 
-        page_size_spinbutton.value = (double) variant.get_int32 ();
+        load_togglebutton ("show_annotation",
+                           show_annotation_checkbutton);
 
-        variant = preferences.get ("pagination_start");
-        assert (variant != null);
-        pagination_start_spinbutton.set_range (0.0, 7.0);
-        pagination_start_spinbutton.set_increments (1.0, 1.0);
-        pagination_start_spinbutton.value = (double) variant.get_int32 ();
+        load_combobox ("punctuation_style",
+                       punctuation_style_combobox,
+                       1);
+        load_combobox ("initial_input_mode",
+                       initial_input_mode_combobox,
+                       1);
 
-        variant = preferences.get ("show_annotation");
-        assert (variant != null);
-        show_annotation_checkbutton.active = variant.get_boolean ();
-
-        load_combobox ("punctuation_style", punctuation_style_combobox, 1);
-        load_combobox ("initial_input_mode", initial_input_mode_combobox, 1);
-
-        variant = preferences.get ("typing_rule");
-        assert (variant != null);
-        var model = (Gtk.ListStore) typing_rule_combobox.get_model ();
-        Gtk.TreeIter iter;
-        if (model.get_iter_first (out iter)) {
-            string rule = variant.get_string ();
-            do {
-                string _rule;
-                model.get (iter, 0, out _rule, -1);
-                if (rule == _rule) {
-                    typing_rule_combobox.set_active_iter (iter);
-                    break;
-                }
-            } while (model.iter_next (ref iter));
-        }
+        load_combobox_string ("typing_rule",
+                              typing_rule_combobox,
+                              0);
     }
 
     void save_dictionaries (string name) {
@@ -420,33 +462,21 @@ class Setup : Object {
         }
     }
 
-    void save () {
-        save_dictionaries ("dictionaries");
-
-        preferences.set ("page_size",
-                         (int) page_size_spinbutton.value);
-        preferences.set ("pagination_start",
-                         (int) pagination_start_spinbutton.value);
-        preferences.set ("show_annotation",
-                         show_annotation_checkbutton.active);
-        save_combobox ("punctuation_style",
-                       punctuation_style_combobox, 1);
-        save_combobox ("initial_input_mode",
-                       initial_input_mode_combobox, 1);
-
+    void save_combobox_string (string name,
+                               Gtk.ComboBox combo,
+                               int column)
+    {
         Gtk.TreeIter iter;
-        if (typing_rule_combobox.get_active_iter (out iter)) {
-            var model = (Gtk.ListStore) typing_rule_combobox.get_model ();
-            string rule;
-            model.get (iter, 0, out rule, -1);
-            preferences.set ("typing_rule", rule);
+        if (combo.get_active_iter (out iter)) {
+            string str;
+            var model = combo.get_model ();
+            model.get (iter, column, out str, -1);
+            preferences.set (name, str);
         }
-        preferences.save ();
     }
 
     public void run () {
         dialog.run ();
-        save ();
     }
 
     class TypeCellRenderer : Gtk.CellRendererText {

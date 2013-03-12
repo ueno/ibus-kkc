@@ -39,17 +39,6 @@ public class Preferences : Object {
         }
     }
 
-    public void save () {
-        var iter = current.map_iterator ();
-        if (iter.first ()) {
-            do {
-                config.set_value ("engine/kkc",
-                                  iter.get_key (),
-                                  iter.get_value ());
-            } while (iter.next ());
-        }
-    }
-
     public new Variant? @get (string name) {
         Variant? value = current.get (name);
         if (value != null) {
@@ -59,7 +48,11 @@ public class Preferences : Object {
     }
 
     public new void @set (string name, Variant value) {
-        current.set (name, value);
+        Variant? _value = current.get (name);
+        if (_value != value) {
+            current.set (name, value);
+            config.set_value ("engine/kkc", name, value);
+        }
     }
 
     public Preferences (IBus.Config config) {
