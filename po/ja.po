@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus-kkc 1.2.0.20091108\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-03-19 15:56+0900\n"
-"PO-Revision-Date: 2013-03-19 15:58+0900\n"
+"POT-Creation-Date: 2013-03-19 16:04+0900\n"
+"PO-Revision-Date: 2013-03-19 16:04+0900\n"
 "Last-Translator: Daiki Ueno <ueno@gnu.org>\n"
 "Language-Team: Japanese\n"
 "Language: \n"
@@ -166,26 +166,23 @@ msgstr "ショートカットを削除"
 
 #: ../src/ibus-kkc-preferences.ui.in.h:27
 msgid ""
-"To edit a shortcut, click the row and hold down the new keys or\n"
-"press Backspace to clear."
-msgstr ""
-"ショートカットを編集するには、対応する行をクリックし、新しいキーの組み合わ"
-"せ\n"
-"を押すか、[BS] キーで取り消してください。"
+"To edit a shortcut, click the row and hold down the new keys or press "
+"Backspace to clear."
+msgstr "ショートカットを編集するには、対応する行をクリックし、新しいキーの組み合わせを押すか、[BS] キーで取り消してください。"
 
-#: ../src/ibus-kkc-preferences.ui.in.h:29
+#: ../src/ibus-kkc-preferences.ui.in.h:28
 msgid "Shortcuts"
 msgstr "ショートカット"
 
-#: ../src/ibus-kkc-preferences.ui.in.h:30
+#: ../src/ibus-kkc-preferences.ui.in.h:29
 msgid "Kana-kanji input method for IBus"
 msgstr "IBus入力プラットフォーム用かな漢字変換エンジン"
 
-#: ../src/ibus-kkc-preferences.ui.in.h:31
+#: ../src/ibus-kkc-preferences.ui.in.h:30
 msgid "About"
 msgstr "情報"
 
-#: ../src/ibus-kkc-preferences.ui.in.h:32
+#: ../src/ibus-kkc-preferences.ui.in.h:31
 msgid "Command:"
 msgstr "コマンド:"
 
