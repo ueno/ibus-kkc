@@ -16,6 +16,8 @@ libutil_la_SOURCES =				\
 	plist.vala
 libutil_la_CFLAGS =				\
 	$(COMMON_CFLAGS)
+libutil_la_LIBADD =				\
+	$(COMMON_LIBS)
 
 BUILT_SOURCES = ibus-kkc.vapi
 
