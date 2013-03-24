@@ -408,6 +408,9 @@ class Setup : Object {
             if (model.get_iter (out iter, row)) {
                 Kkc.KeyEvent *old_event;
                 model.get (iter, 1, out old_event, -1);
+                if (old_event->modifiers == 0 &&
+                    old_event->keyval in IGNORED_KEYVALS)
+                    continue;
                 shortcut_rule.set_override (shortcut_input_mode,
                                             old_event,
                                             null);
@@ -763,6 +766,11 @@ class Setup : Object {
         }
     }
 
+    static const uint IGNORED_KEYVALS[] = {
+        Kkc.Keysyms.BackSpace,
+        Kkc.Keysyms.Escape
+    };
+
     class KeyEventCellRenderer : Gtk.CellRendererAccel {
         private Kkc.KeyEvent _event;
         public Kkc.KeyEvent event {
@@ -774,13 +782,17 @@ class Setup : Object {
                 _event = value;
                 if (_event == null) {
                     accel_key = 0;
-                    accel_mode = 0;
+                    accel_mods = 0;
                     keycode = 0;
                 } else {
                     accel_key = _event.keyval;
                     accel_mods = (Gdk.ModifierType) _event.modifiers;
                     keycode = _event.keycode;
                 }
+                if (accel_mods == 0 && accel_key in IGNORED_KEYVALS)
+                    editable = false;
+                else
+                    editable = true;
             }
         }
     }
