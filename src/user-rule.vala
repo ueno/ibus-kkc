@@ -18,7 +18,7 @@
  * 02110-1301, USA.
  */
 public class UserRule : Kkc.Rule {
-    Kkc.Keymap[] overrides = new Kkc.Keymap[Kkc.InputMode.LAST];
+    Kkc.Keymap[] overrides;
     string path;
 
     public UserRule (Kkc.RuleMetadata parent_metadata,
@@ -37,10 +37,12 @@ public class UserRule : Kkc.Rule {
             Path.build_filename (user_rule_path, "metadata.json"));
         base (metadata);
 
-        for (int mode = Kkc.InputMode.HIRAGANA;
-             mode < Kkc.InputMode.LAST;
-             mode++) {
-            overrides[mode] = new Kkc.Keymap ();
+        var enum_class = (EnumClass) typeof (Kkc.InputMode).class_ref ();
+        overrides = new Kkc.Keymap[enum_class.maximum];
+        for (int i = enum_class.minimum; i <= enum_class.maximum; i++) {
+            var enum_value = enum_class.get_value (i);
+            if (enum_value != null)
+                overrides[enum_value.value] = new Kkc.Keymap ();
         }
 
         path = user_rule_path;
