@@ -50,6 +50,7 @@ class Setup : Object {
     Preferences preferences;
     UserRule shortcut_rule;
     Kkc.InputMode shortcut_input_mode;
+    Gee.Map<string,string> supported_rules;
 
     public Setup (Preferences preferences) {
         this.preferences = preferences;
@@ -261,12 +262,19 @@ class Setup : Object {
         model = new Gtk.ListStore (2, typeof (string), typeof (string));
         model.set_sort_column_id (1, Gtk.SortType.ASCENDING);
         typing_rule_combobox.set_model (model);
+
+        supported_rules = new HashMap<string,string> ();
+        supported_rules.set ("default", _("Default"));
+        supported_rules.set ("kana", _("Kana"));
+
         var rules = Kkc.Rule.list ();
         foreach (var rule in rules) {
-            Gtk.TreeIter iter;
-            model.append (out iter);
-            model.set (iter, 0, rule.name);
-            model.set (iter, 1, rule.label);
+            if (supported_rules.has_key (rule.name)) {
+                Gtk.TreeIter iter;
+                model.append (out iter);
+                model.set (iter, 0, rule.name);
+                model.set (iter, 1, supported_rules.get (rule.name));
+            }
         }
 
         renderer = new Gtk.CellRendererText ();
