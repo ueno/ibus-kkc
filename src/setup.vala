@@ -774,7 +774,7 @@ class Setup : Object {
         }
     }
 
-    static const uint IGNORED_KEYVALS[] = {
+    static const uint[] IGNORED_KEYVALS = {
         Kkc.Keysyms.BackSpace,
         Kkc.Keysyms.Escape
     };
