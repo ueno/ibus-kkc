@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus-kkc 1.2.0.20091108\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-03-19 16:04+0900\n"
-"PO-Revision-Date: 2013-03-19 16:04+0900\n"
+"POT-Creation-Date: 2013-04-02 18:41+0900\n"
+"PO-Revision-Date: 2013-04-02 18:42+0900\n"
 "Last-Translator: Daiki Ueno <ueno@gnu.org>\n"
 "Language-Team: Japanese\n"
 "Language: \n"
@@ -67,16 +67,24 @@ msgstr "IBus からコンポーネントを起動"
 msgid "Kana Kanji"
 msgstr "かな漢字"
 
-#: ../src/setup.vala:348
+#: ../src/setup.vala:267
+msgid "Default"
+msgstr "標準"
+
+#: ../src/setup.vala:268
+msgid "Kana"
+msgstr "かな"
+
+#: ../src/setup.vala:356
 #, c-format
 msgid "Shortcut '%s' is already assigned to '%s'"
 msgstr "ショートカット '%s' は既に '%s' に割り当てられています"
 
-#: ../src/setup.vala:742
+#: ../src/setup.vala:753
 msgid "system"
 msgstr "システム"
 
-#: ../src/setup.vala:744
+#: ../src/setup.vala:755
 msgid "user"
 msgstr "ユーザ"
 
@@ -168,7 +176,9 @@ msgstr "ショートカットを削除"
 msgid ""
 "To edit a shortcut, click the row and hold down the new keys or press "
 "Backspace to clear."
-msgstr "ショートカットを編集するには、対応する行をクリックし、新しいキーの組み合わせを押すか、[BS] キーで取り消してください。"
+msgstr ""
+"ショートカットを編集するには、対応する行をクリックし、新しいキーの組み合わせ"
+"を押すか、[BS] キーで取り消してください。"
 
 #: ../src/ibus-kkc-preferences.ui.in.h:28
 msgid "Shortcuts"
