@@ -19,6 +19,7 @@
  */
 public class UserRule : Kkc.Rule {
     Kkc.Keymap[] overrides;
+    Kkc.RuleMetadata parent_metadata;
     string path;
 
     public UserRule (Kkc.RuleMetadata parent_metadata,
@@ -45,7 +46,8 @@ public class UserRule : Kkc.Rule {
                 overrides[enum_value.value] = new Kkc.Keymap ();
         }
 
-        path = user_rule_path;
+        this.path = user_rule_path;
+        this.parent_metadata = parent_metadata;
     }
 
     static void create_files (Kkc.RuleMetadata parent_metadata,
@@ -127,7 +129,7 @@ public class UserRule : Kkc.Rule {
         builder.begin_object ();
         builder.set_member_name ("include");
         builder.begin_array ();
-        builder.add_string_value ("default/" + keymap_name);
+        builder.add_string_value (parent_metadata.name + "/" + keymap_name);
         builder.end_array ();
         builder.set_member_name ("define");
         builder.begin_object ();
