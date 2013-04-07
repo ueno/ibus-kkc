@@ -29,8 +29,8 @@ public class UserRule : Kkc.Rule {
 
         if (!FileUtils.test (user_rule_path, FileTest.IS_DIR)) {
             create_files (parent_metadata,
-                          prefix + ":" + parent_metadata.name,
-                          user_rule_path);
+                          user_rule_path,
+                          prefix + ":" + parent_metadata.name);
         }
 
         var metadata = Kkc.Rule.load_metadata (
@@ -49,23 +49,23 @@ public class UserRule : Kkc.Rule {
     }
 
     static void create_files (Kkc.RuleMetadata parent_metadata,
-                              string name,
-                              string path) {
+                              string path,
+                              string name) {
         DirUtils.create_with_parents (path, 448);
-        create_metadata (parent_metadata, name, path);
-        create_default (path, "keymap", "default");
-        create_default (path, "keymap", "hiragana");
-        create_default (path, "keymap", "katakana");
-        create_default (path, "keymap", "hankaku-katakana");
-        create_default (path, "keymap", "latin");
-        create_default (path, "keymap", "wide-latin");
-        create_default (path, "keymap", "direct");
-        create_default (path, "rom-kana", "default");
+        create_metadata (parent_metadata, path, name);
+        create_default (parent_metadata, path, "keymap", "default");
+        create_default (parent_metadata, path, "keymap", "hiragana");
+        create_default (parent_metadata, path, "keymap", "katakana");
+        create_default (parent_metadata, path, "keymap", "hankaku-katakana");
+        create_default (parent_metadata, path, "keymap", "latin");
+        create_default (parent_metadata, path, "keymap", "wide-latin");
+        create_default (parent_metadata, path, "keymap", "direct");
+        create_default (parent_metadata, path, "rom-kana", "default");
     }
 
     static void create_metadata (Kkc.RuleMetadata parent_metadata,
-                                 string name,
-                                 string path)
+                                 string path,
+                                 string name)
     {
         var builder = new Json.Builder ();
         builder.begin_object ();
@@ -88,7 +88,10 @@ public class UserRule : Kkc.Rule {
         }
     }
 
-    static void create_default (string path, string type, string name) {
+    static void create_default (Kkc.RuleMetadata parent_metadata,
+                                string path,
+                                string type,
+                                string name) {
         var type_path = Path.build_filename (path, type);
         DirUtils.create_with_parents (type_path, 448);
 
@@ -96,7 +99,7 @@ public class UserRule : Kkc.Rule {
         builder.begin_object ();
         builder.set_member_name ("include");
         builder.begin_array ();
-        builder.add_string_value ("default/" + name);
+        builder.add_string_value (parent_metadata.name + "/" + name);
         builder.end_array ();
         builder.end_object ();
 
