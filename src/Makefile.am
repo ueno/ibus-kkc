@@ -12,7 +12,6 @@ libutil_la_VALAFLAGS =				\
 	$(VALAFLAGS)
 libutil_la_SOURCES =				\
 	preferences.vala			\
-	user-rule.vala				\
 	plist.vala
 libutil_la_CFLAGS =				\
 	$(COMMON_CFLAGS)

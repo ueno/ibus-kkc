@@ -48,7 +48,7 @@ class Setup : Object {
     Gtk.ComboBox shortcut_command_combobox;
 
     Preferences preferences;
-    UserRule shortcut_rule;
+    Kkc.UserRule shortcut_rule;
     Kkc.InputMode shortcut_input_mode;
 
     public Setup (Preferences preferences) {
@@ -246,8 +246,9 @@ class Setup : Object {
         foreach (var command in commands) {
             Gtk.TreeIter iter;
             model.append (out iter);
-            model.set (iter, 0, command);
-            model.set (iter, 1, Kkc.Keymap.get_command_label (command));
+            model.set (iter,
+                       0, command,
+                       1, Kkc.Keymap.get_command_label (command));
         }
         shortcut_command_combobox.set_active (0);
 
@@ -267,8 +268,7 @@ class Setup : Object {
             if (rule.priority > 70) {
                 Gtk.TreeIter iter;
                 model.append (out iter);
-                model.set (iter, 0, rule.name);
-                model.set (iter, 1, rule.label);
+                model.set (iter, 0, rule.name, 1, rule.label);
             }
         }
 
@@ -334,8 +334,7 @@ class Setup : Object {
                 keyval,
                 keycode,
                 (Kkc.ModifierType) modifiers);
-            var keymap = shortcut_rule.get_keymap (
-                shortcut_input_mode);
+            var keymap = shortcut_rule.get_keymap (shortcut_input_mode);
             var old_command = keymap.lookup_key (new_event);
             if (old_command != null) {
                 string new_command;
@@ -362,13 +361,13 @@ class Setup : Object {
                            1, out old_event,
                            -1);
                 if (old_event != null)
-                    shortcut_rule.set_override (shortcut_input_mode,
-                                                old_event,
-                                                null);
-                shortcut_rule.set_override (shortcut_input_mode,
-                                            new_event,
-                                            new_command);
-                shortcut_rule.write_override (shortcut_input_mode);
+                    keymap.set (old_event, null);
+                keymap.set (new_event, new_command);
+                try {
+                    shortcut_rule.write (shortcut_input_mode);
+                } catch (Error e) {
+                    warning ("can't write shortcut: %s", e.message);
+                }
                 model.set (iter, 1, new_event, -1);
             }
         }
@@ -380,11 +379,14 @@ class Setup : Object {
         if (model.get_iter_from_string (out iter, path_string)) {
             Kkc.KeyEvent *old_event;
             model.get (iter, 1, out old_event, -1);
+            var keymap = shortcut_rule.get_keymap (shortcut_input_mode);
             if (old_event != null)
-                shortcut_rule.set_override (shortcut_input_mode,
-                                            old_event,
-                                            null);
-            shortcut_rule.write_override (shortcut_input_mode);
+                keymap.set (old_event, null);
+            try {
+                shortcut_rule.write (shortcut_input_mode);
+            } catch (Error e) {
+                warning ("can't write shortcut: %s", e.message);
+            }
             model.remove (iter);
         }
     }
@@ -406,6 +408,7 @@ class Setup : Object {
         var selection = shortcut_treeview.get_selection ();
         Gtk.TreeModel model;
         var rows = selection.get_selected_rows (out model);
+        var keymap = shortcut_rule.get_keymap (shortcut_input_mode);
         foreach (var row in rows) {
             Gtk.TreeIter iter;
             if (model.get_iter (out iter, row)) {
@@ -414,13 +417,15 @@ class Setup : Object {
                 if (old_event->modifiers == 0 &&
                     old_event->keyval in IGNORED_KEYVALS)
                     continue;
-                shortcut_rule.set_override (shortcut_input_mode,
-                                            old_event,
-                                            null);
+                keymap.set (old_event, null);
                 ((Gtk.ListStore)model).remove (iter);
             }
         }
-        shortcut_rule.write_override (shortcut_input_mode);
+        try {
+            shortcut_rule.write (shortcut_input_mode);
+        } catch (Error e) {
+            warning ("can't write shortcut: %s", e.message);
+        }
     }
 
     void populate_dictionaries_treeview () {
@@ -453,10 +458,10 @@ class Setup : Object {
             Environment.get_user_config_dir (),
             "ibus-kkc", "rules");
 
-        UserRule rule;
+        Kkc.UserRule rule;
         try {
-            rule = new UserRule (parent_metadata, base_dir, "ibus-kkc");
-        } catch (Kkc.RuleParseError e) {
+            rule = new Kkc.UserRule (parent_metadata, base_dir, "ibus-kkc");
+        } catch (Error e) {
             error ("can't load typing rule %s: %s",
                    variant.get_string (), e.message);
         }
@@ -465,11 +470,14 @@ class Setup : Object {
         model.clear ();
         var entries = rule.get_keymap (input_mode).entries ();
         foreach (var entry in entries) {
-            Gtk.TreeIter iter;
-            model.append (out iter);
-            model.set (iter, 0, entry.command);
-            model.set (iter, 1, entry.key);
-            model.set (iter, 2, Kkc.Keymap.get_command_label (entry.command));
+            if (entry.command != null) {
+                Gtk.TreeIter iter;
+                model.append (out iter);
+                model.set (iter,
+                           0, entry.command,
+                           1, entry.key,
+                           2, Kkc.Keymap.get_command_label (entry.command));
+            }
         }
         shortcut_input_mode = input_mode;
         shortcut_rule = rule;

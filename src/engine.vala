@@ -370,9 +370,9 @@ class KkcEngine : IBus.Engine {
             "ibus-kkc", "rules");
 
         try {
-            context.typing_rule = new UserRule (parent_metadata,
-                                                base_dir,
-                                                "ibus-kkc");
+            context.typing_rule = new Kkc.UserRule (parent_metadata,
+                                                    base_dir,
+                                                    "ibus-kkc");
         } catch (Kkc.RuleParseError e) {
             warning ("can't load typing rule %s: %s",
                      variant.get_string (), e.message);
