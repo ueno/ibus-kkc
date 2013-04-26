@@ -58,11 +58,28 @@ DATE_DISPLAY="ibus_datedisplay"
 AC_SUBST(DATE_DISPLAY)
 
 # check ibus
-PKG_CHECK_MODULES(IBUS, [ibus-1.0 >= 1.4.0], ,
-  AC_MSG_ERROR([can't find ibus]))
+AC_ARG_WITH([ibus],
+  [AS_HELP_STRING([--with-ibus],
+    [specify the IBus version to compile with @<:@default=auto@:>@])],
+  [],
+  [with_ibus=auto])
 
-PKG_CHECK_EXISTS([ibus-1.0 >= 1.5.0], have_ibus_1_5=yes, have_ibus_1_5=no)
-AM_CONDITIONAL([IBUS_1_5], [test x$have_ibus_1_5 = xyes])
+IBUS_1_4_REQUIRED=1.4.0
+IBUS_1_5_REQUIRED=1.5.0
+
+AS_CASE([$with_ibus],
+  [1.4], [PKG_CHECK_MODULES(IBUS, [ibus-1.0 >= $IBUS_1_4_REQUIRED], ,
+    AC_MSG_ERROR([can't find ibus 1.4]))],
+  [1.5], [PKG_CHECK_MODULES(IBUS, [ibus-1.0 >= $IBUS_1_5_REQUIRED], ,
+    AC_MSG_ERROR([can't find ibus 1.5]))],
+  [auto], [PKG_CHECK_MODULES(IBUS, [ibus-1.0 >= $IBUS_1_4_REQUIRED], ,
+    AC_MSG_ERROR([can't find ibus 1.4 or later]))
+    PKG_CHECK_EXISTS([ibus-1.0 >= $IBUS_1_5_REQUIRED],
+      [with_ibus=1.5]
+      [with_ibus=1.4])],
+  [AC_MSG_ERROR([invalid ibus version])])
+
+AM_CONDITIONAL([IBUS_1_5], [test x$with_ibus = x1.5])
 
 # check libkkc
 PKG_CHECK_MODULES(LIBKKC, [kkc-1.0 >= 0.1.10], ,
