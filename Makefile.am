@@ -26,6 +26,8 @@ SUBDIRS =					\
 	po					\
 	$(NULL)
 
+DISTCHECK_CONFIGURE_FLAGS = --with-ibus=1.4
+
 ACLOCAL_AMFLAGS = -I m4
 
 EXTRA_DIST =					\
