@@ -75,7 +75,7 @@ AS_CASE([$with_ibus],
   [auto], [PKG_CHECK_MODULES(IBUS, [ibus-1.0 >= $IBUS_1_4_REQUIRED], ,
     AC_MSG_ERROR([can't find ibus 1.4 or later]))
     PKG_CHECK_EXISTS([ibus-1.0 >= $IBUS_1_5_REQUIRED],
-      [with_ibus=1.5]
+      [with_ibus=1.5],
       [with_ibus=1.4])],
   [AC_MSG_ERROR([invalid ibus version])])
 
