@@ -438,14 +438,14 @@ class KkcEngine : IBus.Engine {
                 retval = context.candidates.cursor_down ();
                 break;
             default:
-                break;
+                return false;
             }
 
             if (retval) {
                 set_lookup_table_cursor_pos ();
                 update_preedit ();
-                return true;
             }
+            return true;
         }
 
         return false;
