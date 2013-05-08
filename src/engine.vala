@@ -242,6 +242,19 @@ class KkcEngine : IBus.Engine {
                 offset + context.segments[index].output.char_count ());
         } else {
             text = new IBus.Text.from_string (context.input);
+            if (text.get_length () > 0 &&
+                context.input_cursor_pos >= 0) {
+                text.append_attribute (
+                    IBus.AttrType.BACKGROUND,
+                    0x00000000,
+                    context.input_cursor_pos,
+                    context.input_cursor_pos + 1);
+                text.append_attribute (
+                    IBus.AttrType.FOREGROUND,
+                    (uint) 0xffffffff,
+                    context.input_cursor_pos,
+                    context.input_cursor_pos + 1);
+            }
         }
         if (text.get_length () > 0) {
             text.append_attribute (
