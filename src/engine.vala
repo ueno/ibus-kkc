@@ -575,6 +575,10 @@ class KkcEngine : IBus.Engine {
         }
     }
 
+    public override void candidate_clicked (uint index, uint button, uint state) {
+        context.candidates.select_at (index);
+    }
+
     static bool ibus;
 
     const OptionEntry[] options = {
