@@ -375,7 +375,7 @@ class KkcEngine : IBus.Engine {
         variant = preferences.get ("typing_rule");
         assert (variant != null);
 
-        var parent_metadata = Kkc.Rule.find_rule (variant.get_string ());
+        var parent_metadata = Kkc.RuleMetadata.find (variant.get_string ());
         assert (parent_metadata != null);
 
         var base_dir = Path.build_filename (
