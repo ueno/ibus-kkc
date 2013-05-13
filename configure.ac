@@ -32,7 +32,7 @@ m4_define(ibus_maybe_datestamp,
 m4_define([ibus_version],
     ibus_major_version.ibus_minor_version.ibus_micro_version[]ibus_maybe_datestamp)
 
-AC_INIT([package_name], [ibus_version], [http://github.com/ueno/ibus-kkc/issues], [package_name])
+AC_INIT([package_name], [ibus_version], [https://bitbucket.org/libkkc/libkkc/issues], [package_name])
 AM_INIT_AUTOMAKE([silent-rules])
 AC_GNU_SOURCE
 
