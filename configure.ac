@@ -1,6 +1,6 @@
 # vim:set et ts=4:
 #
-# ibus-kkc - The KKC engine for IBus
+# ibus-kkc - The Japanese Kana Kanji engine for IBus
 #
 # Copyright (c) 2007-2008 Huang Peng <shawn.p.huang@gmail.com>
 # Copyright (C) 2009-2013 Daiki Ueno <ueno@gnu.org>
@@ -17,7 +17,8 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+# 02110-1301, USA.
 
 # if not 1, append datestamp to the version number.
 m4_define([package_name], [ibus-kkc])

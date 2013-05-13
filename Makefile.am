@@ -1,9 +1,6 @@
-# vim:set noet ts=4:
+# ibus-kkc - The Japanese Kana Kanji engine for IBus
 #
-# ibus-kkc - The KKC engine for IBus
-#
-# Copyright (c) 2007-2008 Huang Peng <shawn.p.huang@gmail.com>
-# Copyright (C) 2009-2013 Daiki Ueno <ueno@gnu.org>
+# Copyright (C) 2012-2013 Daiki Ueno <ueno@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,7 +14,8 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+# 02110-1301, USA.
 
 SUBDIRS =					\
 	src					\
@@ -26,6 +24,8 @@ SUBDIRS =					\
 	po					\
 	$(NULL)
 
+# As of now (May 2013) IBus 1.4 is still widely used.  For the tarball
+# distribution, generate C code which uses 1.4 API only.
 DISTCHECK_CONFIGURE_FLAGS = --with-ibus=1.4
 
 ACLOCAL_AMFLAGS = -I m4
