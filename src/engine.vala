@@ -223,6 +223,7 @@ class KkcEngine : IBus.Engine {
 
     void update_preedit () {
         IBus.Text text;
+        uint cursor_pos;
         if (context.segments.cursor_pos >= 0) {
             text = new IBus.Text.from_string (context.segments.get_output ());
             int index = 0;
@@ -240,6 +241,7 @@ class KkcEngine : IBus.Engine {
                 0x00000000,
                 offset,
                 offset + context.segments[index].output.char_count ());
+            cursor_pos = offset;
         } else {
             text = new IBus.Text.from_string (context.input);
             if (text.get_length () > 0 &&
@@ -254,7 +256,9 @@ class KkcEngine : IBus.Engine {
                     (uint) 0xffffffff,
                     context.input_cursor_pos,
                     context.input_cursor_pos + 1);
-            }
+                cursor_pos = context.input_cursor_pos;
+            } else
+                cursor_pos = text.get_length ();
         }
         if (text.get_length () > 0) {
             text.append_attribute (
@@ -271,7 +275,7 @@ class KkcEngine : IBus.Engine {
         }
 
         update_preedit_text (text,
-                             text.get_length (),
+                             cursor_pos,
                              text.get_length () > 0);
     }
 
