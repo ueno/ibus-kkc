@@ -360,6 +360,10 @@ class KkcEngine : IBus.Engine {
         assert (variant != null);
         context.punctuation_style = (Kkc.PunctuationStyle) variant.get_int32 ();
 
+        variant = preferences.get ("auto_correct");
+        assert (variant != null);
+        context.auto_correct = variant.get_boolean ();
+
         variant = preferences.get ("page_size");
         assert (variant != null);
         lookup_table.set_page_size (variant.get_int32 ());

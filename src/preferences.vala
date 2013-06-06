@@ -66,6 +66,8 @@ public class Preferences : Object {
                       new Variant.strv (dictionaries.to_array ()));
         _default.set ("punctuation_style",
                       new Variant.int32 ((int32) Kkc.PunctuationStyle.JA_JA));
+        _default.set ("auto_correct",
+                      new Variant.boolean (true));
         _default.set ("page_size",
                       new Variant.int32 (10));
         _default.set ("pagination_start",

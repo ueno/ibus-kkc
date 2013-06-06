@@ -24,6 +24,7 @@ class Setup : Object {
     Gtk.Dialog dialog;
     Gtk.TreeView dictionaries_treeview;
     Gtk.ComboBox punctuation_style_combobox;
+    Gtk.CheckButton auto_correct_checkbutton;
     Gtk.SpinButton page_size_spinbutton;
     Gtk.SpinButton pagination_start_spinbutton;
     Gtk.CheckButton show_annotation_checkbutton;
@@ -78,6 +79,10 @@ class Setup : Object {
         object = builder.get_object ("punctuation_style_combobox");
         assert (object != null);
         punctuation_style_combobox = (Gtk.ComboBox) object;
+
+        object = builder.get_object ("auto_correct_checkbutton");
+        assert (object != null);
+        auto_correct_checkbutton = (Gtk.CheckButton) object;
 
         object = builder.get_object ("page_size_spinbutton");
         assert (object != null);
@@ -674,27 +679,17 @@ class Setup : Object {
     }
 
     void load () {
+        load_combobox_string ("typing_rule", typing_rule_combobox, 0);
+        load_combobox ("initial_input_mode", initial_input_mode_combobox, 1);
+        load_combobox ("punctuation_style", punctuation_style_combobox, 1);
+        load_togglebutton ("auto_correct", auto_correct_checkbutton);
+
+        load_spinbutton ("page_size", page_size_spinbutton);
+        load_spinbutton ("pagination_start", pagination_start_spinbutton);
+        load_togglebutton ("show_annotation", show_annotation_checkbutton);
+
         populate_dictionaries_treeview ();
         select_shortcut_section (Kkc.InputMode.HIRAGANA);
-
-        load_spinbutton ("page_size",
-                         page_size_spinbutton);
-        load_spinbutton ("pagination_start",
-                         pagination_start_spinbutton);
-
-        load_togglebutton ("show_annotation",
-                           show_annotation_checkbutton);
-
-        load_combobox ("punctuation_style",
-                       punctuation_style_combobox,
-                       1);
-        load_combobox ("initial_input_mode",
-                       initial_input_mode_combobox,
-                       1);
-
-        load_combobox_string ("typing_rule",
-                              typing_rule_combobox,
-                              0);
     }
 
     void save_dictionaries (string name) {
