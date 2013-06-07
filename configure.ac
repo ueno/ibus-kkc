@@ -83,7 +83,7 @@ AS_CASE([$with_ibus],
 AM_CONDITIONAL([IBUS_1_5], [test x$with_ibus = x1.5])
 
 # check libkkc
-PKG_CHECK_MODULES(LIBKKC, [kkc-1.0 >= 0.2.3], ,
+PKG_CHECK_MODULES(LIBKKC, [kkc-1.0 >= 0.2.4], ,
   AC_MSG_ERROR([can't find libkkc]))
 
 # check gtk+
