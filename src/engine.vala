@@ -125,7 +125,7 @@ class KkcEngine : IBus.Engine {
         Kkc.LanguageModel model;
         try {
             model = Kkc.LanguageModel.load ("sorted3");
-        } catch (Kkc.LanguageModelError e) {
+        } catch (Error e) {
             warning ("can't load language model: %s\n", e.message);
         }
 
@@ -394,7 +394,7 @@ class KkcEngine : IBus.Engine {
             context.typing_rule = new Kkc.UserRule (parent_metadata,
                                                     base_dir,
                                                     "ibus-kkc");
-        } catch (Kkc.RuleParseError e) {
+        } catch (Error e) {
             warning ("can't load typing rule %s: %s",
                      variant.get_string (), e.message);
         }
@@ -498,17 +498,13 @@ class KkcEngine : IBus.Engine {
             return true;
         }
 
-        Kkc.ModifierType modifiers = (Kkc.ModifierType) _state;
-        Kkc.KeyEvent key;
-        try {
-            key = new Kkc.KeyEvent.from_x_event (keyval, keycode, modifiers);
-        } catch (Kkc.KeyEventFormatError e) {
-            return false;
-        }
+        var key = new Kkc.KeyEvent.from_x_event (keyval,
+                                                 keycode,
+                                                 (Kkc.ModifierType) _state);
 
         var retval = context.process_key_event (key);
         foreach (var entry in IGNORE_KEYS) {
-            if (entry.keyval == keyval && entry.modifiers == modifiers) {
+            if (entry.keyval == keyval && entry.modifiers == key.modifiers) {
                 return true;
             }
         }

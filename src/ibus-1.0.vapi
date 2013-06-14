@@ -435,7 +435,7 @@ namespace IBus {
 		public uint type;
 		public bool visible;
 		[CCode (has_construct_function = false)]
-		public Property (string key, IBus.PropType type, IBus.Text label, string icon, IBus.Text tooltip, bool sensitive, bool visible, IBus.PropState state, IBus.PropList prop_list);
+		public Property (string key, IBus.PropType type, IBus.Text? label, string? icon, IBus.Text? tooltip, bool sensitive, bool visible, IBus.PropState state, IBus.PropList? prop_list);
 		public unowned string get_icon ();
 		public unowned string get_key ();
 		public unowned IBus.Text get_label ();
