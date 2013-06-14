@@ -31,13 +31,14 @@ libutil_la_VALAFLAGS =				\
 	$(VALAFLAGS)
 libutil_la_SOURCES =				\
 	preferences.vala			\
-	plist.vala
+	plist.vala				\
+	$(NULL)
 libutil_la_CFLAGS =				\
 	$(COMMON_CFLAGS)
 libutil_la_LIBADD =				\
 	$(COMMON_LIBS)
 
-BUILT_SOURCES = ibus-kkc.vapi
+BUILT_SOURCES = ibus-kkc.vapi ibus-kkc-resources.c
 
 # force include config.h before gi18n.h.
 AM_CPPFLAGS = -include $(CONFIG_HEADER)
@@ -76,7 +77,8 @@ ibus_engine_kkc_LDADD =				\
 	libutil.la
 
 ibus_engine_kkc_SOURCES =			\
-	engine.vala
+	engine.vala				\
+	$(NULL)
 
 ibus_setup_kkc_VALAFLAGS =			\
 	--vapidir=.				\
@@ -96,7 +98,8 @@ ibus_setup_kkc_LDADD =				\
 
 ibus_setup_kkc_SOURCES =			\
 	setup.vala				\
-	ibus-kkc-resources.c
+	ibus-kkc-resources.c			\
+	$(NULL)
 
 ibus-kkc-resources.c: ibus-kkc.gresource.xml ibus-kkc-preferences.ui
 	$(AM_V_GEN) $(GLIB_COMPILE_RESOURCES) $(srcdir)/ibus-kkc.gresource.xml \
@@ -138,7 +141,7 @@ GITIGNOREFILES =				\
         $(NULL)
 
 CLEANFILES =					\
-	ibus-kkc.vapi				\
+	ibus-kkc-resources.c			\
 	$(desktop_DATA)				\
 	$(desktop_in_files)			\
 	kkc.xml.in				\
@@ -147,6 +150,7 @@ CLEANFILES =					\
 
 EXTRA_DIST =					\
 	config.vapi				\
+	ibus-kkc.vapi				\
 	ibus-kkc.deps				\
 	ibus-1.0.vapi				\
 	ibus-1.0.deps				\
@@ -158,6 +162,10 @@ EXTRA_DIST =					\
 
 DISTCLEANFILES =				\
 	ibus-kkc-preferences.ui			\
+	$(NULL)
+
+MAINTAINERCLEANFILES =				\
+	ibus-kkc.vapi				\
 	$(NULL)
 
 -include $(top_srcdir)/git.mk
