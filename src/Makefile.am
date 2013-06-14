@@ -95,10 +95,13 @@ ibus_setup_kkc_LDADD =				\
 	libutil.la
 
 ibus_setup_kkc_SOURCES =			\
-	setup.vala
+	setup.vala				\
+	ibus-kkc-resources.c
 
-setupdir = $(pkgdatadir)/setup
-setup_DATA = ibus-kkc-preferences.ui
+ibus-kkc-resources.c: ibus-kkc.gresource.xml ibus-kkc-preferences.ui
+	$(AM_V_GEN) $(GLIB_COMPILE_RESOURCES) $(srcdir)/ibus-kkc.gresource.xml \
+		--target=$@ --sourcedir=$(srcdir) --c-name ibus_kkc \
+		--generate-source
 
 edit = sed \
 	-e 's|@VERSION[@]|$(VERSION)|g' \
@@ -150,6 +153,7 @@ EXTRA_DIST =					\
 	ibus-kkc-preferences.ui.in		\
 	$(desktop_in_in_files)			\
 	kkc.xml.in.in				\
+	ibus-kkc.gresource.xml			\
 	$(NULL)
 
 DISTCLEANFILES =				\

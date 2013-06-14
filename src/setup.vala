@@ -57,12 +57,11 @@ class Setup : Object {
 
         var builder = new Gtk.Builder ();
         builder.set_translation_domain ("ibus-kkc");
-        var ui_filename = Path.build_filename (Config.SETUPDIR,
-                                            "ibus-kkc-preferences.ui");
         try {
-            builder.add_from_file (ui_filename);
+            builder.add_from_resource (
+                "/org/freedesktop/ibus/engine/kkc/ibus-kkc-preferences.ui");
         } catch (GLib.Error e) {
-            error ("can't load %s: %s", ui_filename, e.message);
+            error ("can't load resource: %s", e.message);
         }
 
         // map widgets defined in ibus-kkc-preferences.ui

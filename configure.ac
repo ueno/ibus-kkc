@@ -103,6 +103,10 @@ AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [Define to the read-only architecture-independent data directory.])
 AM_GLIB_GNU_GETTEXT
 
+# check glib-compile-resources
+GLIB_COMPILE_RESOURCES=`$PKG_CONFIG --variable glib_compile_resources gio-2.0`
+AC_SUBST(GLIB_COMPILE_RESOURCES)
+
 # OUTPUT files
 AC_CONFIG_FILES([ po/Makefile.in
 Makefile
