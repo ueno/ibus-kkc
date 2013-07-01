@@ -373,6 +373,9 @@ class Setup : Object {
                     warning ("can't write shortcut: %s", e.message);
                 }
                 model.set (iter, 1, new_event, -1);
+
+                // Notify engine that the typing rule has been modified.
+                typing_rule_combobox.changed ();
             }
         }
     }
