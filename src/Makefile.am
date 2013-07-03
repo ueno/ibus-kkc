@@ -103,7 +103,7 @@ ibus_setup_kkc_SOURCES =			\
 
 ibus-kkc-resources.c: ibus-kkc.gresource.xml ibus-kkc-preferences.ui
 	$(AM_V_GEN) $(GLIB_COMPILE_RESOURCES) $(srcdir)/ibus-kkc.gresource.xml \
-		--target=$@ --sourcedir=$(srcdir) --c-name ibus_kkc \
+		--target=$@ --sourcedir=$(builddir) --c-name ibus_kkc \
 		--generate-source
 
 edit = sed \
