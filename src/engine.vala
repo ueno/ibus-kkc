@@ -626,7 +626,6 @@ class KkcEngine : IBus.Engine {
         }
 
         var bus = new IBus.Bus ();
-
         if (!bus.is_connected ()) {
             stderr.printf ("cannot connect to ibus-daemon!\n");
             return 1;
@@ -635,6 +634,11 @@ class KkcEngine : IBus.Engine {
         bus.disconnected.connect (() => { IBus.quit (); });
 
         var config = bus.get_config ();
+        if (config == null) {
+            stderr.printf ("ibus-config component is not running!\n");
+            return 1;
+        }
+
         KkcEngine.preferences = new Preferences (config);
         KkcEngine.dictionaries = new ArrayList<Kkc.Dictionary> ();
         KkcEngine.reload_dictionaries ();

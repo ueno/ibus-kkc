@@ -811,7 +811,17 @@ class Setup : Object {
         Kkc.init ();
 
         var bus = new IBus.Bus ();
+        if (!bus.is_connected ()) {
+            stderr.printf ("cannot connect to ibus-daemon!\n");
+            return 1;
+        }
+
         var config = bus.get_config ();
+        if (config == null) {
+            stderr.printf ("ibus-config component is not running!\n");
+            return 1;
+        }
+
         var setup = new Setup (new Preferences (config));
 
         setup.run ();
