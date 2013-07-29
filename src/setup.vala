@@ -806,9 +806,13 @@ class Setup : Object {
     }
 
     public static int main (string[] args) {
-        Gtk.init (ref args);
         IBus.init ();
         Kkc.init ();
+        Gtk.init (ref args);
+
+        Intl.bindtextdomain (Config.GETTEXT_PACKAGE, Config.LOCALEDIR);
+        Intl.bind_textdomain_codeset (Config.GETTEXT_PACKAGE, "UTF-8");
+        Intl.textdomain (Config.GETTEXT_PACKAGE);
 
         var bus = new IBus.Bus ();
         if (!bus.is_connected ()) {
