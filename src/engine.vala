@@ -32,8 +32,10 @@ class KkcEngine : IBus.Engine {
     uint page_start;
     bool lookup_table_visible;
 
+    bool use_custom_keymap;
     bool show_annotation;
 
+    IBus.Keymap keymap;
     IBus.Property input_mode_prop;
     IBus.PropList prop_list;
 
@@ -145,10 +147,6 @@ class KkcEngine : IBus.Engine {
                         context.dictionaries.add (dictionary);
                     }
                 }
-            });
-
-        preferences.value_changed.connect ((name, value) => {
-                apply_preferences ();
             });
 
         context.notify["input"].connect (() => {
@@ -398,6 +396,14 @@ class KkcEngine : IBus.Engine {
             warning ("can't load typing rule %s: %s",
                      variant.get_string (), e.message);
         }
+
+        variant = preferences.get ("use_custom_keymap");
+        assert (variant != null);
+        use_custom_keymap = variant.get_boolean ();
+
+        variant = preferences.get ("keymap");
+        assert (variant != null);
+        keymap = IBus.Keymap.get (variant.get_string ());
     }
 
     IBus.Property register_input_mode_property (Kkc.InputMode mode,
@@ -486,6 +492,9 @@ class KkcEngine : IBus.Engine {
                                             uint keycode,
                                             uint state)
     {
+        if (use_custom_keymap)
+            keyval = keymap.lookup_keysym ((uint16) keycode, (uint32) state);
+
         // Filter out unnecessary modifier bits
         // FIXME: should resolve virtual modifiers
         uint _state = state & (IBus.ModifierType.SHIFT_MASK |

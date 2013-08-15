@@ -25,6 +25,8 @@ class Setup : Object {
     Gtk.TreeView dictionaries_treeview;
     Gtk.ComboBox punctuation_style_combobox;
     Gtk.CheckButton auto_correct_checkbutton;
+    Gtk.CheckButton use_custom_keymap_checkbutton;
+    Gtk.ComboBox keymap_combobox;
     Gtk.SpinButton page_size_spinbutton;
     Gtk.SpinButton pagination_start_spinbutton;
     Gtk.CheckButton show_annotation_checkbutton;
@@ -82,6 +84,14 @@ class Setup : Object {
         object = builder.get_object ("auto_correct_checkbutton");
         assert (object != null);
         auto_correct_checkbutton = (Gtk.CheckButton) object;
+
+        object = builder.get_object ("use_custom_keymap_checkbutton");
+        assert (object != null);
+        use_custom_keymap_checkbutton = (Gtk.CheckButton) object;
+
+        object = builder.get_object ("keymap_combobox");
+        assert (object != null);
+        keymap_combobox = (Gtk.ComboBox) object;
 
         object = builder.get_object ("page_size_spinbutton");
         assert (object != null);
@@ -279,6 +289,10 @@ class Setup : Object {
         renderer = new Gtk.CellRendererText ();
         typing_rule_combobox.pack_start (renderer, false);
         typing_rule_combobox.set_attributes (renderer, "text", 1);
+
+        renderer = new Gtk.CellRendererText ();
+        keymap_combobox.pack_start (renderer, false);
+        keymap_combobox.set_attributes (renderer, "text", 1);
 
         load ();
 
@@ -685,6 +699,8 @@ class Setup : Object {
         load_combobox ("initial_input_mode", initial_input_mode_combobox, 1);
         load_combobox ("punctuation_style", punctuation_style_combobox, 1);
         load_togglebutton ("auto_correct", auto_correct_checkbutton);
+        load_togglebutton ("use_custom_keymap", use_custom_keymap_checkbutton);
+        load_combobox_string ("keymap", keymap_combobox, 0);
 
         load_spinbutton ("page_size", page_size_spinbutton);
         load_spinbutton ("pagination_start", pagination_start_spinbutton);

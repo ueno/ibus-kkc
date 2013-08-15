@@ -80,6 +80,10 @@ public class Preferences : Object {
                       new Variant.boolean (false));
         _default.set ("typing_rule",
                       new Variant.string ("default"));
+        _default.set ("use_custom_keymap",
+                      new Variant.boolean (false));
+        _default.set ("keymap",
+                      new Variant.string ("jp"));
 
         this.config = config;
         load ();
