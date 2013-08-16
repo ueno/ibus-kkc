@@ -294,6 +294,11 @@ class Setup : Object {
         keymap_combobox.pack_start (renderer, false);
         keymap_combobox.set_attributes (renderer, "text", 1);
 
+        use_custom_keymap_checkbutton.toggled.connect (() => {
+                keymap_combobox.sensitive =
+                    use_custom_keymap_checkbutton.get_active ();
+            });
+
         load ();
 
         add_dict_button.clicked.connect (add_dict);
