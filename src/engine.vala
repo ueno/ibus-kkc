@@ -489,8 +489,10 @@ class KkcEngine : IBus.Engine {
                                             uint keycode,
                                             uint state)
     {
+        uint _keyval = keyval;
+
         if (use_custom_keymap)
-            keyval = keymap.lookup_keysym ((uint16) keycode, (uint32) state);
+            _keyval = keymap.lookup_keysym ((uint16) keycode, (uint32) state);
 
         // Filter out unnecessary modifier bits
         // FIXME: should resolve virtual modifiers
@@ -500,20 +502,35 @@ class KkcEngine : IBus.Engine {
                                IBus.ModifierType.MOD5_MASK |
                                IBus.ModifierType.RELEASE_MASK);
         if (context.candidates.page_visible &&
-            process_lookup_table_key_event (keyval, keycode, _state)) {
+            process_lookup_table_key_event (_keyval, keycode, _state)) {
             return true;
         }
 
-        var key = new Kkc.KeyEvent.from_x_event (keyval,
+        var key = new Kkc.KeyEvent.from_x_event (_keyval,
                                                  keycode,
                                                  (Kkc.ModifierType) _state);
 
         var retval = context.process_key_event (key);
         foreach (var entry in IGNORE_KEYS) {
-            if (entry.keyval == keyval && entry.modifiers == key.modifiers) {
+            if (entry.keyval == _keyval && entry.modifiers == key.modifiers) {
                 return true;
             }
         }
+
+        // Hack for the direct input mode: if the keyval is translated
+        // in the custom keymap and the new keyval is printable, send
+        // it as a text event.
+        if (!retval && use_custom_keymap &&
+            _keyval != keyval &&
+            0x20 <= _keyval && _keyval <= 0x7F &&
+            (state & IBus.ModifierType.RELEASE_MASK) == 0) {
+            var builder = new StringBuilder ();
+            builder.append_c ((char) _keyval);
+            var text = new IBus.Text.from_string (builder.str);
+            commit_text (text);
+            return true;
+        }
+
         return retval;
     }
 
