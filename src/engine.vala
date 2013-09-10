@@ -27,6 +27,10 @@ class KkcEngine : IBus.Engine {
     // maintained in the per-class signal handler in main().
     static ArrayList<Kkc.Dictionary> dictionaries;
 
+    // Language model is shared among KkcEngine instances and
+    // maintained in the per-class signal handler in main().
+    static Kkc.LanguageModel language_model;
+
     Kkc.Context context;
     IBus.LookupTable lookup_table;
     uint page_start;
@@ -123,15 +127,8 @@ class KkcEngine : IBus.Engine {
             null);
         prop_list.append (prop);
 
-        // Initialize libkkc
-        Kkc.LanguageModel model;
-        try {
-            model = Kkc.LanguageModel.load ("sorted3");
-        } catch (Error e) {
-            warning ("can't load language model: %s\n", e.message);
-        }
-
-        context = new Kkc.Context (model);
+        // Initialize the context of libkkc.
+        context = new Kkc.Context (language_model);
 
         foreach (var dictionary in dictionaries) {
             context.dictionaries.add (dictionary);
@@ -645,6 +642,13 @@ class KkcEngine : IBus.Engine {
         var config = bus.get_config ();
         if (config == null) {
             stderr.printf ("ibus-config component is not running!\n");
+            return 1;
+        }
+
+        try {
+            KkcEngine.language_model = Kkc.LanguageModel.load ("sorted3");
+        } catch (Error e) {
+            stderr.printf ("can't load language model: %s\n", e.message);
             return 1;
         }
 
