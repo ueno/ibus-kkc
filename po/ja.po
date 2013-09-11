@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus-kkc 1.2.0.20091108\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-08-15 11:48+0200\n"
-"PO-Revision-Date: 2013-08-15 11:49+0200\n"
+"POT-Creation-Date: 2013-09-11 16:34+0900\n"
+"PO-Revision-Date: 2013-09-11 16:48+0900\n"
 "Last-Translator: Daiki Ueno <ueno@gnu.org>\n"
 "Language-Team: Japanese\n"
 "Language: \n"
@@ -18,67 +18,68 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: ../src/engine.vala:67 ../src/ibus-kkc-preferences.ui.in.h:4
+#: ../src/engine.vala:71 ../src/ibus-kkc-preferences.ui.in.h:4
 msgid "Hiragana"
 msgstr "ひらがな"
 
-#: ../src/engine.vala:73 ../src/ibus-kkc-preferences.ui.in.h:9
+#: ../src/engine.vala:77 ../src/ibus-kkc-preferences.ui.in.h:9
 msgid "Katakana"
 msgstr "カタカナ"
 
-#: ../src/engine.vala:79 ../src/ibus-kkc-preferences.ui.in.h:10
+#: ../src/engine.vala:83 ../src/ibus-kkc-preferences.ui.in.h:10
 msgid "Halfwidth Katakana"
 msgstr "半角カタカナ"
 
-#: ../src/engine.vala:85 ../src/ibus-kkc-preferences.ui.in.h:5
+#: ../src/engine.vala:89 ../src/ibus-kkc-preferences.ui.in.h:5
 msgid "Latin"
 msgstr "英数"
 
-#: ../src/engine.vala:91 ../src/ibus-kkc-preferences.ui.in.h:11
+#: ../src/engine.vala:95 ../src/ibus-kkc-preferences.ui.in.h:11
 msgid "Wide Latin"
 msgstr "全角英数"
 
-#: ../src/engine.vala:97
+#: ../src/engine.vala:101
 msgid "Direct Input"
 msgstr "直接入力"
 
-#: ../src/engine.vala:106
+#: ../src/engine.vala:110
 msgid "Switch input mode"
 msgstr "入力モードを変更"
 
-#: ../src/engine.vala:117
+#: ../src/engine.vala:121
 msgid "Setup"
 msgstr "設定"
 
-#: ../src/engine.vala:119
+#: ../src/engine.vala:123
 msgid "Configure KKC"
 msgstr "KKC を設定"
 
-#: ../src/engine.vala:307
+#: ../src/engine.vala:304
 #, c-format
 msgid "Input Mode (%s)"
 msgstr "入力モード (%s)"
 
-#: ../src/engine.vala:615
+#: ../src/engine.vala:629
 msgid "Component is executed by IBus"
 msgstr "IBus からコンポーネントを起動"
 
-#: ../src/engine.vala:667 ../src/kkc.xml.in.in.h:1
+#: ../src/engine.vala:688 ../src/kkc.xml.in.in.h:1
 msgid "Kana Kanji"
 msgstr "かな漢字"
 
-#: ../src/setup.vala:368
+#: ../src/setup.vala:313
 #, c-format
 msgid "Shortcut '%s' is already assigned to '%s'"
 msgstr "ショートカット '%s' は既に '%s' に割り当てられています"
 
-#: ../src/setup.vala:769
-msgid "system"
-msgstr "システム"
+#: ../src/setup.vala:747
+#, c-format
+msgid "File: %s"
+msgstr "ファイル: %s"
 
-#: ../src/setup.vala:771
-msgid "user"
-msgstr "ユーザ"
+#: ../src/setup.vala:750
+msgid "User dictionary"
+msgstr "ユーザ辞書"
 
 #: ../src/ibus-kkc-preferences.ui.in.h:1
 msgid "System"
@@ -203,6 +204,34 @@ msgstr "情報"
 #: ../src/ibus-kkc-preferences.ui.in.h:35
 msgid "Command:"
 msgstr "コマンド:"
+
+#: ../src/ibus-kkc-dictionaries.json.in:4
+msgid "Standard dictionary (SKK, large size)"
+msgstr "標準辞書 (SKK, サイズ大)"
+
+#: ../src/ibus-kkc-dictionaries.json.in:8
+msgid "Standard dictionary (SKK, medium size)"
+msgstr "標準辞書 (SKK, サイズ中)"
+
+#: ../src/ibus-kkc-dictionaries.json.in:12
+msgid "Standard dictionary (SKK, small size)"
+msgstr "標準辞書 (SKK, サイズ小)"
+
+#: ../src/ibus-kkc-dictionaries.json.in:16
+msgid "Alternative dictionary for zipcodes"
+msgstr "補助辞書 (郵便番号)"
+
+#: ../src/ibus-kkc-dictionaries.json.in:20
+msgid "Alternative dictionary for station names"
+msgstr "補助辞書 (駅名)"
+
+#: ../src/ibus-kkc-dictionaries.json.in:24
+msgid "Alternative dictionary for Okinawa dialect"
+msgstr "補助辞書 (沖縄方言)"
+
+#: ../src/ibus-kkc-dictionaries.json.in:28
+msgid "Alternative dictionary for biographical names"
+msgstr "補助辞書 (人名)"
 
 #: ../src/ibus-setup-kkc.desktop.in.in.h:1
 msgid "IBus Kana Kanji Engine Setup"
