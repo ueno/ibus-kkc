@@ -1,0 +1,30 @@
+[
+    {
+        "filename": "SKK-JISYO.L",
+        "description": _("Standard dictionary (SKK, large size)")
+    },
+    {
+        "filename": "SKK-JISYO.M",
+        "description": _("Standard dictionary (SKK, medium size)")
+    },
+    {
+        "filename": "SKK-JISYO.S",
+        "description": _("Standard dictionary (SKK, small size)")
+    },
+    {
+        "filename": "SKK-JISYO.zipcode",
+        "description": _("Alternative dictionary for zipcodes")
+    },
+    {
+        "filename": "SKK-JISYO.station",
+        "description": _("Alternative dictionary for station names")
+    },
+    {
+        "filename": "SKK-JISYO.okinawa",
+        "description": _("Alternative dictionary for Okinawa dialect")
+    },
+    {
+        "filename": "SKK-JISYO.jinmei",
+        "description": _("Alternative dictionary for biographical names")
+    }
+]

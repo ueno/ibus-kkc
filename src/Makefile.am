@@ -101,7 +101,16 @@ ibus_setup_kkc_SOURCES =			\
 	ibus-kkc-resources.c			\
 	$(NULL)
 
-ibus-kkc-resources.c: ibus-kkc.gresource.xml ibus-kkc-preferences.ui
+SUFFIXES = .json .json.in
+
+.json.in.json:
+	$(AM_V_GEN) rm -f $@ $@.tmp; \
+	srcdir=''; \
+	  test -f ./$< || srcdir=$(srcdir)/; \
+	  sed -e 's!\(^ *"[^"]*": *\)_(\("[^"]*"\))!\1\2!g' $${srcdir}$< >$@.tmp; \
+	mv $@.tmp $@
+
+ibus-kkc-resources.c: ibus-kkc.gresource.xml ibus-kkc-preferences.ui ibus-kkc-dictionaries.json
 	$(AM_V_GEN) $(GLIB_COMPILE_RESOURCES) $(srcdir)/ibus-kkc.gresource.xml \
 		--target=$@ --sourcedir=$(builddir) --c-name ibus_kkc \
 		--generate-source
@@ -155,6 +164,7 @@ EXTRA_DIST =					\
 	ibus-1.0.vapi				\
 	ibus-1.0.deps				\
 	ibus-kkc-preferences.ui.in		\
+	ibus-kkc-dictionaries.json.in		\
 	$(desktop_in_in_files)			\
 	kkc.xml.in.in				\
 	ibus-kkc.gresource.xml			\

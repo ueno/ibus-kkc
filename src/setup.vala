@@ -37,15 +37,6 @@ class Setup : Object {
     Gtk.ToolButton add_shortcut_toolbutton;
     Gtk.ToolButton remove_shortcut_toolbutton;
 
-    // dict dialog
-    Gtk.Dialog dict_dialog;
-    Gtk.ComboBox dict_type_combobox;
-    Gtk.HBox dict_data_hbox;
-    Gtk.Widget dict_data_widget;
-    Gtk.FileChooserButton dict_filechooserbutton;
-    Gtk.Entry dict_entry;
-    Gtk.SpinButton dict_spinbutton;
-
     // shortcut dialog
     Gtk.Dialog shortcut_dialog;
     Gtk.ComboBox shortcut_command_combobox;
@@ -129,18 +120,6 @@ class Setup : Object {
         assert (object != null);
         Gtk.Button down_dict_button = (Gtk.Button) object;
 
-        object = builder.get_object ("dict_dialog");
-        assert (object != null);
-        dict_dialog = (Gtk.Dialog) object;
-
-        object = builder.get_object ("dict_type_combobox");
-        assert (object != null);
-        dict_type_combobox = (Gtk.ComboBox) object;
-
-        object = builder.get_object ("dict_data_hbox");
-        assert (object != null);
-        dict_data_hbox = (Gtk.HBox) object;
-
         object = builder.get_object ("input_mode_treeview");
         assert (object != null);
         input_mode_treeview = (Gtk.TreeView) object;
@@ -165,12 +144,6 @@ class Setup : Object {
         assert (object != null);
         shortcut_command_combobox = (Gtk.ComboBox) object;
 
-        dict_filechooserbutton = new Gtk.FileChooserButton (
-            "dictionary file",
-            Gtk.FileChooserAction.OPEN);
-        dict_entry = new Gtk.Entry ();
-        dict_spinbutton = new Gtk.SpinButton.with_range (0, 65535, 1);
-
         page_size_spinbutton.set_range (7.0, 16.0);
         page_size_spinbutton.set_increments (1.0, 1.0);
 
@@ -184,13 +157,8 @@ class Setup : Object {
         model = new Gtk.ListStore (1, typeof (PList));
         dictionaries_treeview.set_model (model);
 
-        renderer = new TypeCellRenderer ();
-        column = new Gtk.TreeViewColumn.with_attributes ("type", renderer,
-                                                         "plist", 0);
-        dictionaries_treeview.append_column (column);
-
-        renderer = new DescCellRenderer ();
-        column = new Gtk.TreeViewColumn.with_attributes ("desc", renderer,
+        renderer = new DictCellRenderer ();
+        column = new Gtk.TreeViewColumn.with_attributes ("dict", renderer,
                                                          "plist", 0);
         dictionaries_treeview.append_column (column);
 
@@ -201,10 +169,6 @@ class Setup : Object {
         renderer = new Gtk.CellRendererText ();
         initial_input_mode_combobox.pack_start (renderer, false);
         initial_input_mode_combobox.set_attributes (renderer, "text", 0);
-
-        renderer = new Gtk.CellRendererText ();
-        dict_type_combobox.pack_start (renderer, false);
-        dict_type_combobox.set_attributes (renderer, "text", 0);
 
         renderer = new Gtk.CellRendererText ();
         column = new Gtk.TreeViewColumn.with_attributes ("Mode",
@@ -319,30 +283,6 @@ class Setup : Object {
                     down_dict_button.sensitive = false;
                 }
             });
-
-        dict_type_combobox.changed.connect (() => {
-                if (dict_data_widget != null) {
-                    dict_data_hbox.remove (dict_data_widget);
-                }
-                string text = combobox_get_active_string (dict_type_combobox, 1);
-                if (text == "System") {
-                    dict_filechooserbutton.set_current_folder (
-                        Path.build_filename (Config.DATADIR, "kkc"));
-                    dict_data_widget = dict_filechooserbutton;
-                } else if (text == "User") {
-                    dict_filechooserbutton.set_current_folder (
-                        Environment.get_home_dir ());
-                    dict_data_widget = dict_filechooserbutton;
-                } else {
-                    warning ("unknown dictionary type: %s",
-                             text);
-                    assert_not_reached ();
-                }
-                dict_data_hbox.add (dict_data_widget);
-                dict_data_hbox.show_all ();
-                dict_data_hbox.sensitive = true;
-            });
-        dict_type_combobox.active = 0;
     }
 
     void accel_edited (string path_string,
@@ -522,35 +462,23 @@ class Setup : Object {
     }
 
     void add_dict () {
+        var dict_dialog = new Gtk.FileChooserDialog (
+            "Add dictionary",
+            dialog,
+            Gtk.FileChooserAction.OPEN,
+            Gtk.Stock.CANCEL, Gtk.ResponseType.CANCEL,
+            Gtk.Stock.OPEN, Gtk.ResponseType.ACCEPT);
         if (dict_dialog.run () == Gtk.ResponseType.OK) {
             PList? plist = null;
-            string text = combobox_get_active_string (dict_type_combobox, 1);
-            if (text == "System") {
-                string? file = dict_filechooserbutton.get_filename ();
-                if (file != null) {
-                    try {
-                        plist = new PList (
-                            "type=file,file=%s,mode=readonly".printf (
-                                PList.escape (file)));
-                    } catch (PListParseError e) {
-                        assert_not_reached ();
-                    }
+            string? file = dict_dialog.get_filename ();
+            if (file != null) {
+                try {
+                    plist = new PList (
+                        "type=file,file=%s,mode=readonly".printf (
+                            PList.escape (file)));
+                } catch (PListParseError e) {
+                    assert_not_reached ();
                 }
-            }
-            else if (text == "User") {
-                string? file = dict_filechooserbutton.get_filename ();
-                if (file != null) {
-                    try {
-                        plist = new PList (
-                            "type=file,file=%s,mode=readwrite".printf (
-                                PList.escape (file)));
-                    } catch (PListParseError e) {
-                        assert_not_reached ();
-                    }
-                }
-            }
-            else {
-                assert_not_reached ();
             }
 
             if (plist != null) {
@@ -582,7 +510,11 @@ class Setup : Object {
         foreach (var row in rows) {
             Gtk.TreeIter iter;
             if (model.get_iter (out iter, row)) {
-                ((Gtk.ListStore)model).remove (iter);
+                PList _plist;
+                model.get (iter, 0, out _plist, -1);
+                var mode = _plist.get ("mode") ?? "readonly";
+                if (mode == "readonly")
+                    ((Gtk.ListStore)model).remove (iter);
             }
         }
         save_dictionaries ("dictionaries");
@@ -759,7 +691,42 @@ class Setup : Object {
         dialog.run ();
     }
 
-    class TypeCellRenderer : Gtk.CellRendererText {
+    class DictCellRenderer : Gtk.CellRendererText {
+        Map<string,string> metadata = new HashMap<string,string> ();
+
+        construct {
+            Json.Parser parser = new Json.Parser ();
+            try {
+                var stream = resources_open_stream (
+                    "/org/freedesktop/ibus/engine/kkc/ibus-kkc-dictionaries.json",
+                    ResourceLookupFlags.NONE);
+                if (!parser.load_from_stream (stream))
+                    assert_not_reached ();
+            } catch (GLib.Error e) {
+                assert_not_reached ();
+            }
+
+            var root = parser.get_root ();
+
+            assert (root.get_node_type () == Json.NodeType.ARRAY);
+            var array = root.get_array ();
+
+            for (var i = 0; i < array.get_length (); i++) {
+                var node = array.get_element (i);
+
+                assert (node.get_node_type () == Json.NodeType.OBJECT);
+                var object = node.get_object ();
+
+                assert (object.has_member ("filename"));
+                var filename = object.get_string_member ("filename");
+
+                assert (object.has_member ("description"));
+                var description = object.get_string_member ("description");
+
+                metadata.set (filename, description);
+            }
+        }
+
         private PList _plist;
         public PList plist {
             get {
@@ -770,26 +737,17 @@ class Setup : Object {
                 var type = _plist.get ("type");
                 if (type == "file") {
                     var mode = _plist.get ("mode") ?? "readonly";
-                    if (mode == "readonly")
-                        text = _("system");
+                    if (mode == "readonly") {
+                        var filename = _plist.get ("file");
+                        var description = metadata.get (
+                            Path.get_basename (filename));
+                        if (description != null)
+                            text = dgettext (null, description);
+                        else
+                            text = _("File: %s").printf (filename);
+                    }
                     else
-                        text = _("user");
-                }
-            }
-        }
-    }
-
-    class DescCellRenderer : Gtk.CellRendererText {
-        private PList _plist;
-        public PList plist {
-            get {
-                return _plist;
-            }
-            set {
-                _plist = value;
-                var type = _plist.get ("type");
-                if (type == "file") {
-                    text = _plist.get ("file");
+                        text = _("User dictionary");
                 }
             }
         }

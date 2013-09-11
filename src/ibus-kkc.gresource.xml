@@ -2,5 +2,6 @@
 <gresources>
   <gresource prefix="/org/freedesktop/ibus/engine/kkc">
     <file compressed="true">ibus-kkc-preferences.ui</file>
+    <file compressed="true">ibus-kkc-dictionaries.json</file>
   </gresource>
 </gresources>
