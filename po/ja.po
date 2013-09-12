@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus-kkc 1.2.0.20091108\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-09-12 17:34+0900\n"
-"PO-Revision-Date: 2013-09-12 17:36+0900\n"
+"POT-Creation-Date: 2013-09-12 17:55+0900\n"
+"PO-Revision-Date: 2013-09-12 17:56+0900\n"
 "Last-Translator: Daiki Ueno <ueno@gnu.org>\n"
 "Language-Team: Japanese\n"
 "Language: \n"
@@ -18,23 +18,23 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: ../src/engine.vala:71 ../src/ibus-kkc-preferences.ui.in.h:27
+#: ../src/engine.vala:71 ../src/ibus-kkc-preferences.ui.in.h:28
 msgid "Hiragana"
 msgstr "ひらがな"
 
-#: ../src/engine.vala:77 ../src/ibus-kkc-preferences.ui.in.h:30
+#: ../src/engine.vala:77 ../src/ibus-kkc-preferences.ui.in.h:31
 msgid "Katakana"
 msgstr "カタカナ"
 
-#: ../src/engine.vala:83 ../src/ibus-kkc-preferences.ui.in.h:31
+#: ../src/engine.vala:83 ../src/ibus-kkc-preferences.ui.in.h:32
 msgid "Halfwidth Katakana"
 msgstr "半角カタカナ"
 
-#: ../src/engine.vala:89 ../src/ibus-kkc-preferences.ui.in.h:28
+#: ../src/engine.vala:89 ../src/ibus-kkc-preferences.ui.in.h:29
 msgid "Latin"
 msgstr "英数"
 
-#: ../src/engine.vala:95 ../src/ibus-kkc-preferences.ui.in.h:32
+#: ../src/engine.vala:95 ../src/ibus-kkc-preferences.ui.in.h:33
 msgid "Wide Latin"
 msgstr "全角英数"
 
@@ -161,42 +161,46 @@ msgid "Dictionaries"
 msgstr "辞書"
 
 #: ../src/ibus-kkc-preferences.ui.in.h:22
+msgid "<big><b>IBus Kana Kanji</b></big>"
+msgstr "<big><b>IBus かな漢字</b></big>"
+
+#: ../src/ibus-kkc-preferences.ui.in.h:23
 msgid "Kana-kanji input method for IBus"
 msgstr "IBus入力プラットフォーム用かな漢字変換エンジン"
 
-#: ../src/ibus-kkc-preferences.ui.in.h:23
+#: ../src/ibus-kkc-preferences.ui.in.h:24
 msgid "About"
 msgstr "情報"
 
-#: ../src/ibus-kkc-preferences.ui.in.h:24
+#: ../src/ibus-kkc-preferences.ui.in.h:25
 msgid "Add dictionary"
 msgstr "辞書を追加"
 
-#: ../src/ibus-kkc-preferences.ui.in.h:25
+#: ../src/ibus-kkc-preferences.ui.in.h:26
 msgid "System"
 msgstr "システム"
 
-#: ../src/ibus-kkc-preferences.ui.in.h:26
+#: ../src/ibus-kkc-preferences.ui.in.h:27
 msgid "User"
 msgstr "ユーザ"
 
-#: ../src/ibus-kkc-preferences.ui.in.h:29
+#: ../src/ibus-kkc-preferences.ui.in.h:30
 msgid "Direct input"
 msgstr "直接入力"
 
-#: ../src/ibus-kkc-preferences.ui.in.h:33
+#: ../src/ibus-kkc-preferences.ui.in.h:34
 msgid "Japanese"
 msgstr "日本語"
 
-#: ../src/ibus-kkc-preferences.ui.in.h:34
+#: ../src/ibus-kkc-preferences.ui.in.h:35
 msgid "English (US)"
 msgstr "英語 (US)"
 
-#: ../src/ibus-kkc-preferences.ui.in.h:35
+#: ../src/ibus-kkc-preferences.ui.in.h:36
 msgid "Add shortcut"
 msgstr "ショートカットを追加"
 
-#: ../src/ibus-kkc-preferences.ui.in.h:36
+#: ../src/ibus-kkc-preferences.ui.in.h:37
 msgid "Command:"
 msgstr "コマンド:"
 
