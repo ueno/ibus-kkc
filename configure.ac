@@ -120,7 +120,6 @@ AC_CONFIG_FILES([ po/Makefile.in
 Makefile
 ibus-kkc.spec
 src/Makefile
-src/ibus-kkc-preferences.ui
 icons/Makefile
 m4/Makefile
 ])

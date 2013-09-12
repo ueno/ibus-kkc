@@ -38,7 +38,7 @@ libutil_la_CFLAGS =				\
 libutil_la_LIBADD =				\
 	$(COMMON_LIBS)
 
-BUILT_SOURCES = ibus-kkc.vapi ibus-kkc-resources.c
+BUILT_SOURCES = ibus-kkc.vapi ibus-kkc-preferences.ui ibus-kkc-resources.c
 
 # force include config.h before gi18n.h.
 AM_CPPFLAGS = -include $(CONFIG_HEADER)
@@ -140,6 +140,9 @@ component_DATA = kkc.xml
 componentdir = $(datadir)/ibus/component
 
 kkc.xml.in: kkc.xml.in.in
+	$(AM_V_GEN) $(edit) $< > $@.tmp && mv $@.tmp $@
+
+ibus-kkc-preferences.ui: ibus-kkc-preferences.ui.in
 	$(AM_V_GEN) $(edit) $< > $@.tmp && mv $@.tmp $@
 
 @INTLTOOL_XML_NOMERGE_RULE@
