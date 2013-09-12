@@ -310,41 +310,24 @@ class KkcEngine : IBus.Engine {
         update_property (input_mode_prop);
     }
 
-    static Kkc.Dictionary? parse_dict_from_plist (PList plist) throws GLib.Error {
-        var encoding = plist.get ("encoding") ?? "EUC-JP";
-        var type = plist.get ("type");
-        if (type == "file") {
-            string? file = plist.get ("file");
-            if (file == null) {
-                return null;
-            }
-            string mode = plist.get ("mode") ?? "readonly";
-            if (mode == "readonly") {
-                return new Kkc.SystemSegmentDictionary (file, encoding);
-            } else if (mode == "readwrite")
-                return new Kkc.UserDictionary (file);
-        }
-        return null;
-    }
-
     static void reload_dictionaries () {
         KkcEngine.dictionaries.clear ();
-        Variant? variant = preferences.get ("dictionaries");
+        Variant? variant;
+
+        variant = preferences.get ("user_dictionary");
+        if (variant != null) {
+            KkcEngine.dictionaries.add (new Kkc.UserDictionary (
+                                            variant.get_string ()));
+        }
+
+        variant = preferences.get ("system_dictionaries");
         assert (variant != null);
         string[] strv = variant.dup_strv ();
-        foreach (var str in strv) {
-            try {
-                var plist = new PList (str);
-                Kkc.Dictionary? dict = parse_dict_from_plist (plist);
-                if (dict != null)
-                    dictionaries.add (dict);
-            } catch (PListParseError e) {
-                warning ("can't parse plist \"%s\": %s",
-                         str, e.message);
-            } catch (GLib.Error e) {
-                warning ("can't open dictionary \"%s\": %s",
-                         str, e.message);
-            }
+        foreach (var id in strv) {
+            var metadata = preferences.get_dictionary_metadata (id);
+            KkcEngine.dictionaries.add (
+                new Kkc.SystemSegmentDictionary (metadata.filename,
+                                                 metadata.encoding));
         }
     }
 

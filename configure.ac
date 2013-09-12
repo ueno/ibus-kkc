@@ -61,7 +61,7 @@ AC_SUBST(DATE_DISPLAY)
 # check ibus
 AC_ARG_WITH([ibus],
   [AS_HELP_STRING([--with-ibus],
-    [specify the IBus version to compile with @<:@default=auto@:>@])],
+    [IBus version to compile with @<:@default=auto@:>@])],
   [],
   [with_ibus=auto])
 
@@ -81,6 +81,14 @@ AS_CASE([$with_ibus],
   [AC_MSG_ERROR([invalid ibus version])])
 
 AM_CONDITIONAL([IBUS_1_5], [test x$with_ibus = x1.5])
+
+# check skkdic
+AC_ARG_WITH([skkdic],
+  [AS_HELP_STRING([--with-skkdic],
+    [location of skkdic @<:@default=DATAROOTDIR/skk@:>@])],
+  [],
+  [with_skkdic='${datarootdir}/skk'])
+AC_SUBST([skkdicdir], [$with_skkdic])
 
 # check libkkc
 PKG_CHECK_MODULES(LIBKKC, [kkc-1.0 >= 0.2.4], ,

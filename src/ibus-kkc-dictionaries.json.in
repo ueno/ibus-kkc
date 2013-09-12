@@ -1,30 +1,51 @@
 [
     {
-        "filename": "SKK-JISYO.L",
-        "description": _("Standard dictionary (SKK, large size)")
+        "id": "large",
+        "filename": "@skkdicdir@/SKK-JISYO.L",
+        "name": _("Standard (large)"),
+        "description": _("Standard dictionary (SKK, large size)"),
+        "default_enabled": true
     },
     {
-        "filename": "SKK-JISYO.M",
-        "description": _("Standard dictionary (SKK, medium size)")
+        "id": "medium",
+        "filename": "@skkdicdir@/SKK-JISYO.M",
+        "name": _("Standard (medium)"),
+        "description": _("Standard dictionary (SKK, medium size)"),
+        "default_enabled": false
     },
     {
-        "filename": "SKK-JISYO.S",
-        "description": _("Standard dictionary (SKK, small size)")
+        "id": "small",
+        "filename": "@skkdicdir@/SKK-JISYO.S",
+        "name": _("Standard (small)"),
+        "description": _("Standard dictionary (SKK, small size)"),
+        "default_enabled": false
     },
     {
-        "filename": "SKK-JISYO.zipcode",
-        "description": _("Alternative dictionary for zipcodes")
+        "id": "zipcode",
+        "filename": "@skkdicdir@/SKK-JISYO.zipcode",
+        "name": _("ZIP code"),
+        "description": _("Alternative dictionary for zipcodes"),
+        "default_enabled": true
     },
     {
-        "filename": "SKK-JISYO.station",
-        "description": _("Alternative dictionary for station names")
+        "id": "station",
+        "filename": "@skkdicdir@/SKK-JISYO.station",
+        "name": _("Station names"),
+        "description": _("Alternative dictionary for station names"),
+        "default_enabled": true
     },
     {
-        "filename": "SKK-JISYO.okinawa",
-        "description": _("Alternative dictionary for Okinawa dialect")
+        "id": "okinawa",
+        "filename": "@skkdicdir@/SKK-JISYO.okinawa",
+        "name": _("Okinawa dialect"),
+        "description": _("Alternative dictionary for Okinawa dialect"),
+        "default_enabled": false
     },
     {
-        "filename": "SKK-JISYO.jinmei",
-        "description": _("Alternative dictionary for biographical names")
+        "id": "jinmei",
+        "filename": "@skkdicdir@/SKK-JISYO.jinmei",
+        "name": _("Biographical"),
+        "description": _("Alternative dictionary for biographical names"),
+        "default_enabled": true
     }
 ]

@@ -31,7 +31,7 @@ libutil_la_VALAFLAGS =				\
 	$(VALAFLAGS)
 libutil_la_SOURCES =				\
 	preferences.vala			\
-	plist.vala				\
+	dictionary.vala				\
 	$(NULL)
 libutil_la_CFLAGS =				\
 	$(COMMON_CFLAGS)
@@ -78,6 +78,7 @@ ibus_engine_kkc_LDADD =				\
 
 ibus_engine_kkc_SOURCES =			\
 	engine.vala				\
+	ibus-kkc-resources.c			\
 	$(NULL)
 
 ibus_setup_kkc_VALAFLAGS =			\
@@ -103,11 +104,15 @@ ibus_setup_kkc_SOURCES =			\
 
 SUFFIXES = .json .json.in
 
+json_edit = sed \
+	-e 's|\(^ *"[^"]*": *\)_(\("[^"]*"\))|\1\2|g' \
+	-e 's|@skkdicdir[@]|$(skkdicdir)|g'
+
 .json.in.json:
 	$(AM_V_GEN) rm -f $@ $@.tmp; \
 	srcdir=''; \
 	  test -f ./$< || srcdir=$(srcdir)/; \
-	  sed -e 's!\(^ *"[^"]*": *\)_(\("[^"]*"\))!\1\2!g' $${srcdir}$< >$@.tmp; \
+	  $(json_edit) $${srcdir}$< >$@.tmp; \
 	mv $@.tmp $@
 
 ibus-kkc-resources.c: ibus-kkc.gresource.xml ibus-kkc-preferences.ui ibus-kkc-dictionaries.json

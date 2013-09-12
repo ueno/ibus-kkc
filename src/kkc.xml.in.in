@@ -7,7 +7,7 @@
 	<version>@VERSION@</version>
 	<author>Daiki Ueno &lt;ueno@gnu.org&gt;</author>
 	<license>GPL</license>
-	<homepage>http://code.google.com/p/ibus</homepage>
+	<homepage>https://bitbucket.org/libkkc/libkkc/</homepage>
 	<textdomain>ibus-kkc</textdomain>
 
 	<!-- for static engines -->

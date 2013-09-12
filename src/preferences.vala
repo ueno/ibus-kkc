@@ -21,6 +21,7 @@ using Gee;
 
 public class Preferences : Object {
     IBus.Config config;
+    DictionaryRegistry registry;
 
     Map<string,Variant> _default = new HashMap<string,Variant> ();
     Map<string,Variant> current = new HashMap<string,Variant> ();
@@ -37,6 +38,14 @@ public class Preferences : Object {
                 current.set (name, value);
             }
         }
+    }
+
+    public DictionaryMetadata[] list_available_dictionaries () {
+        return registry.list_available ();
+    }
+
+    public DictionaryMetadata get_dictionary_metadata (string id) {
+        return registry.get_metadata (id);
     }
 
     public new Variant? @get (string name) {
@@ -56,18 +65,23 @@ public class Preferences : Object {
     }
 
     public Preferences (IBus.Config config) {
-        var user_dictionary =
-            "type=file,file=%s/ibus-kkc/dictionary,mode=readwrite".printf (
-                Environment.get_user_config_dir ());
-        _default.set ("user-dictionary",
-                      new Variant.string (user_dictionary));
+        registry = new DictionaryRegistry ();
+
+        _default.set (
+            "user_dictionary",
+            new Variant.string (
+                Path.build_filename (
+                    Environment.get_user_config_dir (),
+                    Config.PACKAGE_NAME,
+                    "dictionary")));
 
         ArrayList<string> dictionaries = new ArrayList<string> ();
-        dictionaries.add (user_dictionary);
-        dictionaries.add (
-            "type=file,file=/usr/share/skk/SKK-JISYO.L,mode=readonly");
-                          
-        _default.set ("dictionaries",
+        foreach (var metadata in list_available_dictionaries ()) {
+            if (metadata.default_enabled) {
+                dictionaries.add (metadata.id);
+            }
+        }
+        _default.set ("system_dictionaries",
                       new Variant.strv (dictionaries.to_array ()));
         _default.set ("punctuation_style",
                       new Variant.int32 ((int32) Kkc.PunctuationStyle.JA_JA));

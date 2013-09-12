@@ -23,6 +23,7 @@ class Setup : Object {
     // main dialog
     Gtk.Dialog dialog;
     Gtk.TreeView dictionaries_treeview;
+    Gtk.TreeView available_dictionaries_treeview;
     Gtk.ComboBox punctuation_style_combobox;
     Gtk.CheckButton auto_correct_checkbutton;
     Gtk.CheckButton use_custom_keymap_checkbutton;
@@ -37,11 +38,15 @@ class Setup : Object {
     Gtk.ToolButton add_shortcut_toolbutton;
     Gtk.ToolButton remove_shortcut_toolbutton;
 
+    // add dictionary dialog
+    Gtk.Dialog dict_dialog;
+
     // shortcut dialog
     Gtk.Dialog shortcut_dialog;
     Gtk.ComboBox shortcut_command_combobox;
 
     Preferences preferences;
+
     Kkc.UserRule shortcut_rule;
     Kkc.InputMode shortcut_input_mode;
 
@@ -54,7 +59,7 @@ class Setup : Object {
             builder.add_from_resource (
                 "/org/freedesktop/ibus/engine/kkc/ibus-kkc-preferences.ui");
         } catch (GLib.Error e) {
-            error ("can't load resource: %s", e.message);
+            error ("can't load ui from resource: %s", e.message);
         }
 
         // map widgets defined in ibus-kkc-preferences.ui
@@ -67,6 +72,10 @@ class Setup : Object {
         object = builder.get_object ("dictionaries_treeview");
         assert (object != null);
         dictionaries_treeview = (Gtk.TreeView) object;
+
+        object = builder.get_object ("available_dictionaries_treeview");
+        assert (object != null);
+        available_dictionaries_treeview = (Gtk.TreeView) object;
 
         object = builder.get_object ("punctuation_style_combobox");
         assert (object != null);
@@ -120,6 +129,10 @@ class Setup : Object {
         assert (object != null);
         Gtk.Button down_dict_button = (Gtk.Button) object;
 
+        object = builder.get_object ("dict_dialog");
+        assert (object != null);
+        dict_dialog = (Gtk.Dialog) object;
+
         object = builder.get_object ("input_mode_treeview");
         assert (object != null);
         input_mode_treeview = (Gtk.TreeView) object;
@@ -154,13 +167,21 @@ class Setup : Object {
         Gtk.CellRenderer renderer;
         Gtk.TreeViewColumn column;
 
-        model = new Gtk.ListStore (1, typeof (PList));
+        model = new Gtk.ListStore (1, typeof (DictionaryMetadata));
         dictionaries_treeview.set_model (model);
 
         renderer = new DictCellRenderer ();
         column = new Gtk.TreeViewColumn.with_attributes ("dict", renderer,
-                                                         "plist", 0);
+                                                         "metadata", 0);
         dictionaries_treeview.append_column (column);
+
+        model = new Gtk.ListStore (1, typeof (DictionaryMetadata));
+        available_dictionaries_treeview.set_model (model);
+
+        renderer = new DictCellRenderer ();
+        column = new Gtk.TreeViewColumn.with_attributes ("dict", renderer,
+                                                         "metadata", 0);
+        available_dictionaries_treeview.append_column (column);
 
         renderer = new Gtk.CellRendererText ();
         punctuation_style_combobox.pack_start (renderer, false);
@@ -395,23 +416,37 @@ class Setup : Object {
     }
 
     void populate_dictionaries_treeview () {
-        Variant? variant = preferences.get ("dictionaries");
+        Variant? variant = preferences.get ("system_dictionaries");
         assert (variant != null);
         string[] strv = variant.dup_strv ();
         var model = (Gtk.ListStore) dictionaries_treeview.get_model ();
-        foreach (var str in strv) {
-            PList plist;
-            try {
-                plist = new PList (str);
-            } catch (PListParseError e) {
-                warning ("can't parse plist %s: %s", str, e.message);
-                continue;
-            }
-            var mode = plist.get ("mode") ?? "readonly";
-            if (mode == "readonly") {
+        foreach (var id in strv) {
+            var metadata = preferences.get_dictionary_metadata (id);
+            if (metadata != null) {
                 Gtk.TreeIter iter;
                 model.append (out iter);
-                model.set (iter, 0, plist);
+                model.set (iter, 0, metadata);
+            }
+        }
+    }
+
+    void populate_available_dictionaries_treeview () {
+        Variant? variant = preferences.get ("system_dictionaries");
+        assert (variant != null);
+        string[] strv = variant.dup_strv ();
+        Set<string> enabled = new HashSet<string> ();
+        foreach (var str in strv) {
+            enabled.add (str);
+        }
+
+        var model = (Gtk.ListStore) available_dictionaries_treeview.get_model ();
+        model.clear ();
+        var available_dictionaries = preferences.list_available_dictionaries ();
+        foreach (var metadata in available_dictionaries) {
+            if (!enabled.contains (metadata.id)) {
+                Gtk.TreeIter iter;
+                model.append (out iter);
+                model.set (iter, 0, metadata);
             }
         }
     }
@@ -465,43 +500,24 @@ class Setup : Object {
     }
 
     void add_dict () {
-        var dict_dialog = new Gtk.FileChooserDialog (
-            "Add dictionary",
-            dialog,
-            Gtk.FileChooserAction.OPEN,
-            Gtk.Stock.CANCEL, Gtk.ResponseType.CANCEL,
-            Gtk.Stock.OPEN, Gtk.ResponseType.ACCEPT);
+        populate_available_dictionaries_treeview ();
         if (dict_dialog.run () == Gtk.ResponseType.OK) {
-            PList? plist = null;
-            string? file = dict_dialog.get_filename ();
-            if (file != null) {
-                try {
-                    plist = new PList (
-                        "type=file,file=%s,mode=readonly".printf (
-                            PList.escape (file)));
-                } catch (PListParseError e) {
-                    assert_not_reached ();
+            var model = (Gtk.ListStore) dictionaries_treeview.get_model ();
+            var selection = available_dictionaries_treeview.get_selection ();
+            Gtk.TreeModel available_model;
+            var rows = selection.get_selected_rows (out available_model);
+            foreach (var row in rows) {
+                Gtk.TreeIter available_iter;
+                if (available_model.get_iter (out available_iter, row)) {
+                    DictionaryMetadata metadata;
+                    available_model.get (available_iter, 0, out metadata, -1);
+                    
+                    Gtk.TreeIter iter;
+                    model.append (out iter);
+                    model.set (iter, 0, metadata);
                 }
             }
-
-            if (plist != null) {
-                var model = (Gtk.ListStore) dictionaries_treeview.get_model ();
-                Gtk.TreeIter iter;
-                bool found = false;
-                if (model.get_iter_first (out iter)) {
-                    do {
-                        PList _plist;
-                        model.get (iter, 0, out _plist, -1);
-                        if (_plist.to_string () == plist.to_string ()) {
-                            found = true;
-                        }
-                    } while (!found && model.iter_next (ref iter));
-                }
-                if (!found) {
-                    model.insert_with_values (out iter, int.MAX, 0, plist, -1);
-                    save_dictionaries ("dictionaries");
-                }
-            }
+            save_dictionaries ("system_dictionaries");
         }
         dict_dialog.hide ();
     }
@@ -512,13 +528,10 @@ class Setup : Object {
         var rows = selection.get_selected_rows (out model);
         foreach (var row in rows) {
             Gtk.TreeIter iter;
-            if (model.get_iter (out iter, row)) {
-                PList _plist;
-                model.get (iter, 0, out _plist, -1);
+            if (model.get_iter (out iter, row))
                 ((Gtk.ListStore)model).remove (iter);
-            }
         }
-        save_dictionaries ("dictionaries");
+        save_dictionaries ("system_dictionaries");
     }
 
     void up_dict () {
@@ -531,7 +544,7 @@ class Setup : Object {
                 ((Gtk.ListStore)model).swap (iter, prev);
             }
         }
-        save_dictionaries ("dictionaries");
+        save_dictionaries ("system_dictionaries");
     }
 
     void down_dict () {
@@ -544,7 +557,7 @@ class Setup : Object {
                 ((Gtk.ListStore)model).swap (iter, next);
             }
         }
-        save_dictionaries ("dictionaries");
+        save_dictionaries ("system_dictionaries");
     }
 
     void load_spinbutton (string name,
@@ -653,13 +666,10 @@ class Setup : Object {
         Gtk.TreeIter iter;
         if (model.get_iter_first (out iter)) {
             ArrayList<string> dictionaries = new ArrayList<string> ();
-            Variant? variant = preferences.get ("user-dictionary");
-            assert (variant != null);
-            dictionaries.add (variant.get_string ());
             do {
-                PList plist;
-                model.get (iter, 0, out plist, -1);
-                dictionaries.add (plist.to_string ());
+                DictionaryMetadata metadata;
+                model.get (iter, 0, out metadata, -1);
+                dictionaries.add (metadata.id);
             } while (model.iter_next (ref iter));
             preferences.set (name, dictionaries.to_array ());
         }
@@ -696,58 +706,14 @@ class Setup : Object {
     }
 
     class DictCellRenderer : Gtk.CellRendererText {
-        Map<string,string> metadata = new HashMap<string,string> ();
-
-        construct {
-            Json.Parser parser = new Json.Parser ();
-            try {
-                var stream = resources_open_stream (
-                    "/org/freedesktop/ibus/engine/kkc/ibus-kkc-dictionaries.json",
-                    ResourceLookupFlags.NONE);
-                if (!parser.load_from_stream (stream))
-                    assert_not_reached ();
-            } catch (GLib.Error e) {
-                assert_not_reached ();
-            }
-
-            var root = parser.get_root ();
-
-            assert (root.get_node_type () == Json.NodeType.ARRAY);
-            var array = root.get_array ();
-
-            for (var i = 0; i < array.get_length (); i++) {
-                var node = array.get_element (i);
-
-                assert (node.get_node_type () == Json.NodeType.OBJECT);
-                var object = node.get_object ();
-
-                assert (object.has_member ("filename"));
-                var filename = object.get_string_member ("filename");
-
-                assert (object.has_member ("description"));
-                var description = object.get_string_member ("description");
-
-                metadata.set (filename, description);
-            }
-        }
-
-        private PList _plist;
-        public PList plist {
+        private DictionaryMetadata _metadata;
+        public DictionaryMetadata metadata {
             get {
-                return _plist;
+                return _metadata;
             }
             set {
-                _plist = value;
-                var type = _plist.get ("type");
-                if (type == "file") {
-                    var filename = _plist.get ("file");
-                    var description = metadata.get (
-                        Path.get_basename (filename));
-                    if (description != null)
-                        text = dgettext (null, description);
-                    else
-                        text = _("File: %s").printf (filename);
-                }
+                _metadata = value;
+                text = dgettext (null, _metadata.name);
             }
         }
     }
