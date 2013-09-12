@@ -56,12 +56,17 @@ public class Preferences : Object {
     }
 
     public Preferences (IBus.Config config) {
-        ArrayList<string> dictionaries = new ArrayList<string> ();
-        dictionaries.add (
+        var user_dictionary =
             "type=file,file=%s/ibus-kkc/dictionary,mode=readwrite".printf (
-                Environment.get_user_config_dir ()));
+                Environment.get_user_config_dir ());
+        _default.set ("user-dictionary",
+                      new Variant.string (user_dictionary));
+
+        ArrayList<string> dictionaries = new ArrayList<string> ();
+        dictionaries.add (user_dictionary);
         dictionaries.add (
             "type=file,file=/usr/share/skk/SKK-JISYO.L,mode=readonly");
+                          
         _default.set ("dictionaries",
                       new Variant.strv (dictionaries.to_array ()));
         _default.set ("punctuation_style",

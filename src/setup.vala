@@ -407,9 +407,12 @@ class Setup : Object {
                 warning ("can't parse plist %s: %s", str, e.message);
                 continue;
             }
-            Gtk.TreeIter iter;
-            model.append (out iter);
-            model.set (iter, 0, plist);
+            var mode = plist.get ("mode") ?? "readonly";
+            if (mode == "readonly") {
+                Gtk.TreeIter iter;
+                model.append (out iter);
+                model.set (iter, 0, plist);
+            }
         }
     }
 
@@ -512,9 +515,7 @@ class Setup : Object {
             if (model.get_iter (out iter, row)) {
                 PList _plist;
                 model.get (iter, 0, out _plist, -1);
-                var mode = _plist.get ("mode") ?? "readonly";
-                if (mode == "readonly")
-                    ((Gtk.ListStore)model).remove (iter);
+                ((Gtk.ListStore)model).remove (iter);
             }
         }
         save_dictionaries ("dictionaries");
@@ -652,6 +653,9 @@ class Setup : Object {
         Gtk.TreeIter iter;
         if (model.get_iter_first (out iter)) {
             ArrayList<string> dictionaries = new ArrayList<string> ();
+            Variant? variant = preferences.get ("user-dictionary");
+            assert (variant != null);
+            dictionaries.add (variant.get_string ());
             do {
                 PList plist;
                 model.get (iter, 0, out plist, -1);
@@ -736,18 +740,13 @@ class Setup : Object {
                 _plist = value;
                 var type = _plist.get ("type");
                 if (type == "file") {
-                    var mode = _plist.get ("mode") ?? "readonly";
-                    if (mode == "readonly") {
-                        var filename = _plist.get ("file");
-                        var description = metadata.get (
-                            Path.get_basename (filename));
-                        if (description != null)
-                            text = dgettext (null, description);
-                        else
-                            text = _("File: %s").printf (filename);
-                    }
+                    var filename = _plist.get ("file");
+                    var description = metadata.get (
+                        Path.get_basename (filename));
+                    if (description != null)
+                        text = dgettext (null, description);
                     else
-                        text = _("User dictionary");
+                        text = _("File: %s").printf (filename);
                 }
             }
         }
