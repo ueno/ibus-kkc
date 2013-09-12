@@ -160,6 +160,7 @@ CLEANFILES =					\
 	$(desktop_in_files)			\
 	kkc.xml.in				\
 	kkc.xml					\
+	ibus-kkc-dictionaries.json		\
 	$(NULL)
 
 EXTRA_DIST =					\
