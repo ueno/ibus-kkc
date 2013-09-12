@@ -92,7 +92,7 @@ public class Preferences : Object {
         _default.set ("pagination_start",
                       new Variant.int32 (0));
         _default.set ("show_annotation",
-                      new Variant.boolean (true));
+                      new Variant.boolean (false));
         _default.set ("initial_input_mode",
                       new Variant.int32 (Kkc.InputMode.HIRAGANA));
         _default.set ("egg_like_newline",
