@@ -296,8 +296,19 @@ class Setup : Object {
                 int count = dictionaries_selection.count_selected_rows ();
                 if (count > 0) {
                     remove_dict_toolbutton.sensitive = true;
-                    up_dict_toolbutton.sensitive = true;
-                    down_dict_toolbutton.sensitive = true;
+
+                    Gtk.TreeModel _model;
+                    Gtk.TreeIter iter;
+                    if (dictionaries_selection.get_selected (out _model,
+                                                             out iter)) {
+                        Gtk.TreeIter prev = iter;
+                        up_dict_toolbutton.sensitive =
+                            _model.iter_previous (ref prev);
+
+                        Gtk.TreeIter next = iter;
+                        down_dict_toolbutton.sensitive =
+                            _model.iter_next (ref next);
+                    }
                 } else if (count == 0) {
                     remove_dict_toolbutton.sensitive = false;
                     up_dict_toolbutton.sensitive = false;

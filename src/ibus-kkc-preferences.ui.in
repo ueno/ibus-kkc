@@ -646,6 +646,7 @@
                         <child>
                           <object class="GtkToolButton" id="up_dict_toolbutton">
                             <property name="visible">True</property>
+                            <property name="sensitive">False</property>
                             <property name="can_focus">False</property>
                             <property name="label" translatable="yes">Up</property>
                             <property name="use_underline">True</property>
@@ -659,6 +660,7 @@
                         <child>
                           <object class="GtkToolButton" id="down_dict_toolbutton">
                             <property name="visible">True</property>
+                            <property name="sensitive">False</property>
                             <property name="can_focus">False</property>
                             <property name="label" translatable="yes">Down</property>
                             <property name="use_underline">True</property>
