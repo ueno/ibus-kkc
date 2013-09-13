@@ -206,6 +206,7 @@
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">False</property>
+                                        <property name="tooltip_text" translatable="yes">Cancel invalid roma-ji sequence instead of inserting it</property>
                                         <property name="xalign">0</property>
                                         <property name="draw_indicator">True</property>
                                       </object>
@@ -227,6 +228,7 @@
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">False</property>
+                                        <property name="tooltip_text" translatable="yes">Use different keyboard layout than the system settings</property>
                                         <property name="xalign">0</property>
                                         <property name="draw_indicator">True</property>
                                       </object>
@@ -300,6 +302,7 @@
                                   <object class="GtkLabel" id="label13">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
+                                    <property name="tooltip_text" translatable="yes">Maximum number of candidates which will be displayed on a single page</property>
                                     <property name="xalign">0</property>
                                     <property name="label" translatable="yes">Candidate _window page size:</property>
                                     <property name="use_underline">True</property>
@@ -332,6 +335,7 @@
                                   <object class="GtkLabel" id="label14">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
+                                    <property name="tooltip_text" translatable="yes">Threshold to display candidate window</property>
                                     <property name="xalign">0</property>
                                     <property name="label" translatable="yes">Candidate window pa_gination start:</property>
                                     <property name="use_underline">True</property>
@@ -372,6 +376,7 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">False</property>
+                                    <property name="tooltip_text" translatable="yes">Display annotation of word on the candidate window</property>
                                     <property name="halign">start</property>
                                     <property name="xalign">0</property>
                                     <property name="draw_indicator">True</property>
