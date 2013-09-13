@@ -728,7 +728,7 @@
                           <object class="GtkImage" id="image1">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
-                            <property name="pixbuf">@pkgdatadir@/icons/ibus-kkc.svg</property>
+                            <property name="pixbuf">resource:///org/freedesktop/ibus/engine/kkc/icon.svg</property>
                             <property name="pixel_size">48</property>
                           </object>
                           <packing>

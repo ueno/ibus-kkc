@@ -57,7 +57,7 @@ class Setup : Object {
         builder.set_translation_domain ("ibus-kkc");
         try {
             builder.add_from_resource (
-                "/org/freedesktop/ibus/engine/kkc/ibus-kkc-preferences.ui");
+                "/org/freedesktop/ibus/engine/kkc/preferences.ui");
         } catch (GLib.Error e) {
             error ("can't load ui from resource: %s", e.message);
         }

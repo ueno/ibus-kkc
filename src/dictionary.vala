@@ -98,7 +98,7 @@ public class DictionaryRegistry : Object {
     public DictionaryRegistry () {
         try {
             var stream = resources_open_stream (
-                "/org/freedesktop/ibus/engine/kkc/ibus-kkc-dictionaries.json",
+                "/org/freedesktop/ibus/engine/kkc/dictionaries.json",
                 ResourceLookupFlags.NONE);
             load_metadata_from_stream (stream);
         } catch (GLib.Error e) {
