@@ -41,6 +41,8 @@ libutil_la_LIBADD =				\
 BUILT_SOURCES =					\
 	ibus-kkc.vapi				\
 	ibus-kkc-preferences.ui			\
+	ibus-engine-kkc.gresource.xml		\
+	ibus-setup-kkc.gresource.xml		\
 	ibus-engine-kkc-resources.c		\
 	ibus-setup-kkc-resources.c		\
 	$(NULL)
@@ -121,19 +123,20 @@ json_edit = sed \
 	mv $@.tmp $@
 
 ibus-engine-kkc-resources.c: ibus-engine-kkc.gresource.xml ibus-kkc-dictionaries.json
-	$(AM_V_GEN) $(GLIB_COMPILE_RESOURCES) $(srcdir)/ibus-engine-kkc.gresource.xml \
+	$(AM_V_GEN) $(GLIB_COMPILE_RESOURCES) ibus-engine-kkc.gresource.xml \
 		--target=$@ --sourcedir=$(builddir) --c-name ibus_kkc \
 		--generate-source
 
 ibus-setup-kkc-resources.c: ibus-setup-kkc.gresource.xml ibus-kkc-preferences.ui ibus-kkc-dictionaries.json $(top_srcdir)/icons/ibus-kkc.svg
-	$(AM_V_GEN) $(GLIB_COMPILE_RESOURCES) $(srcdir)/ibus-setup-kkc.gresource.xml \
+	$(AM_V_GEN) $(GLIB_COMPILE_RESOURCES) ibus-setup-kkc.gresource.xml \
 		--target=$@ --sourcedir=$(builddir) --c-name ibus_kkc \
 		--generate-source
 
 edit = sed \
 	-e 's|@VERSION[@]|$(VERSION)|g' \
 	-e 's|@libexecdir[@]|$(libexecdir)|g' \
-	-e 's|@pkgdatadir[@]|$(pkgdatadir)|g'
+	-e 's|@pkgdatadir[@]|$(pkgdatadir)|g' \
+	-e 's|@top_srcdir[@]|$(top_srcdir)|g'
 
 desktop_in_in_files = ibus-setup-kkc.desktop.in.in
 desktop_in_files = $(desktop_in_in_files:.in.in=.in)
@@ -155,6 +158,12 @@ kkc.xml.in: kkc.xml.in.in
 ibus-kkc-preferences.ui: ibus-kkc-preferences.ui.in
 	$(AM_V_GEN) $(edit) $< > $@.tmp && mv $@.tmp $@
 
+ibus-engine-kkc.gresource.xml: ibus-engine-kkc.gresource.xml.in
+	$(AM_V_GEN) $(edit) $< > $@.tmp && mv $@.tmp $@
+
+ibus-setup-kkc.gresource.xml: ibus-setup-kkc.gresource.xml.in
+	$(AM_V_GEN) $(edit) $< > $@.tmp && mv $@.tmp $@
+
 @INTLTOOL_XML_NOMERGE_RULE@
 
 GITIGNOREFILES =				\
@@ -168,12 +177,16 @@ GITIGNOREFILES =				\
         $(NULL)
 
 CLEANFILES =					\
-	ibus-kkc-resources.c			\
+	ibus-engine-kkc-resources.c		\
+	ibus-setup-kkc-resources.c		\
 	$(desktop_DATA)				\
 	$(desktop_in_files)			\
 	kkc.xml.in				\
 	kkc.xml					\
+	ibus-kkc-preferences.ui			\
 	ibus-kkc-dictionaries.json		\
+	ibus-engine-kkc.gresource.xml		\
+	ibus-setup-kkc.gresource.xml		\
 	$(NULL)
 
 EXTRA_DIST =					\
@@ -186,12 +199,8 @@ EXTRA_DIST =					\
 	ibus-kkc-dictionaries.json.in		\
 	$(desktop_in_in_files)			\
 	kkc.xml.in.in				\
-	ibus-engine-kkc.gresource.xml		\
-	ibus-setup-kkc.gresource.xml		\
-	$(NULL)
-
-DISTCLEANFILES =				\
-	ibus-kkc-preferences.ui			\
+	ibus-engine-kkc.gresource.xml.in	\
+	ibus-setup-kkc.gresource.xml.in		\
 	$(NULL)
 
 MAINTAINERCLEANFILES =				\

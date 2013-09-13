@@ -3,6 +3,6 @@
   <gresource prefix="/org/freedesktop/ibus/engine/kkc">
     <file compressed="true" alias="dictionaries.json">ibus-kkc-dictionaries.json</file>
     <file compressed="true" alias="preferences.ui">ibus-kkc-preferences.ui</file>
-    <file compressed="true" alias="icon.svg">../icons/ibus-kkc.svg</file>
+    <file compressed="true" alias="icon.svg">@top_srcdir@/icons/ibus-kkc.svg</file>
   </gresource>
 </gresources>
