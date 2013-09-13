@@ -58,9 +58,15 @@ public class Preferences : Object {
 
     public new void @set (string name, Variant value) {
         Variant? _value = current.get (name);
-        if (_value != value) {
-            current.set (name, value);
-            config.set_value ("engine/kkc", name, value);
+        if (_value == null || !_value.equal (value)) {
+            _value = _default.get (name);
+            if (_value == null || !_value.equal (value)) {
+                current.set (name, value);
+                config.set_value ("engine/kkc", name, value);
+            } else {
+                current.unset (name);
+                config.unset ("engine/kkc", name);
+            }
         }
     }
 
@@ -117,7 +123,13 @@ public class Preferences : Object {
                            Variant value)
     {
         if (section == "engine/kkc") {
-            current.set (name, value);
+            if (value == null ||
+                // An empty tuple means that the value was unset.
+                value.equal (new Variant.tuple (new Variant[0]))) {
+                current.unset (name);
+            } else {
+                current.set (name, value);
+            }
             value_changed (name, value);
         }
     }
