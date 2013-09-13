@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: ibus-kkc 1.2.0.20091108\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-09-13 12:10+0900\n"
-"PO-Revision-Date: 2013-09-13 12:34+0900\n"
+"PO-Revision-Date: 2013-09-13 13:09+0900\n"
 "Last-Translator: Daiki Ueno <ueno@gnu.org>\n"
 "Language-Team: Japanese\n"
 "Language: \n"
@@ -304,7 +304,7 @@ msgstr "人名 (フルネーム)"
 
 #: ../src/ibus-kkc-dictionaries.json.in:90
 msgid "Alternative dictionary for biographical names (fullname)"
-msgstr "補助辞書 (人名 - フルネーム)"
+msgstr "補助辞書 (人名, フルネーム)"
 
 #: ../src/ibus-kkc-dictionaries.json.in:96
 msgid "Geographical (China and Taiwan)"
