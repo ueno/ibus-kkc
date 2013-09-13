@@ -47,5 +47,61 @@
         "name": _("Biographical"),
         "description": _("Alternative dictionary for biographical names"),
         "default_enabled": true
+    },
+    {
+        "id": "geo",
+        "filename": "@skkdicdir@/SKK-JISYO.geo",
+        "name": _("Geographical"),
+        "description": _("Alternative dictionary for geographical names"),
+        "default_enabled": true
+    },
+    {
+        "id": "assoc",
+        "filename": "@skkdicdir@/SKK-JISYO.assoc",
+        "name": _("Association and abbreviation"),
+        "description": _("Alternative dictionary for association and abbreviation"),
+        "default_enabled": false
+    },
+    {
+        "id": "itaiji",
+        "filename": "@skkdicdir@/SKK-JISYO.itaiji",
+        "name": _("Itaiji"),
+        "description": _("Alternative dictionary for Itaiji"),
+        "default_enabled": false
+    },
+    {
+        "id": "propernoun",
+        "filename": "@skkdicdir@/SKK-JISYO.propernoun",
+        "name": _("Proper nouns"),
+        "description": _("Alternative dictionary for proper nouns"),
+        "default_enabled": false
+    },
+    {
+        "id": "pubdic+",
+        "filename": "@skkdicdir@/SKK-JISYO.pubdic+",
+        "name": _("pubdic"),
+        "description": _("Alternative dictionary based on pubdic"),
+        "default_enabled": false
+    },
+    {
+        "id": "fullname",
+        "filename": "@skkdicdir@/SKK-JISYO.fullname",
+        "name": _("Biographical (fullname)"),
+        "description": _("Alternative dictionary for biographical names (fullname)"),
+        "default_enabled": false
+    },
+    {
+        "id": "china_taiwan",
+        "filename": "@skkdicdir@/SKK-JISYO.china_taiwan",
+        "name": _("Geographical (China and Taiwan)"),
+        "description": _("Alternative dictionary for geographical names in China and Taiwan"),
+        "default_enabled": false
+    },
+    {
+        "id": "law",
+        "filename": "@skkdicdir@/SKK-JISYO.law",
+        "name": _("Law terms"),
+        "description": _("Alternative dictionary for law terms"),
+        "default_enabled": false
     }
 ]
