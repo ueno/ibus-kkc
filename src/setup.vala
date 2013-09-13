@@ -167,7 +167,9 @@ class Setup : Object {
         Gtk.CellRenderer renderer;
         Gtk.TreeViewColumn column;
 
-        model = new Gtk.ListStore (2, typeof (DictionaryMetadata), typeof (string));
+        model = new Gtk.ListStore (2,
+                                   typeof (DictionaryMetadata),
+                                   typeof (string));
         dictionaries_treeview.set_model (model);
 
         renderer = new DictCellRenderer ();
@@ -175,7 +177,9 @@ class Setup : Object {
                                                          "metadata", 0);
         dictionaries_treeview.append_column (column);
 
-        model = new Gtk.ListStore (1, typeof (DictionaryMetadata));
+        model = new Gtk.ListStore (2,
+                                   typeof (DictionaryMetadata),
+                                   typeof (string));
         available_dictionaries_treeview.set_model (model);
 
         renderer = new DictCellRenderer ();
@@ -207,7 +211,10 @@ class Setup : Object {
                 }
             });
 
-        model = new Gtk.ListStore (3, typeof (string), typeof (Kkc.KeyEvent), typeof (string));
+        model = new Gtk.ListStore (3,
+                                   typeof (string),
+                                   typeof (Kkc.KeyEvent),
+                                   typeof (string));
         model.set_sort_column_id (0, Gtk.SortType.ASCENDING);
         shortcut_treeview.set_model (model);
         renderer = new Gtk.CellRendererText ();
@@ -459,7 +466,9 @@ class Setup : Object {
             if (!enabled.contains (metadata.id)) {
                 Gtk.TreeIter iter;
                 model.append (out iter);
-                model.set (iter, 0, metadata);
+                model.set (iter,
+                           0, metadata,
+                           1, dgettext (null, metadata.description));
             }
         }
     }
