@@ -167,7 +167,7 @@ class Setup : Object {
         Gtk.CellRenderer renderer;
         Gtk.TreeViewColumn column;
 
-        model = new Gtk.ListStore (1, typeof (DictionaryMetadata));
+        model = new Gtk.ListStore (2, typeof (DictionaryMetadata), typeof (string));
         dictionaries_treeview.set_model (model);
 
         renderer = new DictCellRenderer ();
@@ -436,7 +436,9 @@ class Setup : Object {
             if (metadata != null) {
                 Gtk.TreeIter iter;
                 model.append (out iter);
-                model.set (iter, 0, metadata);
+                model.set (iter,
+                           0, metadata,
+                           1, dgettext (null, metadata.description));
             }
         }
     }
