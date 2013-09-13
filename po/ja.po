@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: ibus-kkc 1.2.0.20091108\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-09-12 17:55+0900\n"
-"PO-Revision-Date: 2013-09-12 17:56+0900\n"
+"PO-Revision-Date: 2013-09-13 09:28+0900\n"
 "Last-Translator: Daiki Ueno <ueno@gnu.org>\n"
 "Language-Team: Japanese\n"
 "Language: \n"
@@ -74,7 +74,7 @@ msgstr "ショートカット '%s' は既に '%s' に割り当てられていま
 
 #: ../src/ibus-kkc-preferences.ui.in.h:1
 msgid "IBus Kana Kanji Preferences"
-msgstr "IBus かな漢字エンジンの設定"
+msgstr "IBus かな漢字の設定"
 
 #: ../src/ibus-kkc-preferences.ui.in.h:2
 msgid "Typing _rule:"
