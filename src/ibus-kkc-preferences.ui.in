@@ -552,6 +552,7 @@
                         <property name="label" translatable="yes">To edit a shortcut, click the row and hold down the new keys or press Backspace to clear.</property>
                         <property name="justify">fill</property>
                         <property name="wrap">True</property>
+                        <property name="max_width_chars">20</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -601,6 +602,9 @@
                             <property name="can_focus">True</property>
                             <property name="headers_visible">False</property>
                             <property name="headers_clickable">False</property>
+                            <child internal-child="selection">
+                              <object class="GtkTreeSelection" id="treeview-selection4"/>
+                            </child>
                           </object>
                         </child>
                       </object>
