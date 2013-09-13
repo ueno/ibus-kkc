@@ -78,8 +78,11 @@ public class DictionaryRegistry : Object {
 
             var object = node.get_object ();
             var metadata = new DictionaryMetadata.from_json_object (object);
-            available_metadata.set (metadata.id, metadata);
-            available.add (metadata.id);
+
+            if (FileUtils.test (metadata.filename, FileTest.EXISTS)) {
+                available_metadata.set (metadata.id, metadata);
+                available.add (metadata.id);
+            }
         }
     }
 
