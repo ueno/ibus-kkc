@@ -32,7 +32,10 @@ public class DictionaryMetadata : Object {
         var filename = object.get_string_member ("filename");
         var name = object.get_string_member ("name");
         var description = object.get_string_member ("description");
-        var default_enabled = object.get_boolean_member ("default_enabled");
+
+        var default_enabled = false;
+        if (object.has_member ("default_enabled"))
+            default_enabled = object.get_boolean_member ("default_enabled");
 
         var encoding = "EUC-JP";
         if (object.has_member ("encoding")) {
