@@ -24,8 +24,9 @@ public class DictionaryMetadata : Object {
     public string filename { get; construct set; }
     public string name { get; construct set; }
     public string description { get; construct set; }
+
     public string encoding { get; construct set; default = "EUC-JP"; }
-    public bool default_enabled { get; construct set; }
+    public bool default_enabled { get; construct set; default = false; }
 
     public DictionaryMetadata.from_json_object (Json.Object object) {
         var id = object.get_string_member ("id");
