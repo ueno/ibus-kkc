@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ibus-kkc 1.2.0.20091108\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-09-12 17:55+0900\n"
-"PO-Revision-Date: 2013-09-13 09:28+0900\n"
+"POT-Creation-Date: 2013-09-13 12:10+0900\n"
+"PO-Revision-Date: 2013-09-13 12:11+0900\n"
 "Last-Translator: Daiki Ueno <ueno@gnu.org>\n"
 "Language-Team: Japanese\n"
 "Language: \n"
@@ -67,7 +67,7 @@ msgstr "IBus からコンポーネントを起動"
 msgid "Kana Kanji"
 msgstr "かな漢字"
 
-#: ../src/setup.vala:334
+#: ../src/setup.vala:345
 #, c-format
 msgid "Shortcut '%s' is already assigned to '%s'"
 msgstr "ショートカット '%s' は既に '%s' に割り当てられています"
@@ -259,6 +259,70 @@ msgstr "人名"
 #: ../src/ibus-kkc-dictionaries.json.in:48
 msgid "Alternative dictionary for biographical names"
 msgstr "補助辞書 (人名)"
+
+#: ../src/ibus-kkc-dictionaries.json.in:54
+msgid "Geographical"
+msgstr "地名"
+
+#: ../src/ibus-kkc-dictionaries.json.in:55
+msgid "Alternative dictionary for geographical names"
+msgstr "補助辞書 (地名)"
+
+#: ../src/ibus-kkc-dictionaries.json.in:61
+msgid "Association and abbreviation"
+msgstr "連想と略語"
+
+#: ../src/ibus-kkc-dictionaries.json.in:62
+msgid "Alternative dictionary for association and abbreviation"
+msgstr "補助辞書 (連想と略語)"
+
+#: ../src/ibus-kkc-dictionaries.json.in:68
+msgid "Itaiji"
+msgstr "異体字"
+
+#: ../src/ibus-kkc-dictionaries.json.in:69
+msgid "Alternative dictionary for Itaiji"
+msgstr "補助辞書 (異体字)"
+
+#: ../src/ibus-kkc-dictionaries.json.in:75
+msgid "Proper nouns"
+msgstr "固有名詞"
+
+#: ../src/ibus-kkc-dictionaries.json.in:76
+msgid "Alternative dictionary for proper nouns"
+msgstr "補助辞書 (固有名詞)"
+
+#: ../src/ibus-kkc-dictionaries.json.in:82
+msgid "pubdic"
+msgstr "pubdic"
+
+#: ../src/ibus-kkc-dictionaries.json.in:83
+msgid "Alternative dictionary based on pubdic"
+msgstr "補助辞書 (pubdic)"
+
+#: ../src/ibus-kkc-dictionaries.json.in:89
+msgid "Biographical (fullname)"
+msgstr "人名 (フルネーム)"
+
+#: ../src/ibus-kkc-dictionaries.json.in:90
+msgid "Alternative dictionary for biographical names (fullname)"
+msgstr "補助辞書 (人名 - フルネーム)"
+
+#: ../src/ibus-kkc-dictionaries.json.in:96
+msgid "Geographical (China and Taiwan)"
+msgstr "地名 (中国と台湾)"
+
+#: ../src/ibus-kkc-dictionaries.json.in:97
+msgid "Alternative dictionary for geographical names in China and Taiwan"
+msgstr "補助辞書 (中国と台湾の地名)"
+
+#: ../src/ibus-kkc-dictionaries.json.in:103
+msgid "Law terms"
+msgstr "法律用語"
+
+#: ../src/ibus-kkc-dictionaries.json.in:104
+msgid "Alternative dictionary for law terms"
+msgstr "補助辞書 (法律用語)"
 
 #: ../src/ibus-setup-kkc.desktop.in.in.h:1
 msgid "IBus Kana Kanji Engine Setup"
