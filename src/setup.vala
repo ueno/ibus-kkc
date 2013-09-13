@@ -113,21 +113,21 @@ class Setup : Object {
         assert (object != null);
         typing_rule_combobox = (Gtk.ComboBox) object;
 
-        object = builder.get_object ("add_dict_button");
+        object = builder.get_object ("add_dict_toolbutton");
         assert (object != null);
-        Gtk.Button add_dict_button = (Gtk.Button) object;
+        Gtk.ToolButton add_dict_toolbutton = (Gtk.ToolButton) object;
 
-        object = builder.get_object ("remove_dict_button");
+        object = builder.get_object ("remove_dict_toolbutton");
         assert (object != null);
-        Gtk.Button remove_dict_button = (Gtk.Button) object;
+        Gtk.ToolButton remove_dict_toolbutton = (Gtk.ToolButton) object;
 
-        object = builder.get_object ("up_dict_button");
+        object = builder.get_object ("up_dict_toolbutton");
         assert (object != null);
-        Gtk.Button up_dict_button = (Gtk.Button) object;
+        Gtk.ToolButton up_dict_toolbutton = (Gtk.ToolButton) object;
 
-        object = builder.get_object ("down_dict_button");
+        object = builder.get_object ("down_dict_toolbutton");
         assert (object != null);
-        Gtk.Button down_dict_button = (Gtk.Button) object;
+        Gtk.ToolButton down_dict_toolbutton = (Gtk.ToolButton) object;
 
         object = builder.get_object ("dict_dialog");
         assert (object != null);
@@ -286,22 +286,22 @@ class Setup : Object {
 
         load ();
 
-        add_dict_button.clicked.connect (add_dict);
-        remove_dict_button.clicked.connect (remove_dict);
-        up_dict_button.clicked.connect (up_dict);
-        down_dict_button.clicked.connect (down_dict);
+        add_dict_toolbutton.clicked.connect (add_dict);
+        remove_dict_toolbutton.clicked.connect (remove_dict);
+        up_dict_toolbutton.clicked.connect (up_dict);
+        down_dict_toolbutton.clicked.connect (down_dict);
 
         var dictionaries_selection = dictionaries_treeview.get_selection ();
         dictionaries_selection.changed.connect (() => {
                 int count = dictionaries_selection.count_selected_rows ();
                 if (count > 0) {
-                    remove_dict_button.sensitive = true;
-                    up_dict_button.sensitive = true;
-                    down_dict_button.sensitive = true;
+                    remove_dict_toolbutton.sensitive = true;
+                    up_dict_toolbutton.sensitive = true;
+                    down_dict_toolbutton.sensitive = true;
                 } else if (count == 0) {
-                    remove_dict_button.sensitive = false;
-                    up_dict_button.sensitive = false;
-                    down_dict_button.sensitive = false;
+                    remove_dict_toolbutton.sensitive = false;
+                    up_dict_toolbutton.sensitive = false;
+                    down_dict_toolbutton.sensitive = false;
                 }
             });
     }
