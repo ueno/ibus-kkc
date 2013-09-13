@@ -245,6 +245,7 @@
                                     <child>
                                       <object class="GtkComboBox" id="keymap_combobox">
                                         <property name="visible">True</property>
+                                        <property name="sensitive">False</property>
                                         <property name="can_focus">False</property>
                                         <property name="model">keymap_liststore</property>
                                       </object>
