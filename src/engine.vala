@@ -316,8 +316,14 @@ class KkcEngine : IBus.Engine {
 
         variant = preferences.get ("user_dictionary");
         if (variant != null) {
-            KkcEngine.dictionaries.add (new Kkc.UserDictionary (
-                                            variant.get_string ()));
+            try {
+                KkcEngine.dictionaries.add (new Kkc.UserDictionary (
+                    variant.get_string ()));
+            } catch (Error e) {
+                warning ("can't load user dictionary %s: %s",
+                         variant.get_string (),
+                         e.message);
+            }
         }
 
         variant = preferences.get ("system_dictionaries");
@@ -325,9 +331,15 @@ class KkcEngine : IBus.Engine {
         string[] strv = variant.dup_strv ();
         foreach (var id in strv) {
             var metadata = preferences.get_dictionary_metadata (id);
-            KkcEngine.dictionaries.add (
-                new Kkc.SystemSegmentDictionary (metadata.filename,
-                                                 metadata.encoding));
+            try {
+                KkcEngine.dictionaries.add (
+                    new Kkc.SystemSegmentDictionary (metadata.filename,
+                                                     metadata.encoding));
+            } catch (Error e) {
+                warning ("can't load system dictionary %s: %s",
+                         metadata.filename,
+                         e.message);
+            }
         }
     }
 
