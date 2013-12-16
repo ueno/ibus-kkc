@@ -33,7 +33,6 @@ class KkcEngine : IBus.Engine {
 
     Kkc.Context context;
     IBus.LookupTable lookup_table;
-    uint page_start;
     bool lookup_table_visible;
 
     bool use_custom_keymap;
@@ -184,7 +183,7 @@ class KkcEngine : IBus.Engine {
 
     void populate_lookup_table () {
         lookup_table.clear ();
-        for (int i = (int) page_start;
+        for (int i = (int) context.candidates.page_start;
              i < context.candidates.size;
              i++) {
             var text = new IBus.Text.from_string (
@@ -275,8 +274,6 @@ class KkcEngine : IBus.Engine {
     }
 
     void update_candidates () {
-        context.candidates.page_start = page_start;
-        context.candidates.page_size = lookup_table.get_page_size ();
         populate_lookup_table ();
         set_lookup_table_cursor_pos ();
     }
@@ -356,11 +353,12 @@ class KkcEngine : IBus.Engine {
 
         variant = preferences.get ("page_size");
         assert (variant != null);
+        context.candidates.page_size = (uint) variant.get_int32 ();
         lookup_table.set_page_size (variant.get_int32 ());
 
         variant = preferences.get ("pagination_start");
         assert (variant != null);
-        page_start = (uint) variant.get_int32 ();
+        context.candidates.page_start = (uint) variant.get_int32 ();
 
         variant = preferences.get ("initial_input_mode");
         assert (variant != null);
