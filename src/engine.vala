@@ -245,12 +245,12 @@ class KkcEngine : IBus.Engine {
                     IBus.AttrType.BACKGROUND,
                     0x00000000,
                     context.input_cursor_pos,
-                    context.input_cursor_pos + 1);
+                    context.input_cursor_pos + (int) context.input_cursor_width);
                 text.append_attribute (
                     IBus.AttrType.FOREGROUND,
                     (uint) 0xffffffff,
                     context.input_cursor_pos,
-                    context.input_cursor_pos + 1);
+                    context.input_cursor_pos + (int) context.input_cursor_width);
                 cursor_pos = context.input_cursor_pos;
             } else
                 cursor_pos = text.get_length ();

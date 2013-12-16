@@ -91,7 +91,7 @@ AC_ARG_WITH([skkdic],
 AC_SUBST([skkdicdir], [$with_skkdic])
 
 # check libkkc
-PKG_CHECK_MODULES(LIBKKC, [kkc-1.0 >= 0.2.4], ,
+PKG_CHECK_MODULES(LIBKKC, [kkc-1.0 >= 0.3.2], ,
   AC_MSG_ERROR([can't find libkkc]))
 
 # check gtk+
