@@ -15,7 +15,7 @@
   <object class="GtkDialog" id="dialog">
     <property name="can_focus">False</property>
     <property name="border_width">5</property>
-    <property name="title" translatable="yes">IBus Kana Kanji Preferences</property>
+    <property name="title" translatable="yes">Kana Kanji Conversion Preferences</property>
     <property name="type_hint">normal</property>
     <child internal-child="vbox">
       <object class="GtkBox" id="dialog-vbox1">
@@ -743,7 +743,7 @@
                           <object class="GtkLabel" id="label7">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="label" translatable="yes">&lt;big&gt;&lt;b&gt;IBus Kana Kanji&lt;/b&gt;&lt;/big&gt;</property>
+                            <property name="label" translatable="yes">&lt;big&gt;&lt;b&gt;Kana Kanji Conversion&lt;/b&gt;&lt;/big&gt;</property>
                             <property name="use_markup">True</property>
                           </object>
                           <packing>
@@ -769,7 +769,7 @@
                           <object class="GtkLabel" id="label8">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="label" translatable="yes">Kana-kanji input method for IBus</property>
+                            <property name="label" translatable="yes">Kana Kanji Conversion input-method</property>
                           </object>
                           <packing>
                             <property name="expand">True</property>
