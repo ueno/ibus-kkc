@@ -468,16 +468,6 @@ class KkcEngine : IBus.Engine {
         return false;
     }
 
-    struct KeyEntry {
-        uint keyval;
-        uint modifiers;
-    }
-
-    // Keys should always be reported as handled (a8ffece4 and caf9f944)
-    static const KeyEntry[] IGNORE_KEYS = {
-        { IBus.j, IBus.ModifierType.CONTROL_MASK }
-    };
-
     public override bool process_key_event (uint keyval,
                                             uint keycode,
                                             uint state)
@@ -504,11 +494,6 @@ class KkcEngine : IBus.Engine {
                                                  (Kkc.ModifierType) _state);
 
         var retval = context.process_key_event (key);
-        foreach (var entry in IGNORE_KEYS) {
-            if (entry.keyval == _keyval && entry.modifiers == key.modifiers) {
-                return true;
-            }
-        }
 
         // Hack for the direct input mode: if the keyval is translated
         // in the custom keymap and the new keyval is printable, send
