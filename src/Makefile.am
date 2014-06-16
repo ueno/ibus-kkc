@@ -24,7 +24,7 @@ libutil_la_VALAFLAGS =				\
 	-H libutil.h --vapi ibus-kkc.vapi	\
 	--vapidir=.				\
 	--pkg config				\
-	--pkg gee-1.0				\
+	--pkg gee-0.8				\
 	--pkg kkc-1.0				\
 	--pkg ibus-1.0				\
 	--library ibus-kkc			\
