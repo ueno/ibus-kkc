@@ -454,7 +454,7 @@ class Setup : Object {
         Variant? variant = preferences.get ("system_dictionaries");
         assert (variant != null);
         string[] strv = variant.dup_strv ();
-        Set<string> enabled = new HashSet<string> ();
+        Set<string> enabled = new Gee.HashSet<string> ();
         foreach (var str in strv) {
             enabled.add (str);
         }
