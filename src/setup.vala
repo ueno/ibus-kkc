@@ -404,7 +404,11 @@ class Setup : Object {
             Gtk.TreeIter iter;
             var model = (Gtk.ListStore) shortcut_treeview.get_model ();
             model.append (out iter);
-            model.set (iter, 0, command, 1, null, -1);
+            model.set (iter,
+                       0, command,
+                       1, null,
+                       2, Kkc.Keymap.get_command_label (command),
+                       -1);
         }
         shortcut_dialog.hide ();
     }
