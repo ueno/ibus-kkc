@@ -423,10 +423,12 @@ class Setup : Object {
             if (model.get_iter (out iter, row)) {
                 Kkc.KeyEvent *old_event;
                 model.get (iter, 1, out old_event, -1);
-                if (old_event->modifiers == 0 &&
-                    old_event->keyval in IGNORED_KEYVALS)
-                    continue;
-                keymap.set (old_event, null);
+                if (old_event != null) {
+                    if (old_event->modifiers == 0 &&
+                        old_event->keyval in IGNORED_KEYVALS)
+                        continue;
+                    keymap.set (old_event, null);
+                }
                 ((Gtk.ListStore)model).remove (iter);
             }
         }
