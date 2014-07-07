@@ -25,7 +25,7 @@ m4_define([package_name], [ibus-kkc])
 m4_define([ibus_released], [1])
 m4_define([ibus_major_version], [1])
 m4_define([ibus_minor_version], [5])
-m4_define([ibus_micro_version], [20])
+m4_define([ibus_micro_version], [21])
 m4_define(ibus_maybe_datestamp,
     m4_esyscmd([if test x]ibus_released[ != x1; then date +.%Y%m%d | tr -d '\n\r'; fi]))
 
@@ -91,7 +91,7 @@ AC_ARG_WITH([skkdic],
 AC_SUBST([skkdicdir], [$with_skkdic])
 
 # check libkkc
-PKG_CHECK_MODULES(LIBKKC, [kkc-1.0 >= 0.3.2], ,
+PKG_CHECK_MODULES(LIBKKC, [kkc-1.0 >= 0.3.4], ,
   AC_MSG_ERROR([can't find libkkc]))
 
 # check gtk+
