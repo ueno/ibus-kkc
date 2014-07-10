@@ -118,9 +118,9 @@ class KkcEngine : IBus.Engine {
         prop = new IBus.Property (
             "setup",
             IBus.PropType.NORMAL,
-            new IBus.Text.from_string (_("Setup")),
+            new IBus.Text.from_string (_("Preferences")),
             "gtk-preferences",
-            new IBus.Text.from_string (_("Configure KKC")),
+            new IBus.Text.from_string (_("Configure Kana Kanji Conversion")),
             true,
             true,
             IBus.PropState.UNCHECKED,
