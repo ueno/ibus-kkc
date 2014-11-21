@@ -65,22 +65,8 @@ AC_ARG_WITH([ibus],
   [],
   [with_ibus=auto])
 
-IBUS_1_4_REQUIRED=1.4.0
-IBUS_1_5_REQUIRED=1.5.0
-
-AS_CASE([$with_ibus],
-  [1.4], [PKG_CHECK_MODULES(IBUS, [ibus-1.0 >= $IBUS_1_4_REQUIRED], ,
-    AC_MSG_ERROR([can't find ibus 1.4]))],
-  [1.5], [PKG_CHECK_MODULES(IBUS, [ibus-1.0 >= $IBUS_1_5_REQUIRED], ,
-    AC_MSG_ERROR([can't find ibus 1.5]))],
-  [auto], [PKG_CHECK_MODULES(IBUS, [ibus-1.0 >= $IBUS_1_4_REQUIRED], ,
-    AC_MSG_ERROR([can't find ibus 1.4 or later]))
-    PKG_CHECK_EXISTS([ibus-1.0 >= $IBUS_1_5_REQUIRED],
-      [with_ibus=1.5],
-      [with_ibus=1.4])],
-  [AC_MSG_ERROR([invalid ibus version])])
-
-AM_CONDITIONAL([IBUS_1_5], [test x$with_ibus = x1.5])
+PKG_CHECK_MODULES(IBUS, [ibus-1.0 >= 1.5], ,
+  AC_MSG_ERROR([can't find ibus 1.5]))
 
 # check skkdic
 AC_ARG_WITH([skkdic],
