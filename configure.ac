@@ -95,7 +95,7 @@ PKG_CHECK_MODULES(LIBKKC, [kkc-1.0 >= 0.3.4], ,
   AC_MSG_ERROR([can't find libkkc]))
 
 # check gtk+
-PKG_CHECK_MODULES(GTK, [gtk+-3.0 >= 3.4], ,
+PKG_CHECK_MODULES(GTK, [gtk+-3.0 >= 3.10], ,
   AC_MSG_ERROR([can't find gtk+-3.0]))
 
 # check vala
