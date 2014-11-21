@@ -19,143 +19,180 @@
  */
 using Gee;
 
-class Setup : Object {
-    // main dialog
-    Gtk.Dialog dialog;
-    Gtk.TreeView dictionaries_treeview;
+class DictionaryCellRenderer : Gtk.CellRendererText {
+    private DictionaryMetadata _metadata;
+    public DictionaryMetadata metadata {
+        get {
+            return _metadata;
+        }
+        set {
+            _metadata = value;
+            text = dgettext (null, _metadata.name);
+        }
+    }
+}
+
+[GtkTemplate (ui = "/org/freedesktop/ibus/engine/kkc/dictionary-dialog.ui")]
+class DictionaryDialog : Gtk.Dialog {
+    [GtkChild]
     Gtk.TreeView available_dictionaries_treeview;
-    Gtk.ComboBox punctuation_style_combobox;
-    Gtk.CheckButton auto_correct_checkbutton;
-    Gtk.CheckButton use_custom_keymap_checkbutton;
-    Gtk.ComboBox keymap_combobox;
-    Gtk.SpinButton page_size_spinbutton;
-    Gtk.SpinButton pagination_start_spinbutton;
-    Gtk.CheckButton show_annotation_checkbutton;
-    Gtk.ComboBox initial_input_mode_combobox;
-    Gtk.ComboBox typing_rule_combobox;
-    Gtk.TreeView input_mode_treeview;
-    Gtk.TreeView shortcut_treeview;
-    Gtk.ToolButton add_shortcut_toolbutton;
-    Gtk.ToolButton remove_shortcut_toolbutton;
 
-    // add dictionary dialog
-    Gtk.Dialog dict_dialog;
+    Preferences preferences;
 
-    // shortcut dialog
-    Gtk.Dialog shortcut_dialog;
+    public DictionaryDialog (Preferences preferences) {
+        this.preferences = preferences;
+
+        Gtk.ListStore model;
+        Gtk.CellRenderer renderer;
+        Gtk.TreeViewColumn column;
+
+        model = new Gtk.ListStore (2,
+                                   typeof (DictionaryMetadata),
+                                   typeof (string));
+        available_dictionaries_treeview.set_model (model);
+
+        renderer = new DictionaryCellRenderer ();
+        column = new Gtk.TreeViewColumn.with_attributes ("dict", renderer,
+                                                         "metadata", 0);
+        available_dictionaries_treeview.append_column (column);
+        populate_available_dictionaries_treeview ();
+    }        
+
+    void populate_available_dictionaries_treeview () {
+        Variant? variant = preferences.get ("system_dictionaries");
+        assert (variant != null);
+        string[] strv = variant.dup_strv ();
+        Set<string> enabled = new Gee.HashSet<string> ();
+        foreach (var str in strv) {
+            enabled.add (str);
+        }
+
+        var model = (Gtk.ListStore) available_dictionaries_treeview.get_model ();
+        model.clear ();
+        var available_dictionaries = preferences.list_available_dictionaries ();
+        foreach (var metadata in available_dictionaries) {
+            if (!enabled.contains (metadata.id)) {
+                Gtk.TreeIter iter;
+                model.append (out iter);
+                model.set (iter,
+                           0, metadata,
+                           1, dgettext (null, metadata.description));
+            }
+        }
+    }
+
+    public DictionaryMetadata[] get_dictionaries () {
+        DictionaryMetadata[] dictionaries = {};
+        var selection = available_dictionaries_treeview.get_selection ();
+        Gtk.TreeModel available_model;
+        var rows = selection.get_selected_rows (out available_model);
+        foreach (var row in rows) {
+            Gtk.TreeIter available_iter;
+            if (available_model.get_iter (out available_iter, row)) {
+                DictionaryMetadata metadata;
+                available_model.get (available_iter, 0, out metadata, -1);
+                dictionaries += metadata;
+            }
+        }
+        return dictionaries;
+    }
+}
+
+[GtkTemplate (ui = "/org/freedesktop/ibus/engine/kkc/shortcut-dialog.ui")]
+class ShortcutDialog : Gtk.Dialog {
+    [GtkChild]
     Gtk.ComboBox shortcut_command_combobox;
+
+    public ShortcutDialog () {
+        Gtk.ListStore model;
+        Gtk.CellRenderer renderer;
+
+        model = new Gtk.ListStore (2, typeof (string), typeof (string));
+        model.set_sort_column_id (1, Gtk.SortType.ASCENDING);
+        shortcut_command_combobox.set_model (model);
+        var commands = Kkc.Keymap.commands ();
+        foreach (var command in commands) {
+            Gtk.TreeIter iter;
+            model.append (out iter);
+            model.set (iter,
+                       0, command,
+                       1, Kkc.Keymap.get_command_label (command));
+        }
+        shortcut_command_combobox.set_active (0);
+
+        renderer = new Gtk.CellRendererText ();
+        shortcut_command_combobox.pack_start (renderer, false);
+        shortcut_command_combobox.set_attributes (renderer, "text", 1);
+    }
+
+    string combobox_get_active_string (Gtk.ComboBox combo, int column) {
+        string text;
+        Gtk.TreeIter iter;
+        if (combo.get_active_iter (out iter)) {
+            var model = (Gtk.ListStore) combo.get_model ();
+            model.get (iter, column, out text, -1);
+        } else {
+            assert_not_reached ();
+        }
+        return text;
+    }
+
+    public string get_command () {
+        return combobox_get_active_string (shortcut_command_combobox, 0);
+    }
+}
+
+[GtkTemplate (ui = "/org/freedesktop/ibus/engine/kkc/setup-dialog.ui")]
+class SetupDialog : Gtk.Dialog {
+    [GtkChild]
+    Gtk.TreeView dictionaries_treeview;
+    [GtkChild]
+    Gtk.ComboBox punctuation_style_combobox;
+    [GtkChild]
+    Gtk.CheckButton auto_correct_checkbutton;
+    [GtkChild]
+    Gtk.CheckButton use_custom_keymap_checkbutton;
+    [GtkChild]
+    Gtk.ComboBox keymap_combobox;
+    [GtkChild]
+    Gtk.SpinButton page_size_spinbutton;
+    [GtkChild]
+    Gtk.SpinButton pagination_start_spinbutton;
+    [GtkChild]
+    Gtk.CheckButton show_annotation_checkbutton;
+    [GtkChild]
+    Gtk.ComboBox initial_input_mode_combobox;
+    [GtkChild]
+    Gtk.ComboBox typing_rule_combobox;
+    [GtkChild]
+    Gtk.TreeView input_mode_treeview;
+    [GtkChild]
+    Gtk.ToolButton add_dict_toolbutton;
+    [GtkChild]
+    Gtk.ToolButton remove_dict_toolbutton;
+    [GtkChild]
+    Gtk.ToolButton up_dict_toolbutton;
+    [GtkChild]
+    Gtk.ToolButton down_dict_toolbutton;
+    [GtkChild]
+    Gtk.TreeView shortcut_treeview;
+    [GtkChild]
+    Gtk.ToolButton add_shortcut_toolbutton;
+    [GtkChild]
+    Gtk.ToolButton remove_shortcut_toolbutton;
+    [GtkChild]
+    Gtk.Label version_label;
 
     Preferences preferences;
 
     Kkc.UserRule shortcut_rule;
     Kkc.InputMode shortcut_input_mode;
 
-    public Setup (Preferences preferences) {
+    public SetupDialog (Preferences preferences) {
         this.preferences = preferences;
 
-        var builder = new Gtk.Builder ();
-        builder.set_translation_domain ("ibus-kkc");
-        try {
-            builder.add_from_resource (
-                "/org/freedesktop/ibus/engine/kkc/preferences.ui");
-        } catch (GLib.Error e) {
-            error ("can't load ui from resource: %s", e.message);
-        }
-
-        // map widgets defined in ibus-kkc-preferences.ui
-        Object? object;
-
-        object = builder.get_object ("dialog");
-        assert (object != null);
-        dialog = (Gtk.Dialog) object;
-
-        object = builder.get_object ("dictionaries_treeview");
-        assert (object != null);
-        dictionaries_treeview = (Gtk.TreeView) object;
-
-        object = builder.get_object ("available_dictionaries_treeview");
-        assert (object != null);
-        available_dictionaries_treeview = (Gtk.TreeView) object;
-
-        object = builder.get_object ("punctuation_style_combobox");
-        assert (object != null);
-        punctuation_style_combobox = (Gtk.ComboBox) object;
-
-        object = builder.get_object ("auto_correct_checkbutton");
-        assert (object != null);
-        auto_correct_checkbutton = (Gtk.CheckButton) object;
-
-        object = builder.get_object ("use_custom_keymap_checkbutton");
-        assert (object != null);
-        use_custom_keymap_checkbutton = (Gtk.CheckButton) object;
-
-        object = builder.get_object ("keymap_combobox");
-        assert (object != null);
-        keymap_combobox = (Gtk.ComboBox) object;
-
-        object = builder.get_object ("page_size_spinbutton");
-        assert (object != null);
-        page_size_spinbutton = (Gtk.SpinButton) object;
-
-        object = builder.get_object ("pagination_start_spinbutton");
-        assert (object != null);
-        pagination_start_spinbutton = (Gtk.SpinButton) object;
-
-        object = builder.get_object ("show_annotation_checkbutton");
-        assert (object != null);
-        show_annotation_checkbutton = (Gtk.CheckButton) object;
-
-        object = builder.get_object ("initial_input_mode_combobox");
-        assert (object != null);
-        initial_input_mode_combobox = (Gtk.ComboBox) object;
-
-        object = builder.get_object ("typing_rule_combobox");
-        assert (object != null);
-        typing_rule_combobox = (Gtk.ComboBox) object;
-
-        object = builder.get_object ("add_dict_toolbutton");
-        assert (object != null);
-        Gtk.ToolButton add_dict_toolbutton = (Gtk.ToolButton) object;
-
-        object = builder.get_object ("remove_dict_toolbutton");
-        assert (object != null);
-        Gtk.ToolButton remove_dict_toolbutton = (Gtk.ToolButton) object;
-
-        object = builder.get_object ("up_dict_toolbutton");
-        assert (object != null);
-        Gtk.ToolButton up_dict_toolbutton = (Gtk.ToolButton) object;
-
-        object = builder.get_object ("down_dict_toolbutton");
-        assert (object != null);
-        Gtk.ToolButton down_dict_toolbutton = (Gtk.ToolButton) object;
-
-        object = builder.get_object ("dict_dialog");
-        assert (object != null);
-        dict_dialog = (Gtk.Dialog) object;
-
-        object = builder.get_object ("input_mode_treeview");
-        assert (object != null);
-        input_mode_treeview = (Gtk.TreeView) object;
-
-        object = builder.get_object ("shortcut_treeview");
-        assert (object != null);
-        shortcut_treeview = (Gtk.TreeView) object;
-
-        object = builder.get_object ("add_shortcut_toolbutton");
-        assert (object != null);
-        add_shortcut_toolbutton = (Gtk.ToolButton) object;
-
-        object = builder.get_object ("remove_shortcut_toolbutton");
-        assert (object != null);
-        remove_shortcut_toolbutton = (Gtk.ToolButton) object;
-
-        object = builder.get_object ("shortcut_dialog");
-        assert (object != null);
-        shortcut_dialog = (Gtk.Dialog) object;
-
-        object = builder.get_object ("shortcut_command_combobox");
-        assert (object != null);
-        shortcut_command_combobox = (Gtk.ComboBox) object;
+        version_label.use_markup = true;
+        version_label.label = "<b>%s</b>".printf (Config.VERSION);
 
         page_size_spinbutton.set_range (7.0, 16.0);
         page_size_spinbutton.set_increments (1.0, 1.0);
@@ -172,20 +209,10 @@ class Setup : Object {
                                    typeof (string));
         dictionaries_treeview.set_model (model);
 
-        renderer = new DictCellRenderer ();
+        renderer = new DictionaryCellRenderer ();
         column = new Gtk.TreeViewColumn.with_attributes ("dict", renderer,
                                                          "metadata", 0);
         dictionaries_treeview.append_column (column);
-
-        model = new Gtk.ListStore (2,
-                                   typeof (DictionaryMetadata),
-                                   typeof (string));
-        available_dictionaries_treeview.set_model (model);
-
-        renderer = new DictCellRenderer ();
-        column = new Gtk.TreeViewColumn.with_attributes ("dict", renderer,
-                                                         "metadata", 0);
-        available_dictionaries_treeview.append_column (column);
 
         renderer = new Gtk.CellRendererText ();
         punctuation_style_combobox.pack_start (renderer, false);
@@ -244,23 +271,6 @@ class Setup : Object {
                     remove_shortcut_toolbutton.sensitive = false;
                 }
             });
-
-        model = new Gtk.ListStore (2, typeof (string), typeof (string));
-        model.set_sort_column_id (1, Gtk.SortType.ASCENDING);
-        shortcut_command_combobox.set_model (model);
-        var commands = Kkc.Keymap.commands ();
-        foreach (var command in commands) {
-            Gtk.TreeIter iter;
-            model.append (out iter);
-            model.set (iter,
-                       0, command,
-                       1, Kkc.Keymap.get_command_label (command));
-        }
-        shortcut_command_combobox.set_active (0);
-
-        renderer = new Gtk.CellRendererText ();
-        shortcut_command_combobox.pack_start (renderer, false);
-        shortcut_command_combobox.set_attributes (renderer, "text", 1);
 
         add_shortcut_toolbutton.clicked.connect (add_shortcut);
         remove_shortcut_toolbutton.clicked.connect (remove_shortcut);
@@ -345,7 +355,7 @@ class Setup : Object {
                            -1);
                 if (old_command != new_command) {
                     var error_dialog = new Gtk.MessageDialog (
-                        dialog,
+                        this,
                         Gtk.DialogFlags.MODAL,
                         Gtk.MessageType.ERROR,
                         Gtk.ButtonsType.CLOSE,
@@ -397,10 +407,10 @@ class Setup : Object {
     }
 
     void add_shortcut () {
+        var shortcut_dialog = new ShortcutDialog ();
+        shortcut_dialog.set_transient_for (this);
         if (shortcut_dialog.run () == Gtk.ResponseType.OK) {
-            string command = combobox_get_active_string (
-                shortcut_command_combobox,
-                0);
+            var command = shortcut_dialog.get_command ();
             Gtk.TreeIter iter;
             var model = (Gtk.ListStore) shortcut_treeview.get_model ();
             model.append (out iter);
@@ -456,29 +466,6 @@ class Setup : Object {
         }
     }
 
-    void populate_available_dictionaries_treeview () {
-        Variant? variant = preferences.get ("system_dictionaries");
-        assert (variant != null);
-        string[] strv = variant.dup_strv ();
-        Set<string> enabled = new Gee.HashSet<string> ();
-        foreach (var str in strv) {
-            enabled.add (str);
-        }
-
-        var model = (Gtk.ListStore) available_dictionaries_treeview.get_model ();
-        model.clear ();
-        var available_dictionaries = preferences.list_available_dictionaries ();
-        foreach (var metadata in available_dictionaries) {
-            if (!enabled.contains (metadata.id)) {
-                Gtk.TreeIter iter;
-                model.append (out iter);
-                model.set (iter,
-                           0, metadata,
-                           1, dgettext (null, metadata.description));
-            }
-        }
-    }
-
     void populate_shortcut_treeview (Kkc.InputMode input_mode) {
         Variant? variant = preferences.get ("typing_rule");
         assert (variant != null);
@@ -515,39 +502,20 @@ class Setup : Object {
         shortcut_rule = rule;
     }
 
-    string combobox_get_active_string (Gtk.ComboBox combo, int column) {
-        string text;
-        Gtk.TreeIter iter;
-        if (combo.get_active_iter (out iter)) {
-            var model = (Gtk.ListStore) combo.get_model ();
-            model.get (iter, column, out text, -1);
-        } else {
-            assert_not_reached ();
-        }
-        return text;
-    }
-
     void add_dict () {
-        populate_available_dictionaries_treeview ();
-        if (dict_dialog.run () == Gtk.ResponseType.OK) {
+        var dictionary_dialog = new DictionaryDialog (preferences);
+        dictionary_dialog.set_transient_for (this);
+        if (dictionary_dialog.run () == Gtk.ResponseType.OK) {
+            var dictionaries = dictionary_dialog.get_dictionaries ();
             var model = (Gtk.ListStore) dictionaries_treeview.get_model ();
-            var selection = available_dictionaries_treeview.get_selection ();
-            Gtk.TreeModel available_model;
-            var rows = selection.get_selected_rows (out available_model);
-            foreach (var row in rows) {
-                Gtk.TreeIter available_iter;
-                if (available_model.get_iter (out available_iter, row)) {
-                    DictionaryMetadata metadata;
-                    available_model.get (available_iter, 0, out metadata, -1);
-                    
-                    Gtk.TreeIter iter;
-                    model.append (out iter);
-                    model.set (iter, 0, metadata);
-                }
+            foreach (var dictionary in dictionaries) {
+                Gtk.TreeIter iter;
+                model.append (out iter);
+                model.set (iter, 0, dictionary);
             }
             save_dictionaries ("system_dictionaries");
         }
-        dict_dialog.hide ();
+        dictionary_dialog.hide ();
     }
 
     void remove_dict () {
@@ -729,23 +697,6 @@ class Setup : Object {
         }
     }
 
-    public void run () {
-        dialog.run ();
-    }
-
-    class DictCellRenderer : Gtk.CellRendererText {
-        private DictionaryMetadata _metadata;
-        public DictionaryMetadata metadata {
-            get {
-                return _metadata;
-            }
-            set {
-                _metadata = value;
-                text = dgettext (null, _metadata.name);
-            }
-        }
-    }
-
     static const uint[] IGNORED_KEYVALS = {
         Kkc.Keysyms.BackSpace,
         Kkc.Keysyms.Escape
@@ -798,9 +749,9 @@ class Setup : Object {
             return 1;
         }
 
-        var setup = new Setup (new Preferences (config));
+        var setup_dialog = new SetupDialog (new Preferences (config));
 
-        setup.run ();
+        setup_dialog.run ();
         return 0;
     }
 }

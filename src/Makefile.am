@@ -40,7 +40,6 @@ libutil_la_LIBADD =				\
 
 BUILT_SOURCES =					\
 	ibus-kkc.vapi				\
-	ibus-kkc-preferences.ui			\
 	ibus-engine-kkc.gresource.xml		\
 	ibus-setup-kkc.gresource.xml		\
 	ibus-engine-kkc-resources.c		\
@@ -88,11 +87,13 @@ ibus_engine_kkc_SOURCES =			\
 	ibus-engine-kkc-resources.c		\
 	$(NULL)
 
-ibus_setup_kkc_VALAFLAGS =			\
-	--vapidir=.				\
-	--pkg config				\
-	--pkg ibus-kkc				\
-	--pkg gtk+-3.0				\
+ibus_setup_kkc_VALAFLAGS =				\
+	--target-glib=2.38				\
+	--gresources ibus-setup-kkc.gresource.xml	\
+	--vapidir=.					\
+	--pkg config					\
+	--pkg ibus-kkc					\
+	--pkg gtk+-3.0					\
 	$(VALAFLAGS)
 
 ibus_setup_kkc_CFLAGS =				\
@@ -127,7 +128,7 @@ ibus-engine-kkc-resources.c: ibus-engine-kkc.gresource.xml ibus-kkc-dictionaries
 		--target=$@ --sourcedir=$(builddir) --c-name ibus_kkc \
 		--generate-source
 
-ibus-setup-kkc-resources.c: ibus-setup-kkc.gresource.xml ibus-kkc-preferences.ui ibus-kkc-dictionaries.json $(top_srcdir)/icons/ibus-kkc.svg
+ibus-setup-kkc-resources.c: ibus-setup-kkc.gresource.xml setup-dialog.ui dictionary-dialog.ui shortcut-dialog.ui ibus-kkc-dictionaries.json $(top_srcdir)/icons/ibus-kkc.svg
 	$(AM_V_GEN) $(GLIB_COMPILE_RESOURCES) ibus-setup-kkc.gresource.xml \
 		--target=$@ --sourcedir=$(builddir) --c-name ibus_kkc \
 		--generate-source
