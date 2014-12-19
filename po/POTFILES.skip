@@ -1,5 +1,4 @@
 src/ibus-setup-kkc.desktop.in
-src/ibus-kkc-preferences.ui
 src/engine.c
 src/setup.c
 src/kkc.xml.in

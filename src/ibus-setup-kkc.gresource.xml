@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/org/freedesktop/ibus/engine/kkc">
+    <file compressed="true" alias="dictionaries.json">ibus-kkc-dictionaries.json</file>
+    <file compressed="true">setup-dialog.ui</file>
+    <file compressed="true">dictionary-dialog.ui</file>
+    <file compressed="true">shortcut-dialog.ui</file>
+    <file compressed="true" alias="icon.svg">../icons/ibus-kkc.svg</file>
+  </gresource>
+</gresources>

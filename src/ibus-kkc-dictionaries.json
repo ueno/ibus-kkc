@@ -1,0 +1,107 @@
+[
+    {
+        "id": "large",
+        "filename": "SKK-JISYO.L",
+        "name": "Standard (large)",
+        "description": "Standard dictionary (SKK, large size)",
+        "default_enabled": true
+    },
+    {
+        "id": "medium",
+        "filename": "SKK-JISYO.M",
+        "name": "Standard (medium)",
+        "description": "Standard dictionary (SKK, medium size)",
+        "default_enabled": false
+    },
+    {
+        "id": "small",
+        "filename": "SKK-JISYO.S",
+        "name": "Standard (small)",
+        "description": "Standard dictionary (SKK, small size)",
+        "default_enabled": false
+    },
+    {
+        "id": "zipcode",
+        "filename": "SKK-JISYO.zipcode",
+        "name": "ZIP code",
+        "description": "Alternative dictionary for zipcodes",
+        "default_enabled": true
+    },
+    {
+        "id": "station",
+        "filename": "SKK-JISYO.station",
+        "name": "Station names",
+        "description": "Alternative dictionary for station names",
+        "default_enabled": true
+    },
+    {
+        "id": "okinawa",
+        "filename": "SKK-JISYO.okinawa",
+        "name": "Okinawa dialect",
+        "description": "Alternative dictionary for Okinawa dialect",
+        "default_enabled": false
+    },
+    {
+        "id": "jinmei",
+        "filename": "SKK-JISYO.jinmei",
+        "name": "Biographical",
+        "description": "Alternative dictionary for biographical names",
+        "default_enabled": true
+    },
+    {
+        "id": "geo",
+        "filename": "SKK-JISYO.geo",
+        "name": "Geographical",
+        "description": "Alternative dictionary for geographical names",
+        "default_enabled": true
+    },
+    {
+        "id": "assoc",
+        "filename": "SKK-JISYO.assoc",
+        "name": "Association and abbreviation",
+        "description": "Alternative dictionary for association and abbreviation",
+        "default_enabled": false
+    },
+    {
+        "id": "itaiji",
+        "filename": "SKK-JISYO.itaiji",
+        "name": "Itaiji",
+        "description": "Alternative dictionary for Itaiji",
+        "default_enabled": false
+    },
+    {
+        "id": "propernoun",
+        "filename": "SKK-JISYO.propernoun",
+        "name": "Proper nouns",
+        "description": "Alternative dictionary for proper nouns",
+        "default_enabled": false
+    },
+    {
+        "id": "pubdic+",
+        "filename": "SKK-JISYO.pubdic+",
+        "name": "pubdic",
+        "description": "Alternative dictionary based on pubdic",
+        "default_enabled": false
+    },
+    {
+        "id": "fullname",
+        "filename": "SKK-JISYO.fullname",
+        "name": "Biographical (fullname)",
+        "description": "Alternative dictionary for biographical names (fullname)",
+        "default_enabled": false
+    },
+    {
+        "id": "china_taiwan",
+        "filename": "SKK-JISYO.china_taiwan",
+        "name": "Geographical (China and Taiwan)",
+        "description": "Alternative dictionary for geographical names in China and Taiwan",
+        "default_enabled": false
+    },
+    {
+        "id": "law",
+        "filename": "SKK-JISYO.law",
+        "name": "Law terms",
+        "description": "Alternative dictionary for law terms",
+        "default_enabled": false
+    }
+]

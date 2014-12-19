@@ -9,5 +9,6 @@ namespace Config
     public const string LIBEXECDIR;
     public const string SETUPDIR;
     public const string DATADIR;
+    public const string SKKDICDIR;
     public const string VERSION;
 }

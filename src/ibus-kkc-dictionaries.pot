@@ -1,0 +1,89 @@
+msgid "Standard (large)"
+msgstr ""
+
+msgid "Standard dictionary (SKK, large size)"
+msgstr ""
+
+msgid "Standard (medium)"
+msgstr ""
+
+msgid "Standard dictionary (SKK, medium size)"
+msgstr ""
+
+msgid "Standard (small)"
+msgstr ""
+
+msgid "Standard dictionary (SKK, small size)"
+msgstr ""
+
+msgid "ZIP code"
+msgstr ""
+
+msgid "Alternative dictionary for zipcodes"
+msgstr ""
+
+msgid "Station names"
+msgstr ""
+
+msgid "Alternative dictionary for station names"
+msgstr ""
+
+msgid "Okinawa dialect"
+msgstr ""
+
+msgid "Alternative dictionary for Okinawa dialect"
+msgstr ""
+
+msgid "Biographical"
+msgstr ""
+
+msgid "Alternative dictionary for biographical names"
+msgstr ""
+
+msgid "Geographical"
+msgstr ""
+
+msgid "Alternative dictionary for geographical names"
+msgstr ""
+
+msgid "Association and abbreviation"
+msgstr ""
+
+msgid "Alternative dictionary for association and abbreviation"
+msgstr ""
+
+msgid "Itaiji"
+msgstr ""
+
+msgid "Alternative dictionary for Itaiji"
+msgstr ""
+
+msgid "Proper nouns"
+msgstr ""
+
+msgid "Alternative dictionary for proper nouns"
+msgstr ""
+
+msgid "pubdic"
+msgstr ""
+
+msgid "Alternative dictionary based on pubdic"
+msgstr ""
+
+msgid "Biographical (fullname)"
+msgstr ""
+
+msgid "Alternative dictionary for biographical names (fullname)"
+msgstr ""
+
+msgid "Geographical (China and Taiwan)"
+msgstr ""
+
+msgid "Alternative dictionary for geographical names in China and Taiwan"
+msgstr ""
+
+msgid "Law terms"
+msgstr ""
+
+msgid "Alternative dictionary for law terms"
+msgstr ""

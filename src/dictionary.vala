@@ -44,7 +44,7 @@ public class DictionaryMetadata : Object {
         }
 
         Object (id: id,
-                filename: filename,
+                filename: Path.build_filename (Config.SKKDICDIR, filename),
                 name: name,
                 description: description,
                 default_enabled: default_enabled,
