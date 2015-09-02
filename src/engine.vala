@@ -413,8 +413,10 @@ class KkcEngine : IBus.Engine {
         return prop;
     }
 
-    string[] LOOKUP_TABLE_LABELS = {"1", "2", "3", "4", "5", "6", "7",
-                                    "8", "9", "0", "a", "b", "c", "d", "e"};
+    static const string[] LOOKUP_TABLE_LABELS = {
+        "1", "2", "3", "4", "5", "6", "7", "8",
+        "9", "0", "a", "b", "c", "d", "e", "f"
+    };
 
     bool process_lookup_table_key_event (uint keyval,
                                          uint keycode,
