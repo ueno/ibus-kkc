@@ -201,7 +201,11 @@ class KkcEngine : IBus.Engine {
                                          context.candidates.page_start);
             update_lookup_table_fast (lookup_table, true);
             var candidate = context.candidates.get ();
-            if (show_annotation && candidate.annotation != null) {
+            if (show_annotation
+                && candidate.annotation != null
+                // SKK-JISYO.* has annotations marked as "?" for
+                // development purposes.
+                && candidate.annotation != "?") {
                 var text = new IBus.Text.from_string (
                     candidate.annotation);
                 update_auxiliary_text (text, true);
