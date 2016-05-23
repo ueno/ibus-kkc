@@ -284,27 +284,45 @@ class KkcEngine : IBus.Engine {
     }
 
     void update_input_mode () {
+        bool changed;
+
         // Update the menu item
         var iter = input_mode_props.map_iterator ();
         while (iter.next ()) {
             var input_mode = iter.get_key ();
             var prop = iter.get_value ();
-            if (input_mode == context.input_mode)
-                prop.set_state (IBus.PropState.CHECKED);
-            else
-                prop.set_state (IBus.PropState.UNCHECKED);
-            if (properties_registered)
+
+            changed = false;
+            if (input_mode == context.input_mode) {
+                if (prop.get_state () == IBus.PropState.UNCHECKED) {
+                    prop.set_state (IBus.PropState.CHECKED);
+                    changed = true;
+                }
+            } else {
+                if (prop.get_state () == IBus.PropState.CHECKED) {
+                    prop.set_state (IBus.PropState.UNCHECKED);
+                    changed = true;
+                }
+            }
+            if (changed && properties_registered)
                 update_property (prop);
         }
 
         // Update the menu
+        changed = false;
         var symbol = new IBus.Text.from_string (
             input_mode_symbols.get (context.input_mode));
         var label = new IBus.Text.from_string (
             _("Input Mode (%s)").printf (symbol.text));
-        input_mode_prop.set_label (label);
-        input_mode_prop.set_symbol (symbol);
-        if (properties_registered)
+        if (input_mode_prop.get_symbol () != symbol) {
+            input_mode_prop.set_symbol (symbol);
+            changed = true;
+        }
+        if (input_mode_prop.get_label () != label) {
+            input_mode_prop.set_label (label);
+            changed = true;
+        }
+        if (changed && properties_registered)
             update_property (input_mode_prop);
     }
 

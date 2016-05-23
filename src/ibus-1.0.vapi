@@ -439,6 +439,7 @@ namespace IBus {
 		public unowned string get_icon ();
 		public unowned string get_key ();
 		public unowned IBus.Text get_label ();
+		public unowned IBus.Text get_symbol ();
 		public IBus.PropType get_prop_type ();
 		public bool get_sensitive ();
 		public IBus.PropState get_state ();
