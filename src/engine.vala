@@ -688,7 +688,7 @@ class KkcEngine : IBus.Engine {
                 "org.freedesktop.IBus.KKC",
                 N_("Kana Kanji"), Config.PACKAGE_VERSION, "GPL",
                 "Daiki Ueno <ueno@gnu.org>",
-                "http://code.google.com/p/ibus/",
+                "https://github.com/ueno/ibus-kkc",
                 "",
                 "ibus-kkc");
             var engine = new IBus.EngineDesc (
