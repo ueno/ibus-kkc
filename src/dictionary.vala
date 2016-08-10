@@ -125,6 +125,9 @@ public class DictionaryRegistry : Object {
                          file.get_path (),
                          e.message);
             }
+        } else {
+                warning ("Dictionary file at %s could not be found. We will run without any custom dictionaries.",
+                         file.get_path ());
         }
     }
 }
