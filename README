@@ -1,1 +1,28 @@
 ibus-kkc -- a Japanese Kana Kanji input engine for IBus
+=======================================================
+
+ibus-kkc makes the Kana Kanji conversion library (libkkc[0]) usable
+through IBus.
+
+
+Custom dictionaries
+-------------------
+
+ibus-kkc will look for a "dictionaries.json" file in a path consisting
+of the user's config directory concatenated with the package name (the
+default template for this file is at src/ibus-kkc-dictionaries.json[1]). By
+default the file will be searched in "$HOME/.config/ibus-kkc/".
+
+The "dictionaries.json" file is in JSON format and contains a list of
+JSON objects describing dictionaries that can be downloaded from here[2]
+(this site is in Japanese). All custom dictionary files mentioned in
+"dictionaries.json" will be searched in "/usr/local/share/skk/".
+
+The assumed default encoding of the dictionaries is "EUC-JP". If your
+dictionary uses a different encoding you can add an "encoding" field
+to the JSON object describing your dictionary. The value of that field
+should be the name of the encoding used in your custom dictionary file.
+
+[0] https://github.com/ueno/libkkc
+[1] https://github.com/ueno/ibus-kkc/blob/master/src/ibus-kkc-dictionaries.json
+[2] http://openlab.ring.gr.jp/skk/wiki/wiki.cgi?page=SKK%BC%AD%BD%F1
