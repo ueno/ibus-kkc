@@ -402,7 +402,11 @@ class SetupDialog : Gtk.Dialog {
             } catch (Error e) {
                 warning ("can't write shortcut: %s", e.message);
             }
+#if VALA_0_36
+            model.remove (ref iter);
+#else
             model.remove (iter);
+#endif
         }
     }
 
@@ -439,7 +443,11 @@ class SetupDialog : Gtk.Dialog {
                         continue;
                     keymap.set (old_event, null);
                 }
+#if VALA_0_36
+                ((Gtk.ListStore)model).remove (ref iter);
+#else
                 ((Gtk.ListStore)model).remove (iter);
+#endif
             }
         }
         try {
@@ -524,8 +532,13 @@ class SetupDialog : Gtk.Dialog {
         var rows = selection.get_selected_rows (out model);
         foreach (var row in rows) {
             Gtk.TreeIter iter;
-            if (model.get_iter (out iter, row))
+            if (model.get_iter (out iter, row)) {
+#if VALA_0_36
+                ((Gtk.ListStore)model).remove (ref iter);
+#else
                 ((Gtk.ListStore)model).remove (iter);
+#endif
+            }
         }
         save_dictionaries ("system_dictionaries");
     }
