@@ -24,6 +24,7 @@
 			<rank>77</rank>
 			<symbol>&#x3042;</symbol>
 			<textdomain>ibus-kkc</textdomain>
+			@ICON_PROP_KEY_XML@
 		</engine>
 	</engines>
 </component>

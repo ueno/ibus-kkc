@@ -118,7 +118,8 @@ edit = sed \
 	-e 's|@libexecdir[@]|$(libexecdir)|g' \
 	-e 's|@pkgdatadir[@]|$(pkgdatadir)|g' \
 	-e 's|@top_srcdir[@]|$(top_srcdir)|g' \
-	-e 's|@srcdir[@]|$(srcdir)|g'
+	-e 's|@srcdir[@]|$(srcdir)|g' \
+	-e 's|@ICON_PROP_KEY_XML[@]|$(ICON_PROP_KEY_XML)|g'
 
 desktop_in_in_files = ibus-setup-kkc.desktop.in.in
 desktop_in_files = $(desktop_in_in_files:.in.in=.in)

@@ -76,6 +76,18 @@ AC_ARG_WITH([skkdic],
   [with_skkdic='${datarootdir}/skk'])
 AC_SUBST([skkdicdir], [$with_skkdic])
 
+# check icon_prop_key
+AC_MSG_CHECKING([icon_prop_key support])
+PKG_CHECK_EXISTS([ibus-1.0 >= 1.5.11], [icon_prop_key=yes], [icon_prop_key=no])
+if test $icon_prop_key = yes; then
+    ICON_PROP_KEY_XML="<icon_prop_key>InputMode</icon_prop_key>"
+    AC_MSG_RESULT([yes])
+else
+    ICON_PROP_KEY_XML="<!-- <icon_prop_key>InputMode</icon_prop_key> -->"
+    AC_MSG_RESULT([ibus 1.5.11 or later supports icon-prop-key in IBus.EngineDesc])
+fi
+AC_SUBST(ICON_PROP_KEY_XML)
+
 # check libkkc
 PKG_CHECK_MODULES(LIBKKC, [kkc-1.0 >= 0.3.4], ,
   AC_MSG_ERROR([can't find libkkc]))
