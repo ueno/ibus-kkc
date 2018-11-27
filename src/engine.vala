@@ -1,6 +1,6 @@
 /* 
- * Copyright (C) 2011-2014 Daiki Ueno <ueno@gnu.org>
- * Copyright (C) 2011-2014 Red Hat, Inc.
+ * Copyright (C) 2011-2018 Daiki Ueno <ueno@gnu.org>
+ * Copyright (C) 2011-2018 Red Hat, Inc.
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -20,8 +20,9 @@
 using Gee;
 
 class KkcEngine : IBus.Engine {
-    // Preferences are shared among KkcEngine instances.
-    static Preferences preferences;
+    // Settings are shared among KkcEngine instances.
+    static Settings settings;
+    static DictionaryRegistry registry;
 
     // Dictionaries are shared among KkcEngine instances and
     // maintained in the per-class signal handler in main().
@@ -134,15 +135,12 @@ class KkcEngine : IBus.Engine {
             context.dictionaries.add (dictionary);
         }
 
-        apply_preferences ();
-        preferences.value_changed.connect ((name, value) => {
-                apply_preferences ();
-                if (name == "dictionaries") {
-                    // KkcEngine.dictionaries should be updated separately
-                    context.dictionaries.clear ();
-                    foreach (var dictionary in KkcEngine.dictionaries) {
-                        context.dictionaries.add (dictionary);
-                    }
+        apply_settings ();
+        settings.changed["dictionaries"].connect ((key) => {
+                // KkcEngine.dictionaries should be updated separately
+                context.dictionaries.clear ();
+                foreach (var dictionary in KkcEngine.dictionaries) {
+                    context.dictionaries.add (dictionary);
                 }
             });
 
@@ -330,7 +328,7 @@ class KkcEngine : IBus.Engine {
         KkcEngine.dictionaries.clear ();
         Variant? variant;
 
-        variant = preferences.get ("user_dictionary");
+        variant = settings.get_value ("user-dictionary");
         if (variant != null) {
             try {
                 KkcEngine.dictionaries.add (new Kkc.UserDictionary (
@@ -342,11 +340,11 @@ class KkcEngine : IBus.Engine {
             }
         }
 
-        variant = preferences.get ("system_dictionaries");
+        variant = settings.get_value ("system-dictionaries");
         assert (variant != null);
         string[] strv = variant.dup_strv ();
         foreach (var id in strv) {
-            var metadata = preferences.get_dictionary_metadata (id);
+            var metadata = registry.get_metadata (id);
             try {
                 KkcEngine.dictionaries.add (
                     new Kkc.SystemSegmentDictionary (metadata.filename,
@@ -359,37 +357,58 @@ class KkcEngine : IBus.Engine {
         }
     }
 
-    void apply_preferences () {
-        Variant? variant;
+    void apply_settings () {
+        settings.bind ("punctuation-style",
+                       context,
+                       "punctuation-style",
+                       SettingsBindFlags.GET);
+        settings.bind ("auto-correct",
+                       context,
+                       "auto-correct",
+                       SettingsBindFlags.GET);
+        settings.bind ("page-size",
+                       context.candidates,
+                       "page-size",
+                       SettingsBindFlags.GET);
+        settings.bind ("pagination-start",
+                       context.candidates,
+                       "page-start",
+                       SettingsBindFlags.GET);
+        settings.bind ("initial-input-mode",
+                       context,
+                       "input-mode",
+                       SettingsBindFlags.GET);
+        settings.bind_with_mapping ("typing-rule",
+                                    context,
+                                    "typing-rule",
+                                    SettingsBindFlags.GET,
+                                    (SettingsBindGetMappingShared)
+                                        typing_rule_get_mapping,
+                                    (v, t) => {
+                                        assert_not_reached ();
+                                    },
+                                    null, null);
 
-        variant = preferences.get ("punctuation_style");
-        assert (variant != null);
-        context.punctuation_style = (Kkc.PunctuationStyle) variant.get_int32 ();
+        lookup_table.set_page_size (settings.get_int ("page-size"));
+        settings.changed["page-size"].connect ((key) => {
+            lookup_table.set_page_size (settings.get_int ("page-size"));
+        });
+        show_annotation = settings.get_boolean ("show-annotation");
+        settings.changed["show-annotation"].connect ((key) => {
+            show_annotation = settings.get_boolean ("show-annotation");
+        });
+        use_custom_keymap = settings.get_boolean ("use-custom-keymap");
+        settings.changed["use-custom-keymap"].connect ((key) => {
+            use_custom_keymap = settings.get_boolean ("use-custom-keymap");
+        });
+        keymap = IBus.Keymap.get (settings.get_string ("keymap"));
+        settings.changed["keymap"].connect ((key) => {
+            keymap = IBus.Keymap.get (settings.get_string ("keymap"));
+        });
+    }
 
-        variant = preferences.get ("auto_correct");
-        assert (variant != null);
-        context.auto_correct = variant.get_boolean ();
-
-        variant = preferences.get ("page_size");
-        assert (variant != null);
-        context.candidates.page_size = (uint) variant.get_int32 ();
-        lookup_table.set_page_size (variant.get_int32 ());
-
-        variant = preferences.get ("pagination_start");
-        assert (variant != null);
-        context.candidates.page_start = (uint) variant.get_int32 ();
-
-        variant = preferences.get ("initial_input_mode");
-        assert (variant != null);
-        context.input_mode = (Kkc.InputMode) variant.get_int32 ();
-
-        variant = preferences.get ("show_annotation");
-        assert (variant != null);
-        show_annotation = variant.get_boolean ();
-        
-        variant = preferences.get ("typing_rule");
-        assert (variant != null);
-
+    static bool typing_rule_get_mapping (Value value,
+                                         Variant variant) {
         var parent_metadata = Kkc.RuleMetadata.find (variant.get_string ());
         assert (parent_metadata != null);
 
@@ -398,21 +417,14 @@ class KkcEngine : IBus.Engine {
             "ibus-kkc", "rules");
 
         try {
-            context.typing_rule = new Kkc.UserRule (parent_metadata,
-                                                    base_dir,
-                                                    "ibus-kkc");
+            value.set_object (new Kkc.UserRule (parent_metadata,
+                                                base_dir,
+                                                "ibus-kkc"));
         } catch (Error e) {
             warning ("can't load typing rule %s: %s",
                      variant.get_string (), e.message);
         }
-
-        variant = preferences.get ("use_custom_keymap");
-        assert (variant != null);
-        use_custom_keymap = variant.get_boolean ();
-
-        variant = preferences.get ("keymap");
-        assert (variant != null);
-        keymap = IBus.Keymap.get (variant.get_string ());
+        return true;
     }
 
     IBus.Property register_input_mode_property (Kkc.InputMode mode,
@@ -657,12 +669,6 @@ class KkcEngine : IBus.Engine {
 
         bus.disconnected.connect (() => { IBus.quit (); });
 
-        var config = bus.get_config ();
-        if (config == null) {
-            stderr.printf ("ibus-config component is not running!\n");
-            return 1;
-        }
-
         try {
             KkcEngine.language_model = Kkc.LanguageModel.load ("sorted3");
         } catch (Error e) {
@@ -670,13 +676,14 @@ class KkcEngine : IBus.Engine {
             return 1;
         }
 
-        KkcEngine.preferences = new Preferences (config);
+        KkcEngine.settings = new Settings ("org.freedesktop.ibus.engine.kkc");
+        KkcEngine.registry = new DictionaryRegistry ();
         KkcEngine.dictionaries = new ArrayList<Kkc.Dictionary> ();
+
+        // KkcEngine.settings.bind() requires an instance instead of KkcEngine.
         KkcEngine.reload_dictionaries ();
-        KkcEngine.preferences.value_changed.connect ((name, value) => {
-                if (name == "dictionaries") {
-                    KkcEngine.reload_dictionaries ();
-                }
+        KkcEngine.settings.changed["dictionaries"].connect ((key) => {
+                KkcEngine.reload_dictionaries ();
             });
 
         var factory = new IBus.Factory (bus.get_connection());

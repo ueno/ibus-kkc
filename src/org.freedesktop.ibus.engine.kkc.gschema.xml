@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+  <enum id='org.freedesktop.ibus.engine.kkc.KkcPunctuationStyle'>
+    <value nick='ja-ja' value='0'/>
+    <value nick='en-en' value='1'/>
+    <value nick='ja-en' value='2'/>
+    <value nick='en-ja' value='3'/>
+  </enum>
+  <enum id='org.freedesktop.ibus.engine.kkc.KkcInputMode'>
+    <value nick='hiragana' value='0'/>
+    <value nick='katakana' value='1'/>
+    <value nick='hankaku-katakana' value='2'/>
+    <value nick='latin' value='3'/>
+    <value nick='wide-latin' value='4'/>
+    <value nick='direct' value='5'/>
+  </enum>
+
+  <schema gettext-domain="ibus-kkc" id="org.freedesktop.ibus.engine.kkc" path="/org/freedesktop/ibus/engine/kkc/">
+    <key name="user-dictionary" type="s">
+      <default>''</default>
+      <summary></summary>
+      <description></description>
+    </key>
+    <key name="system-dictionaries" type="as">
+      <default>[]</default>
+      <summary></summary>
+      <description></description>
+    </key>
+    <key name="punctuation-style" enum="org.freedesktop.ibus.engine.kkc.KkcPunctuationStyle">
+      <default>'ja-ja'</default>
+      <summary></summary>
+      <description></description>
+    </key>
+    <key name="auto-correct" type="b">
+      <default>true</default>
+      <summary></summary>
+      <description></description>
+    </key>
+    <key name="page-size" type="i">
+      <default>10</default>
+      <summary></summary>
+      <description></description>
+    </key>
+    <key name="pagination-start" type="i">
+      <default>0</default>
+      <summary></summary>
+      <description></description>
+    </key>
+    <key name="show-annotation" type="b">
+      <default>false</default>
+      <summary></summary>
+      <description></description>
+    </key>
+    <key name="initial-input-mode" enum="org.freedesktop.ibus.engine.kkc.KkcInputMode">
+      <default>'hiragana'</default>
+      <summary></summary>
+      <description></description>
+    </key>
+    <key name="egg-like-newline" type="b">
+      <default>false</default>
+      <summary></summary>
+      <description></description>
+    </key>
+    <key name="typing-rule" type="s">
+      <default>'default'</default>
+      <summary></summary>
+      <description></description>
+    </key>
+    <key name="use-custom-keymap" type="b">
+      <default>false</default>
+      <summary></summary>
+      <description></description>
+    </key>
+    <key name="keymap" type="s">
+      <default>'jp'</default>
+      <summary></summary>
+      <description></description>
+    </key>
+  </schema>
+</schemalist>
