@@ -1,6 +1,6 @@
 /* 
- * Copyright (C) 2011-2014 Daiki Ueno <ueno@gnu.org>
- * Copyright (C) 2011-2014 Red Hat, Inc.
+ * Copyright (C) 2011-2018 Daiki Ueno <ueno@gnu.org>
+ * Copyright (C) 2011-2018 Red Hat, Inc.
  * 
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -18,6 +18,12 @@
  * 02110-1301, USA.
  */
 using Gee;
+
+struct SettingsBindData {
+    Gtk.ComboBox combo;
+    int column;
+    unowned EnumClass eclass;
+}
 
 class DictionaryCellRenderer : Gtk.CellRendererText {
     private DictionaryMetadata _metadata;
@@ -37,10 +43,10 @@ class DictionaryDialog : Gtk.Dialog {
     [GtkChild]
     Gtk.TreeView available_dictionaries_treeview;
 
-    Preferences preferences;
+    Settings settings;
 
-    public DictionaryDialog (Preferences preferences) {
-        this.preferences = preferences;
+    public DictionaryDialog (Settings settings) {
+        this.settings = settings;
 
         Gtk.ListStore model;
         Gtk.CellRenderer renderer;
@@ -55,21 +61,35 @@ class DictionaryDialog : Gtk.Dialog {
         column = new Gtk.TreeViewColumn.with_attributes ("dict", renderer,
                                                          "metadata", 0);
         available_dictionaries_treeview.append_column (column);
-        populate_available_dictionaries_treeview ();
+        settings.bind_with_mapping ("system-dictionaries",
+                                    available_dictionaries_treeview,
+                                    "model",
+                                    SettingsBindFlags.GET,
+                                    (SettingsBindGetMappingShared)
+                                        treeview_available_dict_get_mapping,
+                                    (v, t) => {
+                                        assert_not_reached ();
+                                    },
+                                    null, null);
     }        
 
-    void populate_available_dictionaries_treeview () {
-        Variant? variant = preferences.get ("system_dictionaries");
-        assert (variant != null);
-        string[] strv = variant.dup_strv ();
+    static bool treeview_available_dict_get_mapping (Value value,
+                                                     Variant variant) {
+        var _variant = variant;
+        if (_variant.equal (new Variant.strv ({})))
+            _variant =  SetupDialog.get_system_dictionaries ();
+        assert (_variant != null);
+        var strv = _variant.dup_strv ();
+
         Set<string> enabled = new Gee.HashSet<string> ();
         foreach (var str in strv) {
             enabled.add (str);
         }
 
-        var model = (Gtk.ListStore) available_dictionaries_treeview.get_model ();
-        model.clear ();
-        var available_dictionaries = preferences.list_available_dictionaries ();
+        var model = new Gtk.ListStore (2,
+                                       typeof (DictionaryMetadata),
+                                       typeof (string));
+        var available_dictionaries = SetupDialog.list_available_dictionaries ();
         foreach (var metadata in available_dictionaries) {
             if (!enabled.contains (metadata.id)) {
                 Gtk.TreeIter iter;
@@ -79,6 +99,8 @@ class DictionaryDialog : Gtk.Dialog {
                            1, dgettext (null, metadata.description));
             }
         }
+        value.set_object (model);
+        return true;
     }
 
     public DictionaryMetadata[] get_dictionaries () {
@@ -183,16 +205,18 @@ class SetupDialog : Gtk.Dialog {
     [GtkChild]
     Gtk.Label version_label;
 
-    Preferences preferences;
+    Settings settings;
+    static DictionaryRegistry registry;
 
     Kkc.UserRule shortcut_rule;
     Kkc.InputMode shortcut_input_mode;
 
-    public SetupDialog (Preferences preferences) {
-        this.preferences = preferences;
-
+    public SetupDialog () {
         version_label.use_markup = true;
         version_label.label = "<b>%s</b>".printf (Config.VERSION);
+
+        settings = new Settings ("org.freedesktop.ibus.engine.kkc");
+        registry = new DictionaryRegistry ();
 
         page_size_spinbutton.set_range (7.0, 16.0);
         page_size_spinbutton.set_increments (1.0, 1.0);
@@ -295,11 +319,6 @@ class SetupDialog : Gtk.Dialog {
         renderer = new Gtk.CellRendererText ();
         keymap_combobox.pack_start (renderer, false);
         keymap_combobox.set_attributes (renderer, "text", 1);
-
-        use_custom_keymap_checkbutton.toggled.connect (() => {
-                keymap_combobox.sensitive =
-                    use_custom_keymap_checkbutton.get_active ();
-            });
 
         load ();
 
@@ -457,25 +476,8 @@ class SetupDialog : Gtk.Dialog {
         }
     }
 
-    void populate_dictionaries_treeview () {
-        Variant? variant = preferences.get ("system_dictionaries");
-        assert (variant != null);
-        string[] strv = variant.dup_strv ();
-        var model = (Gtk.ListStore) dictionaries_treeview.get_model ();
-        foreach (var id in strv) {
-            var metadata = preferences.get_dictionary_metadata (id);
-            if (metadata != null) {
-                Gtk.TreeIter iter;
-                model.append (out iter);
-                model.set (iter,
-                           0, metadata,
-                           1, dgettext (null, metadata.description));
-            }
-        }
-    }
-
     void populate_shortcut_treeview (Kkc.InputMode input_mode) {
-        Variant? variant = preferences.get ("typing_rule");
+        var variant = settings.get_value ("typing-rule");
         assert (variant != null);
 
         var parent_metadata = Kkc.RuleMetadata.find (variant.get_string ());
@@ -511,7 +513,7 @@ class SetupDialog : Gtk.Dialog {
     }
 
     void add_dict () {
-        var dictionary_dialog = new DictionaryDialog (preferences);
+        var dictionary_dialog = new DictionaryDialog (settings);
         dictionary_dialog.set_transient_for (this);
         if (dictionary_dialog.run () == Gtk.ResponseType.OK) {
             var dictionaries = dictionary_dialog.get_dictionaries ();
@@ -521,7 +523,7 @@ class SetupDialog : Gtk.Dialog {
                 model.append (out iter);
                 model.set (iter, 0, dictionary);
             }
-            save_dictionaries ("system_dictionaries");
+            dictionaries_treeview.set ("model", model);
         }
         dictionary_dialog.hide ();
     }
@@ -540,7 +542,7 @@ class SetupDialog : Gtk.Dialog {
 #endif
             }
         }
-        save_dictionaries ("system_dictionaries");
+        dictionaries_treeview.set ("model", model);
     }
 
     void up_dict () {
@@ -551,9 +553,12 @@ class SetupDialog : Gtk.Dialog {
             Gtk.TreeIter prev = iter;
             if (model.iter_previous (ref prev)) {
                 ((Gtk.ListStore)model).swap (iter, prev);
+                down_dict_toolbutton.sensitive = true;
+                prev = iter;
+                up_dict_toolbutton.sensitive = model.iter_previous (ref prev);
             }
         }
-        save_dictionaries ("system_dictionaries");
+        dictionaries_treeview.set ("model", model);
     }
 
     void down_dict () {
@@ -564,78 +569,134 @@ class SetupDialog : Gtk.Dialog {
             Gtk.TreeIter next = iter;
             if (model.iter_next (ref next)) {
                 ((Gtk.ListStore)model).swap (iter, next);
+                up_dict_toolbutton.sensitive = true;
+                next = iter;
+                down_dict_toolbutton.sensitive = model.iter_next (ref next);
             }
         }
-        save_dictionaries ("system_dictionaries");
+        dictionaries_treeview.set ("model", model);
     }
 
-    void load_spinbutton (string name,
-                          Gtk.SpinButton spin) {
-        Variant? variant = preferences.get (name);
-        assert (variant != null);
-        spin.value = (double) variant.get_int32 ();
-        spin.value_changed.connect (() => {
-                preferences.set (name, (int) spin.value);
-            });
-    }
-
-    void load_togglebutton (string name,
-                            Gtk.ToggleButton toggle) {
-        Variant? variant = preferences.get (name);
-        assert (variant != null);
-        toggle.active = variant.get_boolean ();
-        toggle.toggled.connect (() => {
-                preferences.set (name,
-                                 toggle.active);
-            });
-    }
-
-    void load_combobox (string name,
-                        Gtk.ComboBox combo,
-                        int column) {
-        Variant? variant = preferences.get (name);
-        assert (variant != null);
-        Gtk.TreeIter iter;
+    static bool combobox_enum_get_mapping (Value value,
+                                           Variant variant,
+                                           SettingsBindData data) {
+        var combo = data.combo;
+        int column = data.column;
+        unowned EnumClass eclass = data.eclass;
+        string nick = variant.get_string(null);
+        var evalue = eclass.get_value_by_nick (nick);
+        int mode = evalue.value;
+        int index = 0;
         var model = combo.get_model ();
+        Gtk.TreeIter iter;
         if (model.get_iter_first (out iter)) {
-            var index = variant.get_int32 ();
-            int _index;
             do {
-                model.get (iter, column, out _index, -1);
-                if (index == _index) {
-                    combo.set_active_iter (iter);
-                    break;
+                int _mode;
+                model.get (iter, column, out _mode, -1);
+                if (mode == _mode) {
+                    value.set_int(index);
+                    return true;
                 }
+                index++;
             } while (model.iter_next (ref iter));
         }
-
-        combo.changed.connect (() => {
-                save_combobox (name, combo, column);
-            });
+        assert_not_reached ();
     }
 
-    void load_combobox_string (string name,
-                               Gtk.ComboBox combo,
-                               int column) {
-        Variant? variant = preferences.get (name);
-        assert (variant != null);
+    static Variant combobox_enum_set_mapping (Value value,
+                                              VariantType expected_type,
+                                              SettingsBindData data) {
+        var combo = data.combo;
+        int column = data.column;
+        unowned EnumClass eclass = data.eclass;
         Gtk.TreeIter iter;
-        var model = combo.get_model ();
+        if (combo.get_active_iter (out iter)) {
+            int mode;
+            var model = combo.get_model ();
+            model.get (iter, column, out mode, -1);
+            var evalue = eclass.get_value (mode);
+            return evalue.value_nick;
+        }
+        assert_not_reached ();
+    }
+
+    static bool treeview_dict_get_mapping (Value value,
+                                           Variant variant) {
+        var _variant = variant;
+        if (_variant.equal (new Variant.strv ({})))
+            _variant =  get_system_dictionaries ();
+        assert (_variant != null);
+        var strv = _variant.dup_strv ();
+
+        var model = new Gtk.ListStore (2,
+                                       typeof (DictionaryMetadata),
+                                       typeof (string));
+        foreach (var id in strv) {
+            var metadata = registry.get_metadata (id);
+            if (metadata != null) {
+                Gtk.TreeIter iter;
+                model.append (out iter);
+                model.set (iter,
+                           0, metadata,
+                           1, dgettext (null, metadata.description));
+            }
+        }
+        value.set_object (model);
+        return true;
+    }
+
+    static Variant treeview_dict_set_mapping (Value value,
+                                              VariantType expected_type) {
+        var model = value.get_object () as Gtk.TreeModel;
+        Gtk.TreeIter iter;
+        ArrayList<string> dictionaries = new ArrayList<string> ();
         if (model.get_iter_first (out iter)) {
-            string str = variant.get_string ();
             do {
-                string _str;
-                model.get (iter, column, out _str, -1);
-                if (str == _str) {
-                    combo.set_active_iter (iter);
-                    break;
-                }
+                DictionaryMetadata metadata;
+                model.get (iter, 0, out metadata, -1);
+                dictionaries.add (metadata.id);
             } while (model.iter_next (ref iter));
         }
+        return dictionaries.to_array ();
+    }
 
-        combo.changed.connect (() => {
-                save_combobox_string (name, combo, column);
-            });
+    void settings_combobox_string (string name,
+                                   Gtk.ComboBox combo,
+                                   int column) {
+        combo.set_id_column (column);
+        settings.bind (name, combo, "active-id", SettingsBindFlags.DEFAULT);
+    }
+
+    void settings_combobox_enum (string name,
+                                 Gtk.ComboBox combo,
+                                 int column,
+                                 EnumClass eclass) {
+        SettingsBindData *data = malloc (sizeof (SettingsBindData));
+        *data = SettingsBindData() {
+            combo = combo, column = column, eclass = eclass
+        };
+        settings.bind_with_mapping (name,
+                                    combo,
+                                    "active",
+                                    SettingsBindFlags.DEFAULT,
+                                    (SettingsBindGetMappingShared)
+                                        combobox_enum_get_mapping,
+                                    (SettingsBindSetMappingShared)
+                                        combobox_enum_set_mapping,
+                                    data, free);
+    }
+
+    void settings_treeview_dict (string name,
+                                 Gtk.TreeView treeview) {
+        settings.bind_with_mapping (name,
+                                    treeview,
+                                    "model",
+                                    SettingsBindFlags.DEFAULT,
+                                    (SettingsBindGetMappingShared)
+                                        treeview_dict_get_mapping,
+                                    (SettingsBindSetMappingShared)
+                                        treeview_dict_set_mapping,
+                                    null, null);
     }
 
     void select_shortcut_section (Kkc.InputMode input_mode) {
@@ -655,59 +716,46 @@ class SetupDialog : Gtk.Dialog {
     }
 
     void load () {
-        load_combobox_string ("typing_rule", typing_rule_combobox, 0);
-        load_combobox ("initial_input_mode", initial_input_mode_combobox, 1);
-        load_combobox ("punctuation_style", punctuation_style_combobox, 1);
-        load_togglebutton ("auto_correct", auto_correct_checkbutton);
-        load_togglebutton ("use_custom_keymap", use_custom_keymap_checkbutton);
-        load_combobox_string ("keymap", keymap_combobox, 0);
+        settings_combobox_string ("typing-rule", typing_rule_combobox, 0);
+        settings_combobox_enum (
+            "initial-input-mode",
+            initial_input_mode_combobox,
+            1,
+            (EnumClass)typeof (Kkc.InputMode).class_ref ());
+        settings_combobox_enum (
+            "punctuation-style",
+            punctuation_style_combobox,
+            1,
+            (EnumClass)typeof (Kkc.PunctuationStyle).class_ref ());
+        settings.bind ("auto-correct",
+                       auto_correct_checkbutton,
+                       "active",
+                       SettingsBindFlags.DEFAULT);
+        settings.bind ("use-custom-keymap",
+                       use_custom_keymap_checkbutton,
+                       "active",
+                       SettingsBindFlags.DEFAULT);
+        settings_combobox_string ("keymap", keymap_combobox, 0);
+        settings.bind ("use-custom-keymap",
+                       keymap_combobox,
+                       "sensitive",
+                       SettingsBindFlags.GET);
 
-        load_spinbutton ("page_size", page_size_spinbutton);
-        load_spinbutton ("pagination_start", pagination_start_spinbutton);
-        load_togglebutton ("show_annotation", show_annotation_checkbutton);
+        settings.bind ("page-size",
+                       page_size_spinbutton,
+                       "value",
+                       SettingsBindFlags.DEFAULT);
+        settings.bind ("pagination-start",
+                       pagination_start_spinbutton,
+                       "value",
+                       SettingsBindFlags.DEFAULT);
+        settings.bind ("show-annotation",
+                       show_annotation_checkbutton,
+                       "active",
+                       SettingsBindFlags.DEFAULT);
 
-        populate_dictionaries_treeview ();
+        settings_treeview_dict ("system-dictionaries", dictionaries_treeview);
         select_shortcut_section (Kkc.InputMode.HIRAGANA);
-    }
-
-    void save_dictionaries (string name) {
-        var model = dictionaries_treeview.get_model ();
-        Gtk.TreeIter iter;
-        if (model.get_iter_first (out iter)) {
-            ArrayList<string> dictionaries = new ArrayList<string> ();
-            do {
-                DictionaryMetadata metadata;
-                model.get (iter, 0, out metadata, -1);
-                dictionaries.add (metadata.id);
-            } while (model.iter_next (ref iter));
-            preferences.set (name, dictionaries.to_array ());
-        }
-    }
-
-    void save_combobox (string name,
-                        Gtk.ComboBox combo,
-                        int column)
-    {
-        Gtk.TreeIter iter;
-        if (combo.get_active_iter (out iter)) {
-            int index;
-            var model = combo.get_model ();
-            model.get (iter, column, out index, -1);
-            preferences.set (name, index);
-        }
-    }
-
-    void save_combobox_string (string name,
-                               Gtk.ComboBox combo,
-                               int column)
-    {
-        Gtk.TreeIter iter;
-        if (combo.get_active_iter (out iter)) {
-            string str;
-            var model = combo.get_model ();
-            model.get (iter, column, out str, -1);
-            preferences.set (name, str);
-        }
     }
 
     static const uint[] IGNORED_KEYVALS = {
@@ -741,6 +789,20 @@ class SetupDialog : Gtk.Dialog {
         }
     }
 
+    public static DictionaryMetadata[] list_available_dictionaries () {
+        return registry.list_available ();
+    }
+
+    public static Variant get_system_dictionaries () {
+        ArrayList<string> dictionaries = new ArrayList<string> ();
+        foreach (var metadata in list_available_dictionaries ()) {
+            if (metadata.default_enabled) {
+                dictionaries.add (metadata.id);
+            }
+        }
+        return dictionaries.to_array ();
+    }
+
     public static int main (string[] args) {
         IBus.init ();
         Kkc.init ();
@@ -756,13 +818,7 @@ class SetupDialog : Gtk.Dialog {
             return 1;
         }
 
-        var config = bus.get_config ();
-        if (config == null) {
-            stderr.printf ("ibus-config component is not running!\n");
-            return 1;
-        }
-
-        var setup_dialog = new SetupDialog (new Preferences (config));
+        var setup_dialog = new SetupDialog ();
 
         setup_dialog.run ();
         return 0;

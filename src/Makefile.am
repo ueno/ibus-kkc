@@ -1,6 +1,6 @@
 # ibus-kkc - The Japanese Kana Kanji engine for IBus
 #
-# Copyright (C) 2012-2013 Daiki Ueno <ueno@gnu.org>
+# Copyright (C) 2012-2018 Daiki Ueno <ueno@gnu.org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -30,7 +30,6 @@ libutil_la_VALAFLAGS =				\
 	--library ibus-kkc			\
 	$(VALAFLAGS)
 libutil_la_SOURCES =				\
-	preferences.vala			\
 	dictionary.vala				\
 	$(NULL)
 libutil_la_CFLAGS =				\
@@ -139,6 +138,10 @@ kkc.xml.in: kkc.xml.in.in
 
 @INTLTOOL_XML_NOMERGE_RULE@
 
+gsettings_SCHEMAS = org.freedesktop.ibus.engine.kkc.gschema.xml
+
+@GSETTINGS_RULES@
+
 GITIGNOREFILES =				\
         $(libutil_la_SOURCES:.vala=.c)		\
         $(ibus_engine_kkc_SOURCES:.vala=.c)	\
@@ -167,6 +170,7 @@ EXTRA_DIST =					\
 	ibus-kkc-dictionaries.json		\
 	ibus-kkc-dictionaries.pot		\
 	$(desktop_in_in_files)			\
+	$(gsettings_SCHEMAS)			\
 	kkc.xml.in.in				\
 	ibus-engine-kkc.gresource.xml		\
 	ibus-setup-kkc.gresource.xml		\
