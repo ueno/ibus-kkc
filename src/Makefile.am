@@ -129,7 +129,8 @@ $(desktop_in_files): %.desktop.in: %.desktop.in.in Makefile
 desktopdir=$(datadir)/applications
 desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
 
-@INTLTOOL_DESKTOP_RULE@
+$(desktop_DATA): $(addsuffix .in, $(desktop_DATA))
+	cp -f $< $@
 
 component_DATA = kkc.xml
 componentdir = $(datadir)/ibus/component
@@ -137,7 +138,8 @@ componentdir = $(datadir)/ibus/component
 kkc.xml.in: kkc.xml.in.in
 	$(AM_V_GEN) $(edit) $< > $@.tmp && mv $@.tmp $@
 
-@INTLTOOL_XML_NOMERGE_RULE@
+$(component_DATA): $(addsuffix .in, $(component_DATA))
+	cp -f $< $@
 
 GITIGNOREFILES =				\
         $(libutil_la_SOURCES:.vala=.c)		\
