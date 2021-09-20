@@ -130,16 +130,16 @@ desktopdir=$(datadir)/applications
 desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
 
 $(desktop_DATA): $(addsuffix .in, $(desktop_DATA))
-	cp -f $< $@
+	$(AM_V_GEN) $(MSGFMT) --desktop --template $< -d $(top_srcdir)/po -o $@
 
 component_DATA = kkc.xml
 componentdir = $(datadir)/ibus/component
 
-kkc.xml.in: kkc.xml.in.in
+kkc.inputMethod.xml.in: kkc.xml.in.in
 	$(AM_V_GEN) $(edit) $< > $@.tmp && mv $@.tmp $@
 
-$(component_DATA): $(addsuffix .in, $(component_DATA))
-	cp -f $< $@
+$(component_DATA): $(patsubst %.xml,%.inputMethod.xml.in,$(component_DATA))
+	$(AM_V_GEN) $(MSGFMT) --xml --template $< -d $(top_srcdir)/po -o $@
 
 GITIGNOREFILES =				\
         $(libutil_la_SOURCES:.vala=.c)		\
@@ -156,7 +156,7 @@ CLEANFILES =					\
 	ibus-setup-kkc-resources.c		\
 	$(desktop_DATA)				\
 	$(desktop_in_files)			\
-	kkc.xml.in				\
+	kkc.inputMethod.xml.in			\
 	kkc.xml					\
 	$(NULL)
 
