@@ -35,7 +35,7 @@ class DictionaryCellRenderer : Gtk.CellRendererText {
 [GtkTemplate (ui = "/org/freedesktop/ibus/engine/kkc/dictionary-dialog.ui")]
 class DictionaryDialog : Gtk.Dialog {
     [GtkChild]
-    Gtk.TreeView available_dictionaries_treeview;
+    private unowned Gtk.TreeView available_dictionaries_treeview;
 
     Preferences preferences;
 
@@ -101,7 +101,7 @@ class DictionaryDialog : Gtk.Dialog {
 [GtkTemplate (ui = "/org/freedesktop/ibus/engine/kkc/shortcut-dialog.ui")]
 class ShortcutDialog : Gtk.Dialog {
     [GtkChild]
-    Gtk.ComboBox shortcut_command_combobox;
+    private unowned Gtk.ComboBox shortcut_command_combobox;
 
     public ShortcutDialog () {
         Gtk.ListStore model;
@@ -145,43 +145,43 @@ class ShortcutDialog : Gtk.Dialog {
 [GtkTemplate (ui = "/org/freedesktop/ibus/engine/kkc/setup-dialog.ui")]
 class SetupDialog : Gtk.Dialog {
     [GtkChild]
-    Gtk.TreeView dictionaries_treeview;
+    private unowned Gtk.TreeView dictionaries_treeview;
     [GtkChild]
-    Gtk.ComboBox punctuation_style_combobox;
+    private unowned Gtk.ComboBox punctuation_style_combobox;
     [GtkChild]
-    Gtk.CheckButton auto_correct_checkbutton;
+    private unowned Gtk.CheckButton auto_correct_checkbutton;
     [GtkChild]
-    Gtk.CheckButton use_custom_keymap_checkbutton;
+    private unowned Gtk.CheckButton use_custom_keymap_checkbutton;
     [GtkChild]
-    Gtk.ComboBox keymap_combobox;
+    private unowned Gtk.ComboBox keymap_combobox;
     [GtkChild]
-    Gtk.SpinButton page_size_spinbutton;
+    private unowned Gtk.SpinButton page_size_spinbutton;
     [GtkChild]
-    Gtk.SpinButton pagination_start_spinbutton;
+    private unowned Gtk.SpinButton pagination_start_spinbutton;
     [GtkChild]
-    Gtk.CheckButton show_annotation_checkbutton;
+    private unowned Gtk.CheckButton show_annotation_checkbutton;
     [GtkChild]
-    Gtk.ComboBox initial_input_mode_combobox;
+    private unowned Gtk.ComboBox initial_input_mode_combobox;
     [GtkChild]
-    Gtk.ComboBox typing_rule_combobox;
+    private unowned Gtk.ComboBox typing_rule_combobox;
     [GtkChild]
-    Gtk.TreeView input_mode_treeview;
+    private unowned Gtk.TreeView input_mode_treeview;
     [GtkChild]
-    Gtk.ToolButton add_dict_toolbutton;
+    private unowned Gtk.ToolButton add_dict_toolbutton;
     [GtkChild]
-    Gtk.ToolButton remove_dict_toolbutton;
+    private unowned Gtk.ToolButton remove_dict_toolbutton;
     [GtkChild]
-    Gtk.ToolButton up_dict_toolbutton;
+    private unowned Gtk.ToolButton up_dict_toolbutton;
     [GtkChild]
-    Gtk.ToolButton down_dict_toolbutton;
+    private unowned Gtk.ToolButton down_dict_toolbutton;
     [GtkChild]
-    Gtk.TreeView shortcut_treeview;
+    private unowned Gtk.TreeView shortcut_treeview;
     [GtkChild]
-    Gtk.ToolButton add_shortcut_toolbutton;
+    private unowned Gtk.ToolButton add_shortcut_toolbutton;
     [GtkChild]
-    Gtk.ToolButton remove_shortcut_toolbutton;
+    private unowned Gtk.ToolButton remove_shortcut_toolbutton;
     [GtkChild]
-    Gtk.Label version_label;
+    private unowned Gtk.Label version_label;
 
     Preferences preferences;
 
@@ -710,7 +710,7 @@ class SetupDialog : Gtk.Dialog {
         }
     }
 
-    static const uint[] IGNORED_KEYVALS = {
+    const uint[] IGNORED_KEYVALS = {
         Kkc.Keysyms.BackSpace,
         Kkc.Keysyms.Escape
     };
